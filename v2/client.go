@@ -1,0 +1,743 @@
+// Copyright 2019 Tokenomy Technologies Pte. Ltd. All rights reserved.
+// Use of this source code is governed by a MIT-style license that can be
+// found in the LICENSE file.
+
+package v2
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
+
+	liberrors "github.com/shuLhan/share/lib/errors"
+
+	"github.com/tokenomy/tokenomy-go"
+)
+
+//
+// Client for Tokenomy REST API v2.
+//
+type Client struct {
+	User *User
+
+	env       *tokenomy.Environment
+	conn      *http.Client
+	apiKey    string
+	secretKey string
+}
+
+//
+// NewClient create and initialize new client for REST API v2.
+//
+// The address parameter define the REST API v2 address, if its empty it will
+// set to value in DefaultAddress.
+//
+// The token and secret parameters are used to authenticate the client when
+// accessing private API.
+//
+// By default, the key and secret is read from environment variables
+// "TOKENOMY_KEY" and "TOKENOMY_SECRET", the parameters will override the
+// default value, if its set.
+// If both environment variables and the parameters are empty, the client can
+// only access the public API.
+//
+func NewClient(address, token, secret string) (cl *Client, err error) {
+	if len(address) == 0 {
+		address = DefaultAddress
+	}
+
+	cl = &Client{
+		env: tokenomy.NewEnvironment(address),
+		conn: &http.Client{
+			Timeout: defHTTPTimeout,
+		},
+		apiKey:    token,
+		secretKey: secret,
+	}
+
+	if len(token) > 0 {
+		err = cl.Authenticate()
+		if err != nil {
+			return nil, fmt.Errorf("NewClient: %w", err)
+		}
+	} else if len(cl.env.APIKey) > 0 {
+		cl.apiKey = cl.env.APIKey
+		cl.secretKey = cl.env.SecretKey
+
+		err = cl.Authenticate()
+		if err != nil {
+			return nil, fmt.Errorf("NewClient: %w", err)
+		}
+	}
+
+	return cl, nil
+}
+
+//
+// Authenticate the current client's connection using token and secret keys.
+//
+func (cl *Client) Authenticate() (err error) {
+	// Test the token and secret keys by requesting user information.
+	cl.User, err = cl.UserInfo()
+	if err != nil {
+		return fmt.Errorf("Authenticate: %w", err)
+	}
+
+	return nil
+}
+
+//
+// MarketDepths fetch list of market's depth for specific pair.
+//
+func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error) {
+	params := url.Values{
+		tokenomy.ParamNamePair: []string{pairName},
+	}
+
+	b, err := cl.doGet(apiMarketDepths, params)
+	if err != nil {
+		return nil, fmt.Errorf("MarketDepths: %w", err)
+	}
+
+	depths = &MarketDepths{}
+	res := &Response{
+		Data: depths,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return depths, nil
+}
+
+//
+// MarketInfo return information about all the pair in the platform.
+//
+func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
+	b, err := cl.doGet(apiMarketInfo, url.Values{})
+	if err != nil {
+		return nil, fmt.Errorf("MarketInfo: %w", err)
+	}
+
+	marketInfos = make([]MarketInfo, 0)
+	res := &Response{
+		Data: marketInfos,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return marketInfos, nil
+}
+
+//
+// MarketOrdersOpen return list of all open orders in the market, specific to
+// pair's name, grouped by ask and bid.
+//
+func (cl *Client) MarketOrdersOpen(pairName string) (openOrders *OpenOrders, err error) {
+	params := url.Values{
+		tokenomy.ParamNamePair: []string{pairName},
+	}
+
+	b, err := cl.doGet(apiMarketOrdersOpen, params)
+	if err != nil {
+		return nil, fmt.Errorf("MarketOrdersOpen: %w", err)
+	}
+
+	openOrders = &OpenOrders{}
+	res := &Response{
+		Data: openOrders,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return openOrders, nil
+}
+
+//
+// MarketPrices return list of all latest pair's prices.
+//
+func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
+	params := url.Values{}
+
+	b, err := cl.doGet(apiMarketPrices, params)
+	if err != nil {
+		return nil, fmt.Errorf("MarketPrices: %w", err)
+	}
+
+	marketPrices = make(MarketPrices, 0)
+	res := &Response{
+		Data: marketPrices,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return marketPrices, nil
+}
+
+//
+// MarketTicker return the ticker information on specific pair.
+//
+func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
+	params := url.Values{
+		tokenomy.ParamNamePair: []string{pairName},
+	}
+
+	b, err := cl.doGet(apiMarketTicker, params)
+	if err != nil {
+		return nil, fmt.Errorf("MarketTicker: %w", err)
+	}
+
+	tick = &Tick{}
+	res := &Response{
+		Data: tick,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return tick, nil
+}
+
+//
+// MarketTrades return list of all closed orders in the market, specific to
+// pair's name, grouped by ask and bid.
+//
+func (cl *Client) MarketTrades(pairName string) (tradePrices *MarketTradePrices, err error) {
+	params := url.Values{
+		tokenomy.ParamNamePair: []string{pairName},
+	}
+
+	b, err := cl.doGet(apiMarketTrades, params)
+	if err != nil {
+		return nil, fmt.Errorf("MarketTrades: %w", err)
+	}
+
+	tradePrices = &MarketTradePrices{}
+	res := &Response{
+		Data: tradePrices,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return tradePrices, nil
+}
+
+//
+// MarketSummaries return the summaries (ticker) of all pairs.
+//
+func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
+	params := url.Values{}
+
+	b, err := cl.doGet(apiMarketSummaries, params)
+	if err != nil {
+		return nil, fmt.Errorf("MarketSummaries: %w", err)
+	}
+
+	summaries = &MarketSummaries{}
+	res := &Response{
+		Data: summaries,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return summaries, nil
+}
+
+//
+// UserInfo fetch the user information and balances.
+//
+// This method require authentication.
+//
+func (cl *Client) UserInfo() (user *User, err error) {
+	params := url.Values{}
+
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserInfo, params)
+	if err != nil {
+		return nil, fmt.Errorf("UserInfo: %w", err)
+	}
+
+	user = &User{}
+	res := &Response{
+		Data: user,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+//
+// UserTrades list the user's trade history, ordered from latest to oldest
+// one.
+//
+// The offset parameter define the number of record to be skipped.
+//
+// The limit parameter define the maximum number of record fetched, if its not
+// set default to DefaultLimit.
+//
+// The idAfter and idBefore filter the records based on ID.  The idAfter will
+// only fetch  record after the value of ID, and idBefore will only fetch
+// record before the value of ID.
+//
+// the timeAfter and timeBefore filter the records based on time when the
+// trades completed.  The value of time is Unix timestamp in seconds.
+//
+// the sortIDBy define the order of result set, default is sorted by ID in
+// "desc" (descending) order.
+// Valid values are "asc" for ascending and "desc" for descending order.
+//
+// This method require authentication.
+//
+func (cl *Client) UserTrades(
+	pairName string,
+	offset, limit, idAfter, idBefore, timeAfter, timeBefore int64,
+) (
+	trades []Trade, err error,
+) {
+	if !cl.env.IsValidPairName(pairName) {
+		return nil, tokenomy.ErrInvalidPair
+	}
+
+	params := url.Values{
+		tokenomy.ParamNamePair: []string{pairName},
+	}
+	if offset > 0 {
+		params.Set(tokenomy.ParamNameOffset, strconv.FormatInt(offset, 10))
+	}
+	if limit > 0 && limit <= tokenomy.DefaultLimit {
+		params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
+	}
+	if idAfter > 0 {
+		params.Set(tokenomy.ParamNameIDAfter, strconv.FormatInt(idAfter, 10))
+	}
+	if idBefore > 0 {
+		params.Set(tokenomy.ParamNameIDBefore, strconv.FormatInt(idBefore, 10))
+	}
+	if timeAfter > 0 {
+		params.Set(tokenomy.ParamNameTimeAfter, strconv.FormatInt(timeAfter, 10))
+	}
+	if timeBefore > 0 {
+		params.Set(tokenomy.ParamNameTimeBefore, strconv.FormatInt(timeBefore, 10))
+	}
+
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserTrades, params)
+	if err != nil {
+		return nil, fmt.Errorf("UserTrades: %w", err)
+	}
+
+	res := &Response{
+		Data: trades,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return trades, nil
+}
+
+//
+// UserOrdersClosed fetch the user closed orders based on pair's name.
+// The offset parameter define the beginning of record and limit parameter
+// define the maximum record in result set.
+//
+// This method require authentication.
+//
+func (cl *Client) UserOrdersClosed(pairName string, offset, limit int64) (trades []Trade, err error) {
+	if !cl.env.IsValidPairName(pairName) {
+		return nil, tokenomy.ErrInvalidPair
+	}
+
+	params := url.Values{
+		tokenomy.ParamNamePair: []string{pairName},
+	}
+
+	if offset > 0 {
+		params.Set(tokenomy.ParamNameOffset, strconv.FormatInt(offset, 10))
+	}
+	if limit > 0 && limit <= tokenomy.DefaultLimit {
+		params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
+	}
+
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserOrdersClosed, params)
+	if err != nil {
+		return nil, fmt.Errorf("UserOrdersClosed: %w", err)
+	}
+
+	res := &Response{
+		Data: trades,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return trades, nil
+}
+
+//
+// UserOrdersOpen fetch the user open orders based on pair's name.
+//
+// This method require authentication.
+//
+func (cl *Client) UserOrdersOpen(pairName string) (openOrders *OpenOrders, err error) {
+	if !cl.env.IsValidPairName(pairName) {
+		return nil, tokenomy.ErrInvalidPair
+	}
+
+	params := url.Values{
+		tokenomy.ParamNamePair: []string{pairName},
+	}
+
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserOrdersOpen, params)
+	if err != nil {
+		return nil, fmt.Errorf("UserOrdersOpen: %w", err)
+	}
+
+	openOrders = &OpenOrders{}
+	res := &Response{
+		Data: openOrders,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return openOrders, nil
+}
+
+//
+// UserOrder fetch a single user order information based on pair's name and
+// order ID.
+//
+// This method require authentication.
+//
+func (cl *Client) UserOrder(pairName string, id int64) (order *Order, err error) {
+	if !cl.env.IsValidPairName(pairName) {
+		return nil, tokenomy.ErrInvalidPair
+	}
+
+	params := url.Values{
+		tokenomy.ParamNamePair:    []string{pairName},
+		tokenomy.ParamNameTradeID: []string{strconv.FormatInt(id, 10)},
+	}
+
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserOrder, params)
+	if err != nil {
+		return nil, fmt.Errorf("UserOrder: %w", err)
+	}
+
+	order = &Order{}
+	res := &Response{
+		Data: order,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return order, nil
+}
+
+//
+// UserTransactions fetch all user deposit and withdraw transaction history.
+// If the asset name is not empty, it will fetch only the deposit and withdraw
+// based on the asset name.
+//
+// The limit parameter define the maximum record in result set.
+//
+// This method require authentication.
+//
+func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTransactions, err error) {
+	params := url.Values{}
+
+	if len(asset) > 0 {
+		params.Set(tokenomy.ParamNameAsset, asset)
+	}
+	if limit > 0 && limit <= tokenomy.DefaultLimit {
+		params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
+	}
+
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserTransactions, params)
+	if err != nil {
+		return nil, fmt.Errorf("UserTransactions: %w", err)
+	}
+
+	trans = &AssetTransactions{}
+	res := &Response{
+		Data: trans,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return trans, nil
+}
+
+//
+// TradeAsk request to sell the coin on market with specific method, amount,
+// and price.
+// The method parameter define the mode of sell, its either "market" or
+// "limit", default to "market" if its empty.
+// If the method is "market", it will only accept amount parameter, otherwise
+// if the methid is "limit", the amount and price must not be zero.
+//
+// The pairName parameter define the coin and base assets to be traded, in the
+// following format: "coin_base".
+//
+// The amount parameter define the volume of coin we want to sell.
+//
+// The price parameter define the number of base that we want to sell the
+// amount of coin.
+//
+func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfloat) (
+	trade *TradeResponse, err error,
+) {
+	return cl.trade(apiTradeAsk, tokenomy.TradeTypeAsk, method, pairName, amount, price)
+}
+
+//
+// TradeBid request to buy the coin on market with specific method, amount,
+// and price.
+// The method parameter define the mode of buy, its either "market" or
+// "limit", default to "market" if its empty.
+// If the method is "market", it will only accept amount parameter, otherwise
+// if the methid is "limit", the amount and price must not be zero.
+//
+// The pairName parameter define the coin and base assets to be traded, in the
+// following format: "coin_base".
+//
+// The amount parameter define the volume of coin we want to buy.
+//
+// The price parameter define the number of base that we want to buy the
+// amount of coin.
+//
+func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfloat) (
+	trade *TradeResponse, err error,
+) {
+	return cl.trade(apiTradeBid, tokenomy.TradeTypeBid, method, pairName, amount, price)
+}
+
+func (cl *Client) trade(
+	api, tipe, method, pairName string,
+	amount, price tokenomy.Rawfloat,
+) (
+	trade *TradeResponse, err error,
+) {
+	params := url.Values{}
+
+	if len(method) == 0 {
+		method = tokenomy.TradeMethodMarket
+	} else {
+		method = strings.ToLower(method)
+		switch method {
+		case tokenomy.TradeMethodMarket, tokenomy.TradeMethodLimit:
+		default:
+			return nil, tokenomy.ErrInvalidTradeMethod
+		}
+	}
+	params.Set(tokenomy.ParamNameTradeMethod, method)
+
+	if !cl.env.IsValidPairName(pairName) {
+		return nil, tokenomy.ErrInvalidPair
+	}
+	params.Set(tokenomy.ParamNamePair, pairName)
+
+	if amount <= 0 {
+		return nil, tokenomy.ErrInvalidAmount
+	}
+	params.Set(tokenomy.ParamNameAmount, amount.String())
+
+	if method == tokenomy.TradeMethodLimit {
+		if price <= 0 {
+			return nil, tokenomy.ErrInvalidPrice
+		}
+		params.Set(tokenomy.ParamNamePrice, price.String())
+	}
+
+	b, err := cl.doSecureRequest(http.MethodPost, api, params)
+	if err != nil {
+		return nil, err
+	}
+
+	trade = &TradeResponse{}
+	res := &Response{
+		Data: trade,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return trade, nil
+}
+
+//
+// TradeCancelAsk cancel the specific open sell order by pair and ID.
+//
+func (cl *Client) TradeCancelAsk(pairName string, id int64) (
+	trade *TradeResponse, err error,
+) {
+	return cl.cancel(apiTradeCancelAsk, pairName, id)
+}
+
+//
+// TradeCancelBid cancel the specific open buy order by pair and ID.
+//
+func (cl *Client) TradeCancelBid(pairName string, id int64) (
+	trade *TradeResponse, err error,
+) {
+	return cl.cancel(apiTradeCancelBid, pairName, id)
+}
+
+func (cl *Client) cancel(api, pairName string, id int64) (
+	trade *TradeResponse, err error,
+) {
+	params := url.Values{}
+
+	if !cl.env.IsValidPairName(pairName) {
+		return nil, tokenomy.ErrInvalidPair
+	}
+	params.Set(tokenomy.ParamNamePair, pairName)
+
+	if id <= 0 {
+		return nil, tokenomy.ErrInvalidTradeID
+	}
+	params.Set(tokenomy.ParamNameTradeID, strconv.FormatInt(id, 10))
+
+	b, err := cl.doSecureRequest(http.MethodDelete, api, params)
+	if err != nil {
+		return nil, err
+	}
+
+	trade = &TradeResponse{}
+	res := &Response{
+		Data: trade,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return trade, nil
+}
+
+//
+// doGet create and send request without authentication on specific
+// "path" with additional "params".
+//
+func (cl *Client) doGet(path string, params url.Values) (b []byte, err error) {
+	req, err := http.NewRequest(http.MethodGet, cl.env.Host, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.URL.Path = path
+	req.URL.RawQuery = params.Encode()
+
+	return cl.send(req)
+}
+
+func (cl *Client) doSecureRequest(httpMethod, path string, params url.Values) (
+	b []byte, err error,
+) {
+	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
+
+	payload := params.Encode()
+	sign := tokenomy.Sign(payload, cl.secretKey)
+
+	req, err := http.NewRequest(httpMethod, cl.env.Host, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.URL.Path = path
+	req.Header.Set(tokenomy.HeaderNameKey, cl.apiKey)
+	req.Header.Set(tokenomy.HeaderNameSign, sign)
+
+	switch httpMethod {
+	case http.MethodGet, http.MethodDelete:
+		req.URL.RawQuery = payload
+	case http.MethodPost, http.MethodPut:
+		req.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(payload)))
+		req.Header.Set(tokenomy.HeaderNameContentType, tokenomy.ContentTypeForm)
+	}
+
+	return cl.send(req)
+}
+
+func (cl *Client) send(req *http.Request) (b []byte, err error) {
+	if cl.env.Debug > 0 {
+		fmt.Printf(">>> send: %+v\n", req)
+	}
+
+	httpres, err := cl.conn.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer httpres.Body.Close()
+
+	b, err = ioutil.ReadAll(httpres.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if cl.env.Debug > 0 {
+		fmt.Printf("<<< send: %s\n", b)
+	}
+
+	if httpres.StatusCode >= 400 {
+		res := &Response{}
+
+		err = json.Unmarshal(b, res)
+		if err != nil {
+			return nil, err
+		}
+
+		err = &liberrors.E{
+			Code:    httpres.StatusCode,
+			Message: res.Message,
+			Name:    res.Name,
+		}
+
+		return nil, err
+	}
+
+	return b, nil
+}
