@@ -171,7 +171,7 @@ func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 		return nil, fmt.Errorf("MarketPrices: %w", err)
 	}
 
-	marketPrices = make(MarketPrices, 0)
+	marketPrices = make(MarketPrices)
 	res := &Response{
 		Data: marketPrices,
 	}
