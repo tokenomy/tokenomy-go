@@ -17,7 +17,7 @@ type Order struct {
 	SubmitTime int64             `json:"submit_time"`
 	FinishTime int64             `json:"finish_time,omitempty"`
 	Status     string            `json:"status,omitempty"` // Status for closed order.
-	Price      tokenomy.Rawfloat `json:"price",omitempty`
+	Price      tokenomy.Rawfloat `json:"price,omitempty"`
 
 	AmountBase tokenomy.Rawfloat `json:"amount_base,omitempty"`
 	RemainBase tokenomy.Rawfloat `json:"remain_base,omitempty"`
