@@ -35,8 +35,6 @@ const (
 	apiTradeBid       = "/v2/trade/bid"
 	apiTradeCancelAsk = "/v2/trade/cancel/ask"
 	apiTradeCancelBid = "/v2/trade/cancel/bid"
-
-	defHTTPTimeout = 10 * time.Second
 )
 
 func timestamp() int64 {
