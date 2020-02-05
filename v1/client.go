@@ -7,6 +7,7 @@ package v1
 import (
 	"crypto/hmac"
 	"crypto/sha512"
+	"crypto/tls"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -24,48 +25,49 @@ import (
 // Client represent an HTTP client for Tokenomy API v1.
 //
 type Client struct {
-	Info   *UserInfo
-	conn   *http.Client
-	env    *tokenomy.Environment
-	token  string
-	secret string
+	Info *UserInfo
+	conn *http.Client
+	env  *tokenomy.Environment
 }
 
 //
 // NewClient create and initialize new Tokenomy client for API v1.
 //
-// The address parameter define the REST API v2 address, if its empty it will
-// set to value in DefaultAddress.
+// The Environment's Address parameter define the REST API v2 address, if its
+// empty it will set to value in DefaultAddress.
 //
-// The token and secret parameters are used to authenticate the client when
-// accessing private API.
+// The Environment's Token and Secret parameters are used to
+// authenticate the client when accessing private API.
 //
-// By default, the key and secret is read from environment variables
-// "TOKENOMY_KEY" and "TOKENOMY_SECRET", the parameters will override the
+// By default, the Token and Secret is read from environment variables
+// "TOKENOMY_TOKEN" and "TOKENOMY_SECRET", the parameters will override the
 // default value, if its set.
 // If both environment variables and the parameters are empty, the client can
 // only access the public API.
 //
-func NewClient(address, token, secret string) (cl *Client, err error) {
-	if len(address) == 0 {
-		address = DefaultAddress
+func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
+	if len(env.Address) == 0 {
+		env.Address = DefaultAddress
+	}
+
+	var transport http.Transport = http.Transport{}
+
+	defTransport := http.DefaultTransport.(*http.Transport)
+	transport = *defTransport
+
+	transport.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: env.IsInsecure,
 	}
 
 	cl = &Client{
-		conn: &http.Client{},
-		env:  tokenomy.NewEnvironment(address),
+		conn: &http.Client{
+			Transport: &transport,
+		},
+		env: env,
 	}
 
-	if len(token) == 0 {
-		cl.token = cl.env.APIKey
-		cl.secret = cl.env.SecretKey
-	} else {
-		cl.token = token
-		cl.secret = secret
-	}
-
-	if len(cl.token) > 0 {
-		err = cl.Authenticate(cl.token, cl.secret)
+	if len(cl.env.Token) > 0 {
+		err = cl.Authenticate()
 	}
 
 	return cl, err
@@ -74,15 +76,10 @@ func NewClient(address, token, secret string) (cl *Client, err error) {
 //
 // Authenticate the current client's connection using token and secret keys.
 //
-func (cl *Client) Authenticate(token, secret string) (err error) {
-	cl.token = token
-	cl.secret = secret
-
+func (cl *Client) Authenticate() (err error) {
 	// Test the token and secret by requesting user information.
 	_, err = cl.UserInfo()
 	if err != nil {
-		cl.token = cl.env.APIKey
-		cl.secret = cl.env.SecretKey
 		err = fmt.Errorf("Authenticate: " + err.Error())
 		return err
 	}
@@ -779,7 +776,7 @@ func (cl *Client) WithdrawCoin(
 func (cl *Client) callPrivate(method string, params url.Values) (
 	body []byte, err error,
 ) {
-	if len(cl.token) == 0 {
+	if len(cl.env.Token) == 0 {
 		return nil, ErrUnauthenticated
 	}
 
@@ -824,7 +821,7 @@ func (cl *Client) callPublic(publicPath string) (body []byte, err error) {
 		},
 	}
 
-	req.URL, err = url.Parse(cl.env.Host + publicPath)
+	req.URL, err = url.Parse(cl.env.Address + publicPath)
 	if err != nil {
 		return nil, fmt.Errorf("callPublic: " + err.Error())
 	}
@@ -872,7 +869,7 @@ func (cl *Client) cancelOrder(tipe, pairName string, orderID int64) (
 // secret key.
 //
 func (cl *Client) encodeToString(in []byte) string {
-	mac := hmac.New(sha512.New, []byte(cl.secret))
+	mac := hmac.New(sha512.New, []byte(cl.env.Secret))
 
 	_, _ = mac.Write(in)
 
@@ -917,7 +914,7 @@ func (cl *Client) newPrivateRequest(apiMethod string, params url.Values) (
 				"application/x-www-form-urlencoded",
 			},
 			"Key": []string{
-				cl.token,
+				cl.env.Token,
 			},
 			"Sign": []string{
 				sign,
@@ -926,7 +923,7 @@ func (cl *Client) newPrivateRequest(apiMethod string, params url.Values) (
 		Body: ioutil.NopCloser(strings.NewReader(reqBody)),
 	}
 
-	req.URL, err = url.Parse(cl.env.Host + defPrivatePath)
+	req.URL, err = url.Parse(cl.env.Address + defPrivatePath)
 	if err != nil {
 		err = fmt.Errorf("newPrivateRequest: " + err.Error())
 		return nil, err

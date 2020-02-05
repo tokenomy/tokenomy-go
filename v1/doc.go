@@ -8,17 +8,17 @@
 //
 // Tokenomy provide public and private APIs.
 // The public APIs can be accessed directly by creating new client with empty
-// API and secret key parameters.
-// The private APIs can only be accessed by using API and secret keys (API
-// credential).
+// Token and Secret.
+// The private APIs can only be accessed by using API key, a pair of Token and
+// Secret.
 //
 // An API credential can be retrieved manually by logging in into your
 // Tokenomy Exchange account (https://exchange.tokenomy.com) and open the
 // "Trade API" menu section or https://exchange.tokenomy.com/trade_api.
-// Please keep these credentials safe and do not reveal to any external party.
+// Please keep those credentials safe and do not reveal to any external party.
 //
-// Beside passing the API and secret keys to NewClient or Authenticate, this
-// library also read API and secret keys from environment variables
-// "TOKENOMY_KEY" for API key and "TOKENOMY_SECRET" for secret key.
+// Beside passing the API key Token and Secret to NewEnvironment, this
+// library also read Token and Secret keys from environment variables
+// "TOKENOMY_TOKEN" for Token and "TOKENOMY_SECRET" for Secret.
 //
 package v1

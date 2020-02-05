@@ -7,21 +7,15 @@ package v1
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/tokenomy/tokenomy-go"
 )
 
-//
-// This variables is defined only to show how to use examples in
-// documentations.
-//
-//nolint:gochecknoglobals
-var (
-	token, secret string
-)
-
 func ExampleClient_Buy() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,7 +29,9 @@ func ExampleClient_Buy() {
 }
 
 func ExampleClient_BuyByMarket() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,7 +46,9 @@ func ExampleClient_BuyByMarket() {
 
 //nolint:dupl
 func ExampleClient_CancelBuy() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -94,7 +92,9 @@ func ExampleClient_CancelBuy() {
 
 //nolint:dupl
 func ExampleClient_CancelSell() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -136,9 +136,10 @@ func ExampleClient_CancelSell() {
 }
 
 func ExampleClient_GetOrder() {
+	env := tokenomy.NewEnvironment("", "")
 	orderID := int64(1023965)
 
-	cl, err := NewClient("", "")
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -152,7 +153,9 @@ func ExampleClient_GetOrder() {
 }
 
 func ExampleClient_GetTicker() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -166,7 +169,9 @@ func ExampleClient_GetTicker() {
 }
 
 func ExampleClient_ListOpenOrders() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -186,7 +191,9 @@ func ExampleClient_ListOpenOrders() {
 }
 
 func ExampleClient_ListOrderHistory() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -203,7 +210,9 @@ func ExampleClient_ListOrderHistory() {
 }
 
 func ExampleClient_ListTrades() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -220,7 +229,9 @@ func ExampleClient_ListTrades() {
 }
 
 func ExampleClient_ListTradeHistory() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -238,11 +249,12 @@ func ExampleClient_ListTradeHistory() {
 }
 
 func ExampleClient_ListTransactionHistory() {
-	// Get the API keys from environment.
-	// token := os.Getenv("TOKENOMY_KEY")
-	// secret := os.Getenv("TOKENOMY_SECRET")
+	env := tokenomy.NewEnvironment(
+		os.Getenv(tokenomy.EnvNameToken),
+		os.Getenv(tokenomy.EnvNameSecret),
+	)
 
-	cl, err := NewClient(token, secret)
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -256,7 +268,9 @@ func ExampleClient_ListTransactionHistory() {
 }
 
 func ExampleClient_MarketInfo() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -270,7 +284,9 @@ func ExampleClient_MarketInfo() {
 }
 
 func ExampleClient_OrderBook() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -292,11 +308,9 @@ func ExampleClient_OrderBook() {
 }
 
 func ExampleClient_SellByMarket() {
-	// Get the API keys from environment.
-	// token := os.Getenv("TOKENOMY_KEY")
-	// secret := os.Getenv("TOKENOMY_SECRET")
+	env := tokenomy.NewEnvironment("", "")
 
-	cl, err := NewClient(token, secret)
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -310,7 +324,9 @@ func ExampleClient_SellByMarket() {
 }
 
 func ExampleClient_Summaries() {
-	cl, err := NewClient("", "")
+	env := tokenomy.NewEnvironment("", "")
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -330,10 +346,12 @@ func ExampleClient_Summaries() {
 }
 
 func ExampleClient_UserInfo() {
-	// Get the API keys from environment.
-	// token := os.Getenv("TOKENOMY_KEY")
-	// secret := os.Getenv("TOKENOMY_SECRET")
-	cl, err := NewClient(token, secret)
+	env := tokenomy.NewEnvironment(
+		os.Getenv(tokenomy.EnvNameToken),
+		os.Getenv(tokenomy.EnvNameSecret),
+	)
+
+	cl, err := NewClient(env)
 	if err != nil {
 		log.Fatal(err)
 	}

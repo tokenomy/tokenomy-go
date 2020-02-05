@@ -6,6 +6,7 @@ package v2
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -24,58 +25,51 @@ import (
 //
 type Client struct {
 	User *User
-
-	env       *tokenomy.Environment
-	conn      *http.Client
-	apiKey    string
-	secretKey string
+	conn *http.Client
+	env  *tokenomy.Environment
 }
 
 //
 // NewClient create and initialize new client for REST API v2.
 //
-// The address parameter define the REST API v2 address, if its empty it will
-// set to value in DefaultAddress.
+// The Environment Address parameter define the REST API v2 address, if its
+// empty it will set to value in DefaultAddress.
 //
-// The token and secret parameters are used to authenticate the client when
-// accessing private API.
+// The Environment' Token and Secret parameters are used to authenticate the
+// client when accessing private API.
 //
-// By default, the key and secret is read from environment variables
-// "TOKENOMY_KEY" and "TOKENOMY_SECRET", the parameters will override the
+// By default, the Token and Secret is read from environment variables
+// "TOKENOMY_TOKEN" and "TOKENOMY_SECRET", the parameters will override the
 // default value, if its set.
 // If both environment variables and the parameters are empty, the client can
 // only access the public API.
 //
-func NewClient(address, token, secret string) (cl *Client, err error) {
-	if len(address) == 0 {
-		address = DefaultAddress
+func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
+	if len(env.Address) == 0 {
+		env.Address = DefaultAddress
+	}
+
+	var transport http.Transport
+
+	defTransport := http.DefaultTransport.(*http.Transport)
+	transport = *defTransport
+
+	transport.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: env.IsInsecure,
 	}
 
 	cl = &Client{
-		env: tokenomy.NewEnvironment(address),
 		conn: &http.Client{
-			Timeout: defHTTPTimeout,
+			Transport: &transport,
 		},
-		apiKey:    token,
-		secretKey: secret,
+		env: env,
 	}
 
-	if len(token) > 0 {
+	if len(cl.env.Token) > 0 {
 		err = cl.Authenticate()
-		if err != nil {
-			return nil, fmt.Errorf("NewClient: %w", err)
-		}
-	} else if len(cl.env.APIKey) > 0 {
-		cl.apiKey = cl.env.APIKey
-		cl.secretKey = cl.env.SecretKey
-
-		err = cl.Authenticate()
-		if err != nil {
-			return nil, fmt.Errorf("NewClient: %w", err)
-		}
 	}
 
-	return cl, nil
+	return cl, err
 }
 
 //
@@ -662,7 +656,7 @@ func (cl *Client) cancel(api, pairName string, id int64) (
 // "path" with additional "params".
 //
 func (cl *Client) doGet(path string, params url.Values) (b []byte, err error) {
-	req, err := http.NewRequest(http.MethodGet, cl.env.Host, nil)
+	req, err := http.NewRequest(http.MethodGet, cl.env.Address, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -679,15 +673,15 @@ func (cl *Client) doSecureRequest(httpMethod, path string, params url.Values) (
 	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
 
 	payload := params.Encode()
-	sign := tokenomy.Sign(payload, cl.secretKey)
+	sign := tokenomy.Sign(payload, cl.env.Secret)
 
-	req, err := http.NewRequest(httpMethod, cl.env.Host, nil)
+	req, err := http.NewRequest(httpMethod, cl.env.Address, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	req.URL.Path = path
-	req.Header.Set(tokenomy.HeaderNameKey, cl.apiKey)
+	req.Header.Set(tokenomy.HeaderNameKey, cl.env.Token)
 	req.Header.Set(tokenomy.HeaderNameSign, sign)
 
 	switch httpMethod {

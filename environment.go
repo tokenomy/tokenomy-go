@@ -24,12 +24,19 @@ type Environment struct {
 	//
 	Debug int
 
-	// Host contains the host API.
-	// Its value can be overriden using environment variable
-	// "TOKENOMY_HOST".
-	Host      string
-	APIKey    string
-	SecretKey string
+	// Address of API server, optional. It will default to DefaultAddress
+	// constant on each package.
+	Address string
+
+	// Token, required, is the public part of API key.
+	Token string
+
+	// Secret, required, is the private part of API key.
+	Secret string
+
+	// IsInsecure, optional, allow self-signed certificate, should be use
+	// for testing only.
+	IsInsecure bool
 
 	pairs map[string]struct{}
 }
@@ -37,23 +44,28 @@ type Environment struct {
 //
 // NewEnvironment create and initialize environment.
 //
-func NewEnvironment(host string) (env *Environment) {
+// If token and/or secret is empty it will set from environment variables
+// TOKENOMY_TOKEN and TOKENOMY_SECRET.
+//
+func NewEnvironment(token, secret string) (env *Environment) {
 	log.SetFlags(0)
 
 	env = &Environment{
-		Host:      host,
-		APIKey:    os.Getenv(EnvNameKey),
-		SecretKey: os.Getenv(EnvNameSecret),
+		Address: os.Getenv(EnvNameAddress),
+		Token:   os.Getenv(EnvNameToken),
+		Secret:  os.Getenv(EnvNameSecret),
+	}
+
+	if len(token) > 0 {
+		env.Token = token
+	}
+	if len(secret) > 0 {
+		env.Secret = secret
 	}
 
 	v := os.Getenv(EnvNameDebug)
 	if len(v) > 0 {
 		env.Debug, _ = strconv.Atoi(v)
-	}
-
-	v = os.Getenv(EnvNameHost)
-	if len(v) > 0 {
-		env.Host = v
 	}
 
 	if env.Debug >= 1 {

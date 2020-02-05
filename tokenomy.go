@@ -139,10 +139,10 @@ const (
 // List of knowns environment variables.
 //
 const (
-	EnvNameDebug  = "TOKENOMY_DEBUG"
-	EnvNameHost   = "TOKENOMY_HOST"
-	EnvNameKey    = "TOKENOMY_KEY"
-	EnvNameSecret = "TOKENOMY_SECRET"
+	EnvNameAddress = "TOKENOMY_ADDRESS"
+	EnvNameDebug   = "TOKENOMY_DEBUG"
+	EnvNameToken   = "TOKENOMY_TOKEN"
+	EnvNameSecret  = "TOKENOMY_SECRET"
 )
 
 //
