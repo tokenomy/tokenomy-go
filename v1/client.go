@@ -88,8 +88,8 @@ func (cl *Client) Authenticate() (err error) {
 }
 
 //
-// Buy put the buy order for the asset at specific amount and price into the
-// market.
+// TradeBid put the buy order for the asset at specific amount and price into
+// the market.
 //
 // On success, it will return the information about status of transaction and
 // remaining balance.
@@ -97,17 +97,17 @@ func (cl *Client) Authenticate() (err error) {
 //
 // This method require authentication.
 //
-func (cl *Client) Buy(pairName string, amount, price float64) (
+func (cl *Client) TradeBid(method, pairName string, amount, price float64) (
 	tres *TradeResponse, err error,
 ) {
-	resBody, err := cl.trade(tokenomy.TradeMethodLimit,
+	resBody, err := cl.trade(method,
 		tokenomy.TradeTypeBid, pairName, amount, price)
 	if err != nil {
 		return nil, err
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> Buy: response body: %s\n", resBody)
+		fmt.Printf(">>> TradeBid: response body: %s\n", resBody)
 	}
 
 	tres = &TradeResponse{}
@@ -118,7 +118,7 @@ func (cl *Client) Buy(pairName string, amount, price float64) (
 	}
 
 	if tres.Success != responseSuccess {
-		return nil, fmt.Errorf("Buy: %s", tres.Error)
+		return nil, fmt.Errorf("TradeBid: %s", tres.Error)
 	}
 
 	tres.Pair = pairName
@@ -127,50 +127,12 @@ func (cl *Client) Buy(pairName string, amount, price float64) (
 }
 
 //
-// BuyByMarket buy the asset at specific amount from market using the base
-// asset as currency.
-//
-// On success, it will return the information about status of transaction and
-// remaining balances.
-// On fail, it will return nil TradeResponse and an error.
+// TradeCancelAsk cancel the sell (ask) order on specific pair name and order
+// ID.
 //
 // This method require authentication.
 //
-func (cl *Client) BuyByMarket(pairName string, amount float64) (
-	tres *TradeResponse, err error,
-) {
-	resBody, err := cl.trade(tokenomy.TradeMethodMarket,
-		tokenomy.TradeTypeBid, pairName, amount, 0)
-	if err != nil {
-		return nil, err
-	}
-
-	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> BuyByMarket: response body: %s\n", resBody)
-	}
-
-	tres = &TradeResponse{}
-
-	err = json.Unmarshal(resBody, tres)
-	if err != nil {
-		return nil, err
-	}
-
-	if tres.Success == 0 {
-		return nil, fmt.Errorf("%s: %s", tres.ErrorCode, tres.Error)
-	}
-
-	tres.Pair = pairName
-
-	return tres, nil
-}
-
-//
-// CancelSell cancel the sell (ask) order on specific pair name and order ID.
-//
-// This method require authentication.
-//
-func (cl *Client) CancelSell(pairName string, orderID int64) (
+func (cl *Client) TradeCancelAsk(pairName string, orderID int64) (
 	cancelOrder *CancelOrder, err error,
 ) {
 	if len(pairName) == 0 {
@@ -183,18 +145,18 @@ func (cl *Client) CancelSell(pairName string, orderID int64) (
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> CancelSell: response body: %s\n", resBody)
+		fmt.Printf(">>> TradeCancelAsk: response body: %s\n", resBody)
 	}
 
 	cancelRes := &cancelOrderResponse{}
 
 	err = json.Unmarshal(resBody, cancelRes)
 	if err != nil {
-		return nil, fmt.Errorf("CancelSell: " + err.Error())
+		return nil, fmt.Errorf("TradeCancelAsk: " + err.Error())
 	}
 
 	if cancelRes.Success != responseSuccess {
-		return nil, fmt.Errorf("CancelSell: " + cancelRes.Error)
+		return nil, fmt.Errorf("TradeCancelAsk: " + cancelRes.Error)
 	}
 
 	cancelOrder = cancelRes.Return
@@ -204,11 +166,12 @@ func (cl *Client) CancelSell(pairName string, orderID int64) (
 }
 
 //
-// CancelBuy cancel the buy (bid) order on specific pair name and order ID.
+// TradeCancelBid cancel the buy (bid) order on specific pair name and order
+// ID.
 //
 // This method require authentication.
 //
-func (cl *Client) CancelBuy(pairName string, orderID int64) (
+func (cl *Client) TradeCancelBid(pairName string, orderID int64) (
 	cancelOrder *CancelOrder, err error,
 ) {
 	if len(pairName) == 0 {
@@ -221,18 +184,18 @@ func (cl *Client) CancelBuy(pairName string, orderID int64) (
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> CancelBuy: response body: %s\n", resBody)
+		fmt.Printf(">>> TradeCancelBid: response body: %s\n", resBody)
 	}
 
 	cancelRes := &cancelOrderResponse{}
 
 	err = json.Unmarshal(resBody, cancelRes)
 	if err != nil {
-		return nil, fmt.Errorf("CancelBuy: " + err.Error())
+		return nil, fmt.Errorf("TradeCancelBid: " + err.Error())
 	}
 
 	if cancelRes.Success != responseSuccess {
-		return nil, fmt.Errorf("CancelBuy: " + cancelRes.Error)
+		return nil, fmt.Errorf("TradeCancelBid: " + cancelRes.Error)
 	}
 
 	cancelOrder = cancelRes.Return
@@ -242,11 +205,12 @@ func (cl *Client) CancelBuy(pairName string, orderID int64) (
 }
 
 //
-// GetOrder get the detail of a specific open order by pair name and order ID.
+// UserOrder get the detail of a specific user's open order by pair name and
+// order ID.
 //
 // This method require authentication.
 //
-func (cl *Client) GetOrder(pairName string, orderID int64) (
+func (cl *Client) UserOrder(pairName string, orderID int64) (
 	order *OrderHistory, err error,
 ) {
 	if len(pairName) == 0 {
@@ -257,20 +221,20 @@ func (cl *Client) GetOrder(pairName string, orderID int64) (
 	params.Set("pair", pairName)
 	params.Set("order_id", strconv.FormatInt(orderID, 10))
 
-	resBody, err := cl.callPrivate(MethodUserGetOrder, params)
+	resBody, err := cl.callPrivate(MethodUserOrder, params)
 	if err != nil {
 		return nil, err
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> GetOrder: response body: %s\n", resBody)
+		fmt.Printf(">>> UserOrder: response body: %s\n", resBody)
 	}
 
 	gores := &getOrderResponse{}
 
 	err = json.Unmarshal(resBody, gores)
 	if err != nil {
-		return nil, fmt.Errorf("GetOrder: " + err.Error())
+		return nil, fmt.Errorf("UserOrder: " + err.Error())
 	}
 
 	order = gores.Return.Order
@@ -280,29 +244,29 @@ func (cl *Client) GetOrder(pairName string, orderID int64) (
 }
 
 //
-// GetTicker get the price summary of an individual pair.
+// MarketTicker get the price summary of an individual pair.
 //
-func (cl *Client) GetTicker(pairName string) (pair *Pair, err error) {
+func (cl *Client) MarketTicker(pairName string) (pair *Pair, err error) {
 	if len(pairName) == 0 {
 		return nil, ErrInvalidPairName
 	}
 
-	apiPath := fmt.Sprintf(apiTicker, pairName)
+	apiPath := fmt.Sprintf(apiMarketTicker, pairName)
 
 	body, err := cl.callPublic(apiPath)
 	if err != nil {
-		return nil, fmt.Errorf("GetTicker: " + err.Error())
+		return nil, fmt.Errorf("MarketTicker: " + err.Error())
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> GetTicker: response body: %s\n", body)
+		fmt.Printf(">>> MarketTicker: response body: %s\n", body)
 	}
 
 	tickerRes := &tickerResponse{}
 
 	err = json.Unmarshal(body, tickerRes)
 	if err != nil {
-		return nil, fmt.Errorf("GetTicker: " + err.Error())
+		return nil, fmt.Errorf("MarketTicker: " + err.Error())
 	}
 
 	pair = tickerRes.Ticker
@@ -312,39 +276,39 @@ func (cl *Client) GetTicker(pairName string) (pair *Pair, err error) {
 }
 
 //
-// ListTrades get the latest trades for a particular pair.
+// MarketTrades get the latest trades for a particular pair.
 //
-func (cl *Client) ListTrades(pairName string) (trades []*Trade, err error) {
+func (cl *Client) MarketTrades(pairName string) (trades []*Trade, err error) {
 	if len(pairName) == 0 {
 		return nil, ErrInvalidPairName
 	}
 
-	apiPath := fmt.Sprintf(apiTrades, pairName)
+	apiPath := fmt.Sprintf(apiMarketTrades, pairName)
 
 	body, err := cl.callPublic(apiPath)
 	if err != nil {
-		return nil, fmt.Errorf("ListTrades: " + err.Error())
+		return nil, fmt.Errorf("MarketTrades: " + err.Error())
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> ListTrades: response body: %s\n", body)
+		fmt.Printf(">>> MarketTrades: response body: %s\n", body)
 	}
 
 	err = json.Unmarshal(body, &trades)
 	if err != nil {
-		return nil, fmt.Errorf("ListTrades: " + err.Error())
+		return nil, fmt.Errorf("MarketTrades: " + err.Error())
 	}
 
 	return trades, nil
 }
 
 //
-// ListOpenOrders list the current user's open order (buy and sell) by pair
+// UserOrdersOpen list the current user's open order (buy and sell) by pair
 // name.
 //
 // This method require authentication.
 //
-func (cl *Client) ListOpenOrders(pairName string) (
+func (cl *Client) UserOrdersOpen(pairName string) (
 	openOrders OpenOrders, err error,
 ) {
 	if len(pairName) == 0 {
@@ -354,24 +318,24 @@ func (cl *Client) ListOpenOrders(pairName string) (
 	params := url.Values{}
 	params.Set("pair", pairName)
 
-	resBody, err := cl.callPrivate(MethodUserOpenOrders, params)
+	resBody, err := cl.callPrivate(MethodUserOrdersOpen, params)
 	if err != nil {
 		return nil, err
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> ListOpenOrders: response body: %s\n", resBody)
+		fmt.Printf(">>> UserOrdersOpen: response body: %s\n", resBody)
 	}
 
 	oores := &openOrdersResponse{}
 
 	err = json.Unmarshal(resBody, oores)
 	if err != nil {
-		return nil, fmt.Errorf("ListOpenOrders: " + err.Error())
+		return nil, fmt.Errorf("UserOrdersOpen: " + err.Error())
 	}
 
 	if oores.Success != responseSuccess {
-		return nil, fmt.Errorf("ListOpenOrders: " + oores.Error)
+		return nil, fmt.Errorf("UserOrdersOpen: " + oores.Error)
 	}
 
 	openOrders = oores.Return.Orders
@@ -387,11 +351,11 @@ func (cl *Client) ListOpenOrders(pairName string) (
 }
 
 //
-// ListOrderHistory list user's closed order history (buy and sell).
+// UserOrdersClosed list user's closed order history (buy and sell).
 //
 // This method require authentication.
 //
-func (cl *Client) ListOrderHistory(pairName string, count, fromID int) (
+func (cl *Client) UserOrdersClosed(pairName string, count, fromID int) (
 	orderHistory []*OrderHistory, err error,
 ) {
 	resBody, err := cl.callPrivate(MethodUserOrderHistory, nil)
@@ -400,18 +364,18 @@ func (cl *Client) ListOrderHistory(pairName string, count, fromID int) (
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> ListOrderHistory: response body: %s\n", resBody)
+		fmt.Printf(">>> UserOrdersClosed: response body: %s\n", resBody)
 	}
 
 	ohres := &orderHistoryResponse{}
 
 	err = json.Unmarshal(resBody, ohres)
 	if err != nil {
-		return nil, fmt.Errorf("ListOrderHistory: " + err.Error())
+		return nil, fmt.Errorf("UserOrdersClosed: " + err.Error())
 	}
 
 	if ohres.Success != responseSuccess {
-		return nil, fmt.Errorf("ListOrderHistory: " + ohres.Error)
+		return nil, fmt.Errorf("UserOrdersClosed: " + ohres.Error)
 	}
 
 	orderHistory = ohres.Return.Orders
@@ -425,7 +389,7 @@ func (cl *Client) ListOrderHistory(pairName string, count, fromID int) (
 }
 
 //
-// ListTradeHistory list all user's history of trade.
+// UserTrades list all user's history of trade.
 //
 // The "count" parameter limit the number of history returned by this method,
 // default to 1000.
@@ -439,7 +403,7 @@ func (cl *Client) ListOrderHistory(pairName string, count, fromID int) (
 //
 // This method require authentication.
 //
-func (cl *Client) ListTradeHistory(
+func (cl *Client) UserTrades(
 	pairName string,
 	count, startTradeID, endTradeID int64,
 	sortOrder string,
@@ -483,7 +447,7 @@ func (cl *Client) ListTradeHistory(
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> ListTradeHistory: response body: %s\n", resBody)
+		fmt.Printf(">>> UserTrades: response body: %s\n", resBody)
 	}
 
 	thres := &tradeHistoryResponse{}
@@ -494,7 +458,7 @@ func (cl *Client) ListTradeHistory(
 	}
 
 	if thres.Success != responseSuccess {
-		return nil, fmt.Errorf("ListTradeHistory: %s: %s",
+		return nil, fmt.Errorf("UserTrades: %s: %s",
 			thres.ErrorCode, thres.Error)
 	}
 
@@ -504,30 +468,30 @@ func (cl *Client) ListTradeHistory(
 }
 
 //
-// ListTransactionHistory list all user's history of deposits and withdrawals
+// UserTransactions list all user's history of deposits and withdrawals
 // from all assets.
 //
 // This method is require authentication.
 //
-func (cl *Client) ListTransactionHistory() (transHistory *TransactionHistory, err error) {
+func (cl *Client) UserTransactions() (transHistory *TransactionHistory, err error) {
 	resBody, err := cl.callPrivate(MethodUserTransHistory, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> ListTransactionHistory: response body: %s\n", resBody)
+		fmt.Printf(">>> UserTransactions: response body: %s\n", resBody)
 	}
 
 	thres := &transHistoryResponse{}
 
 	err = json.Unmarshal(resBody, thres)
 	if err != nil {
-		return nil, fmt.Errorf("ListTransactionHistory: " + err.Error())
+		return nil, fmt.Errorf("UserTransactions: " + err.Error())
 	}
 
 	if thres.Success != responseSuccess {
-		return nil, fmt.Errorf("ListTransactionHistory: %s: %s",
+		return nil, fmt.Errorf("UserTransactions: %s: %s",
 			thres.ErrorCode, thres.Error)
 	}
 
@@ -562,51 +526,51 @@ func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
 }
 
 //
-// OrderBook list the public open order book (buy and sell) for spesific
+// MarketOrdersOpen list the public open order book (buy and sell) for spesific
 // pair.
 //
-func (cl *Client) OrderBook(pairName string) (orderBook *OrderBook, err error) {
+func (cl *Client) MarketOrdersOpen(pairName string) (orderBook *OrderBook, err error) {
 	if len(pairName) == 0 {
 		return nil, ErrInvalidPairName
 	}
 
-	apiPath := fmt.Sprintf(apiOrderBook, pairName)
+	apiPath := fmt.Sprintf(apiMarketOrdersOpen, pairName)
 
 	body, err := cl.callPublic(apiPath)
 	if err != nil {
-		return nil, fmt.Errorf("OrderBook: " + err.Error())
+		return nil, fmt.Errorf("MarketOrdersOpen: " + err.Error())
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> OrderBook: response body: %s\n", body)
+		fmt.Printf(">>> MarketOrdersOpen: response body: %s\n", body)
 	}
 
 	orderBook = &OrderBook{}
 
 	err = json.Unmarshal(body, orderBook)
 	if err != nil {
-		return nil, fmt.Errorf("OrderBook: " + err.Error())
+		return nil, fmt.Errorf("MarketOrdersOpen: " + err.Error())
 	}
 
 	return orderBook, nil
 }
 
 //
-// Sell put the sell order into open orders at specific amount and price.
+// TradeAsk put the sell order into open orders at specific amount and price.
 //
 // This method require authentication.
 //
-func (cl *Client) Sell(pairName string, amount, price float64) (
+func (cl *Client) TradeAsk(method, pairName string, amount, price float64) (
 	tres *TradeResponse, err error,
 ) {
-	resBody, err := cl.trade(tokenomy.TradeMethodLimit,
+	resBody, err := cl.trade(method,
 		tokenomy.TradeTypeAsk, pairName, amount, price)
 	if err != nil {
 		return nil, err
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> Sell: response body: %s\n", resBody)
+		fmt.Printf(">>> TradeAsk: response body: %s\n", resBody)
 	}
 
 	tres = &TradeResponse{}
@@ -617,7 +581,7 @@ func (cl *Client) Sell(pairName string, amount, price float64) (
 	}
 
 	if tres.Success != responseSuccess {
-		return nil, fmt.Errorf("Sell: %s", tres.Error)
+		return nil, fmt.Errorf("TradeAsk: %s", tres.Error)
 	}
 
 	tres.Pair = pairName
@@ -626,55 +590,25 @@ func (cl *Client) Sell(pairName string, amount, price float64) (
 }
 
 //
-// SellByMarket sell the asset at specific amount to the market.
-//
-// On success, it will return the information about status of sell transaction
-// and your remaining balance.
-// On fail, it will return nil TradeResponse and an error.
-//
-// This method require authentication.
-//
-func (cl *Client) SellByMarket(pair string, amount float64) (tres *TradeResponse, err error) {
-	resBody, err := cl.trade(tokenomy.TradeMethodMarket,
-		tokenomy.TradeTypeAsk, pair, amount, 0)
-	if err != nil {
-		return nil, err
-	}
-
-	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> SellByMarket: response body: %s\n", resBody)
-	}
-
-	tres = &TradeResponse{}
-
-	err = json.Unmarshal(resBody, tres)
-	if err != nil {
-		return nil, err
-	}
-
-	return tres, nil
-}
-
-//
-// Summaries retrieve the summary of all traded pairs, highest price, lowest
-// price, volume, last price, token/coin name.
+// MarketSummaries retrieve the summary of all traded pairs, highest price,
+// lowest price, volume, last price, token/coin name.
 // This API method can also be used to discover all current traded pairs.
 //
-func (cl *Client) Summaries() (summary *Summary, err error) {
-	body, err := cl.callPublic(apiSummaries)
+func (cl *Client) MarketSummaries() (summary *Summary, err error) {
+	body, err := cl.callPublic(apiMarketSummaries)
 	if err != nil {
 		return nil, err
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> Summaries: response body: %s\n", body)
+		fmt.Printf(">>> MarketSummaries: response body: %s\n", body)
 	}
 
 	summary = &Summary{}
 
 	err = json.Unmarshal(body, summary)
 	if err != nil {
-		err = fmt.Errorf("Summaries: " + err.Error())
+		err = fmt.Errorf("MarketSummaries: " + err.Error())
 		return nil, err
 	}
 
@@ -689,7 +623,7 @@ func (cl *Client) Summaries() (summary *Summary, err error) {
 // This method require authentication.
 //
 func (cl *Client) UserInfo() (*UserInfo, error) {
-	resBody, err := cl.callPrivate(MethodUserGetInfo, nil)
+	resBody, err := cl.callPrivate(MethodUserInfo, nil)
 	if err != nil {
 		err = fmt.Errorf("UserInfo: " + err.Error())
 		return nil, err
@@ -717,7 +651,7 @@ func (cl *Client) UserInfo() (*UserInfo, error) {
 }
 
 //
-// WithdrawCoin withdraw your assets into another address.
+// UserWithdraw withdraw your assets into another address.
 // This method accept withdrawing all coins except TEN.
 //
 // This method require the "withdraw" permission, otherwise it will return a
@@ -732,7 +666,7 @@ func (cl *Client) UserInfo() (*UserInfo, error) {
 // 200 with string “ok” (without quotes), and we will process the withdrawn in
 // our system, otherwise the request will be fail.
 //
-func (cl *Client) WithdrawCoin(
+func (cl *Client) UserWithdraw(
 	currencyName, address, amount, requestID, memo string,
 ) (
 	withdrawRes *WithdrawResponse, err error,
@@ -745,13 +679,13 @@ func (cl *Client) WithdrawCoin(
 		"request_id":       {requestID},
 	}
 
-	resBody, err := cl.callPrivate(MethodWithdraw, params)
+	resBody, err := cl.callPrivate(MethodUserWithdraw, params)
 	if err != nil {
 		return nil, err
 	}
 
 	if cl.env.Debug >= 2 {
-		fmt.Printf(">>> WithdrawCoin: response body: %s\n", resBody)
+		fmt.Printf(">>> UserWithdraw: response body: %s\n", resBody)
 	}
 
 	withdrawRes = &WithdrawResponse{}

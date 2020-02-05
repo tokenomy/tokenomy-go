@@ -20,11 +20,11 @@ const (
 // List of public APIs.
 //
 const (
-	apiSummaries  = "/api/summaries"
-	apiTicker     = "/api/%s/ticker"
-	apiTrades     = "/api/%s/trades"
-	apiOrderBook  = "/api/%s/depth"
-	apiMarketInfo = "/api/market_info"
+	apiMarketSummaries  = "/api/summaries"
+	apiMarketTicker     = "/api/%s/ticker"
+	apiMarketTrades     = "/api/%s/trades"
+	apiMarketOrdersOpen = "/api/%s/depth"
+	apiMarketInfo       = "/api/market_info"
 )
 
 //
@@ -33,13 +33,13 @@ const (
 const (
 	MethodTrade            = "trade"
 	MethodTradeCancelOrder = "cancelOrder"
-	MethodUserGetInfo      = "getInfo"
-	MethodUserGetOrder     = "getOrder"
-	MethodUserOpenOrders   = "openOrders"
+	MethodUserInfo         = "getInfo"
+	MethodUserOrder        = "getOrder"
+	MethodUserOrdersOpen   = "openOrders"
 	MethodUserOrderHistory = "orderHistory"
 	MethodUserTradeHistory = "tradeHistory"
 	MethodUserTransHistory = "transHistory"
-	MethodWithdraw         = "withdrawCoin"
+	MethodUserWithdraw     = "withdrawCoin"
 )
 
 // List of common JSON field names.

@@ -12,7 +12,7 @@ import (
 	"github.com/tokenomy/tokenomy-go"
 )
 
-func ExampleClient_Buy() {
+func ExampleClient_TradeBid() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -20,15 +20,16 @@ func ExampleClient_Buy() {
 		log.Fatal(err)
 	}
 
-	tres, err := cl.Buy(tokenomy.PairTokenomyBitcoin, 100, 0.00005)
+	tres, err := cl.TradeBid(tokenomy.TradeMethodLimit,
+		tokenomy.PairTokenomyBitcoin, 100, 0.00005)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Buy response: %+v\n", tres)
+	fmt.Printf("Trade bid response: %+v\n", tres)
 }
 
-func ExampleClient_BuyByMarket() {
+func ExampleClient_TradeBid_by_market() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -36,16 +37,17 @@ func ExampleClient_BuyByMarket() {
 		log.Fatal(err)
 	}
 
-	tres, err := cl.BuyByMarket(tokenomy.PairTokenomyBitcoin, 0.0001)
+	tres, err := cl.TradeBid(tokenomy.TradeMethodMarket,
+		tokenomy.PairTokenomyBitcoin, 0.0001, 0)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Buy by market response: %+v\n", tres)
+	fmt.Printf("Trade bid by market response: %+v\n", tres)
 }
 
 //nolint:dupl
-func ExampleClient_CancelBuy() {
+func ExampleClient_TradeCancelBid() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -53,7 +55,7 @@ func ExampleClient_CancelBuy() {
 		log.Fatal(err)
 	}
 
-	openOrders, err := cl.ListOpenOrders(tokenomy.PairTokenomyBitcoin)
+	openOrders, err := cl.UserOrdersOpen(tokenomy.PairTokenomyBitcoin)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,7 +84,8 @@ func ExampleClient_CancelBuy() {
 
 	fmt.Printf("Canceling the first open bid with ID '%d'\n", openBuy.OrderID)
 
-	cancelRes, err := cl.CancelBuy(tokenomy.PairTokenomyBitcoin, openBuy.OrderID)
+	cancelRes, err := cl.TradeCancelBid(tokenomy.PairTokenomyBitcoin,
+		openBuy.OrderID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -91,7 +94,7 @@ func ExampleClient_CancelBuy() {
 }
 
 //nolint:dupl
-func ExampleClient_CancelSell() {
+func ExampleClient_TradeCancelAsk() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -99,7 +102,7 @@ func ExampleClient_CancelSell() {
 		log.Fatal(err)
 	}
 
-	openOrders, err := cl.ListOpenOrders(tokenomy.PairTokenomyBitcoin)
+	openOrders, err := cl.UserOrdersOpen(tokenomy.PairTokenomyBitcoin)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -127,7 +130,8 @@ func ExampleClient_CancelSell() {
 
 	fmt.Printf("Canceling the open sell (ask) with ID '%d'\n", openSell.OrderID)
 
-	cancelRes, err := cl.CancelSell(tokenomy.PairTokenomyBitcoin, openSell.OrderID)
+	cancelRes, err := cl.TradeCancelAsk(tokenomy.PairTokenomyBitcoin,
+		openSell.OrderID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -135,7 +139,7 @@ func ExampleClient_CancelSell() {
 	fmt.Printf("Cancel sell (ask) response: %+v\n", cancelRes)
 }
 
-func ExampleClient_GetOrder() {
+func ExampleClient_UserOrder() {
 	env := tokenomy.NewEnvironment("", "")
 	orderID := int64(1023965)
 
@@ -144,7 +148,7 @@ func ExampleClient_GetOrder() {
 		log.Fatal(err)
 	}
 
-	order, err := cl.GetOrder(tokenomy.PairTokenomyBitcoin, orderID)
+	order, err := cl.UserOrder(tokenomy.PairTokenomyBitcoin, orderID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -152,7 +156,7 @@ func ExampleClient_GetOrder() {
 	fmt.Printf("Order detail for %d: %+v\n", orderID, order)
 }
 
-func ExampleClient_GetTicker() {
+func ExampleClient_MarketTicker() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -160,7 +164,7 @@ func ExampleClient_GetTicker() {
 		log.Fatal(err)
 	}
 
-	pair, err := cl.GetTicker(tokenomy.PairTokenomyBitcoin)
+	pair, err := cl.MarketTicker(tokenomy.PairTokenomyBitcoin)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -168,7 +172,7 @@ func ExampleClient_GetTicker() {
 	fmt.Printf("Pair information for %q: %+v\n", tokenomy.PairTokenomyBitcoin, pair)
 }
 
-func ExampleClient_ListOpenOrders() {
+func ExampleClient_UserOrdersOpen() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -176,7 +180,7 @@ func ExampleClient_ListOpenOrders() {
 		log.Fatal(err)
 	}
 
-	openOrders, err := cl.ListOpenOrders(tokenomy.PairTokenomyBitcoin)
+	openOrders, err := cl.UserOrdersOpen(tokenomy.PairTokenomyBitcoin)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -190,7 +194,7 @@ func ExampleClient_ListOpenOrders() {
 	}
 }
 
-func ExampleClient_ListOrderHistory() {
+func ExampleClient_UserOrdersClosed() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -198,7 +202,7 @@ func ExampleClient_ListOrderHistory() {
 		log.Fatal(err)
 	}
 
-	orderHistory, err := cl.ListOrderHistory(tokenomy.PairTokenomyBitcoin, 0, 0)
+	orderHistory, err := cl.UserOrdersClosed(tokenomy.PairTokenomyBitcoin, 0, 0)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -209,7 +213,7 @@ func ExampleClient_ListOrderHistory() {
 	}
 }
 
-func ExampleClient_ListTrades() {
+func ExampleClient_MarketTrades() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -217,7 +221,7 @@ func ExampleClient_ListTrades() {
 		log.Fatal(err)
 	}
 
-	trades, err := cl.ListTrades(tokenomy.PairTokenomyBitcoin)
+	trades, err := cl.MarketTrades(tokenomy.PairTokenomyBitcoin)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -228,7 +232,7 @@ func ExampleClient_ListTrades() {
 	}
 }
 
-func ExampleClient_ListTradeHistory() {
+func ExampleClient_UserTrades() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -236,7 +240,7 @@ func ExampleClient_ListTradeHistory() {
 		log.Fatal(err)
 	}
 
-	tradeHistory, err := cl.ListTradeHistory(tokenomy.PairTokenomyBitcoin,
+	tradeHistory, err := cl.UserTrades(tokenomy.PairTokenomyBitcoin,
 		1, 0, 0, "asc", nil, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -248,7 +252,7 @@ func ExampleClient_ListTradeHistory() {
 	}
 }
 
-func ExampleClient_ListTransactionHistory() {
+func ExampleClient_UserTransactions() {
 	env := tokenomy.NewEnvironment(
 		os.Getenv(tokenomy.EnvNameToken),
 		os.Getenv(tokenomy.EnvNameSecret),
@@ -259,7 +263,7 @@ func ExampleClient_ListTransactionHistory() {
 		log.Fatal(err)
 	}
 
-	transHistory, err := cl.ListTransactionHistory()
+	transHistory, err := cl.UserTransactions()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -283,7 +287,7 @@ func ExampleClient_MarketInfo() {
 	fmt.Printf("Market Info: %+v\n", marketInfos)
 }
 
-func ExampleClient_OrderBook() {
+func ExampleClient_MarketOrdersOpen() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -291,7 +295,7 @@ func ExampleClient_OrderBook() {
 		log.Fatal(err)
 	}
 
-	orderBook, err := cl.OrderBook(tokenomy.PairTokenomyBitcoin)
+	orderBook, err := cl.MarketOrdersOpen(tokenomy.PairTokenomyBitcoin)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -307,7 +311,7 @@ func ExampleClient_OrderBook() {
 	}
 }
 
-func ExampleClient_SellByMarket() {
+func ExampleClient_TradeAsk_by_market() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -315,15 +319,16 @@ func ExampleClient_SellByMarket() {
 		log.Fatal(err)
 	}
 
-	tres, err := cl.SellByMarket(tokenomy.PairTokenomyBitcoin, 20)
+	tres, err := cl.TradeAsk(tokenomy.TradeMethodMarket,
+		tokenomy.PairTokenomyBitcoin, 20, 0)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Sell by market response: %+v\n", tres)
+	fmt.Printf("Trade ask by market response: %+v\n", tres)
 }
 
-func ExampleClient_Summaries() {
+func ExampleClient_MarketSummaries() {
 	env := tokenomy.NewEnvironment("", "")
 
 	cl, err := NewClient(env)
@@ -331,7 +336,7 @@ func ExampleClient_Summaries() {
 		log.Fatal(err)
 	}
 
-	summary, err := cl.Summaries()
+	summary, err := cl.MarketSummaries()
 	if err != nil {
 		log.Fatal(err)
 	}
