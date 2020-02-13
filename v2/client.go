@@ -446,7 +446,7 @@ func (cl *Client) UserOrdersOpen(pairName string) (openOrders *OpenOrders, err e
 //
 // This method require authentication.
 //
-func (cl *Client) UserOrder(pairName string, id int64) (order *Order, err error) {
+func (cl *Client) UserOrder(pairName string, id int64) (order *tokenomy.Order, err error) {
 	if !cl.env.IsValidPairName(pairName) {
 		return nil, tokenomy.ErrInvalidPair
 	}
@@ -461,7 +461,7 @@ func (cl *Client) UserOrder(pairName string, id int64) (order *Order, err error)
 		return nil, fmt.Errorf("UserOrder: %w", err)
 	}
 
-	order = &Order{}
+	order = &tokenomy.Order{}
 	res := &Response{
 		Data: order,
 	}
@@ -528,7 +528,7 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 // amount of coin.
 //
 func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfloat) (
-	trade *TradeResponse, err error,
+	trade *tokenomy.TradeResponse, err error,
 ) {
 	return cl.trade(apiTradeAsk, tokenomy.TradeTypeAsk, method, pairName, amount, price)
 }
@@ -550,7 +550,7 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfl
 // amount of coin.
 //
 func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfloat) (
-	trade *TradeResponse, err error,
+	trade *tokenomy.TradeResponse, err error,
 ) {
 	return cl.trade(apiTradeBid, tokenomy.TradeTypeBid, method, pairName, amount, price)
 }
@@ -559,7 +559,7 @@ func (cl *Client) trade(
 	api, tipe, method, pairName string,
 	amount, price tokenomy.Rawfloat,
 ) (
-	trade *TradeResponse, err error,
+	trade *tokenomy.TradeResponse, err error,
 ) {
 	params := url.Values{}
 
@@ -597,7 +597,7 @@ func (cl *Client) trade(
 		return nil, err
 	}
 
-	trade = &TradeResponse{}
+	trade = &tokenomy.TradeResponse{}
 	res := &Response{
 		Data: trade,
 	}
@@ -607,6 +607,8 @@ func (cl *Client) trade(
 		return nil, err
 	}
 
+	trade.Order.Pair = pairName
+
 	return trade, nil
 }
 
@@ -614,7 +616,7 @@ func (cl *Client) trade(
 // TradeCancelAsk cancel the specific open sell order by pair and ID.
 //
 func (cl *Client) TradeCancelAsk(pairName string, id int64) (
-	trade *TradeResponse, err error,
+	trade *tokenomy.TradeResponse, err error,
 ) {
 	return cl.cancel(apiTradeCancelAsk, pairName, id)
 }
@@ -623,13 +625,13 @@ func (cl *Client) TradeCancelAsk(pairName string, id int64) (
 // TradeCancelBid cancel the specific open buy order by pair and ID.
 //
 func (cl *Client) TradeCancelBid(pairName string, id int64) (
-	trade *TradeResponse, err error,
+	trade *tokenomy.TradeResponse, err error,
 ) {
 	return cl.cancel(apiTradeCancelBid, pairName, id)
 }
 
 func (cl *Client) cancel(api, pairName string, id int64) (
-	trade *TradeResponse, err error,
+	trade *tokenomy.TradeResponse, err error,
 ) {
 	params := url.Values{}
 
@@ -648,7 +650,7 @@ func (cl *Client) cancel(api, pairName string, id int64) (
 		return nil, err
 	}
 
-	trade = &TradeResponse{}
+	trade = &tokenomy.TradeResponse{}
 	res := &Response{
 		Data: trade,
 	}

@@ -11,9 +11,9 @@ import (
 )
 
 //
-// TradeResponse is data returned from buying, selling, or canceling order.
+// tradeResponse is data returned from buying, selling, or canceling order.
 //
-type TradeResponse struct {
+type tradeResponse struct {
 	OrderID   int64
 	Pair      string
 	Success   int64
@@ -26,7 +26,7 @@ type TradeResponse struct {
 	IsError   bool
 }
 
-func (tres *TradeResponse) UnmarshalJSON(b []byte) (err error) {
+func (tres *tradeResponse) UnmarshalJSON(b []byte) (err error) {
 	var kv map[string]interface{}
 
 	err = json.Unmarshal(b, &kv)

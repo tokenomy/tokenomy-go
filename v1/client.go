@@ -106,11 +106,10 @@ func (cl *Client) Authenticate() (err error) {
 //
 // This method require authentication.
 //
-func (cl *Client) TradeBid(method, pairName string, amount, price float64) (
-	tres *TradeResponse, err error,
+func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfloat) (
+	tres *tokenomy.TradeResponse, err error,
 ) {
-	resBody, err := cl.trade(method,
-		tokenomy.TradeTypeBid, pairName, amount, price)
+	resBody, err := cl.trade(method, tokenomy.TradeTypeBid, pairName, amount, price)
 	if err != nil {
 		return nil, err
 	}
@@ -119,18 +118,31 @@ func (cl *Client) TradeBid(method, pairName string, amount, price float64) (
 		fmt.Printf(">>> TradeBid: response body: %s\n", resBody)
 	}
 
-	tres = &TradeResponse{}
+	intRes := &tradeResponse{}
 
-	err = json.Unmarshal(resBody, tres)
+	err = json.Unmarshal(resBody, intRes)
 	if err != nil {
 		return nil, err
 	}
 
-	if tres.Success != responseSuccess {
-		return nil, fmt.Errorf("TradeBid: %s", tres.Error)
+	if intRes.Success != responseSuccess {
+		return nil, fmt.Errorf("TradeBid: %s", intRes.Error)
 	}
 
-	tres.Pair = pairName
+	tres = &tokenomy.TradeResponse{
+		Order: &tokenomy.Order{
+			ID:    intRes.OrderID,
+			Pair:  pairName,
+			Price: price,
+
+			AmountCoin: amount,
+			FilledCoin: tokenomy.Rawfloat(intRes.Receive),
+
+			AmountBase: (amount * price),
+			RemainBase: tokenomy.Rawfloat(intRes.Remain),
+			FilledBase: tokenomy.Rawfloat(intRes.Spend),
+		},
+	}
 
 	return tres, nil
 }
@@ -142,7 +154,7 @@ func (cl *Client) TradeBid(method, pairName string, amount, price float64) (
 // This method require authentication.
 //
 func (cl *Client) TradeCancelAsk(pairName string, orderID int64) (
-	cancelOrder *CancelOrder, err error,
+	tres *tokenomy.TradeResponse, err error,
 ) {
 	if len(pairName) == 0 {
 		return nil, ErrInvalidPairName
@@ -168,10 +180,18 @@ func (cl *Client) TradeCancelAsk(pairName string, orderID int64) (
 		return nil, fmt.Errorf("TradeCancelAsk: " + cancelRes.Error)
 	}
 
-	cancelOrder = cancelRes.Return
 	cancelRes.Return = nil
 
-	return cancelOrder, nil
+	tres = &tokenomy.TradeResponse{
+		Order: &tokenomy.Order{
+			ID:     cancelRes.Return.OrderID,
+			Pair:   pairName,
+			Type:   cancelRes.Return.Type,
+			Status: "cancelled",
+		},
+	}
+
+	return tres, nil
 }
 
 //
@@ -181,7 +201,7 @@ func (cl *Client) TradeCancelAsk(pairName string, orderID int64) (
 // This method require authentication.
 //
 func (cl *Client) TradeCancelBid(pairName string, orderID int64) (
-	cancelOrder *CancelOrder, err error,
+	tres *tokenomy.TradeResponse, err error,
 ) {
 	if len(pairName) == 0 {
 		return nil, ErrInvalidPairName
@@ -207,10 +227,16 @@ func (cl *Client) TradeCancelBid(pairName string, orderID int64) (
 		return nil, fmt.Errorf("TradeCancelBid: " + cancelRes.Error)
 	}
 
-	cancelOrder = cancelRes.Return
-	cancelRes.Return = nil
+	tres = &tokenomy.TradeResponse{
+		Order: &tokenomy.Order{
+			ID:     cancelRes.Return.OrderID,
+			Pair:   pairName,
+			Type:   cancelRes.Return.Type,
+			Status: "cancelled",
+		},
+	}
 
-	return cancelOrder, nil
+	return tres, nil
 }
 
 //
@@ -569,11 +595,10 @@ func (cl *Client) MarketOrdersOpen(pairName string) (orderBook *OrderBook, err e
 //
 // This method require authentication.
 //
-func (cl *Client) TradeAsk(method, pairName string, amount, price float64) (
-	tres *TradeResponse, err error,
+func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfloat) (
+	tres *tokenomy.TradeResponse, err error,
 ) {
-	resBody, err := cl.trade(method,
-		tokenomy.TradeTypeAsk, pairName, amount, price)
+	resBody, err := cl.trade(method, tokenomy.TradeTypeAsk, pairName, amount, price)
 	if err != nil {
 		return nil, err
 	}
@@ -582,18 +607,30 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price float64) (
 		fmt.Printf(">>> TradeAsk: response body: %s\n", resBody)
 	}
 
-	tres = &TradeResponse{}
+	intRes := &tradeResponse{}
 
-	err = json.Unmarshal(resBody, tres)
+	err = json.Unmarshal(resBody, intRes)
 	if err != nil {
 		return nil, err
 	}
 
-	if tres.Success != responseSuccess {
-		return nil, fmt.Errorf("TradeAsk: %s", tres.Error)
+	if intRes.Success != responseSuccess {
+		return nil, fmt.Errorf("TradeAsk: %s", intRes.Error)
 	}
 
-	tres.Pair = pairName
+	tres = &tokenomy.TradeResponse{
+		Order: &tokenomy.Order{
+			ID:    intRes.OrderID,
+			Pair:  pairName,
+			Price: price,
+
+			AmountCoin: amount,
+			RemainCoin: tokenomy.Rawfloat(intRes.Remain),
+			FilledCoin: tokenomy.Rawfloat(intRes.Spend),
+
+			AmountBase: tokenomy.Rawfloat(intRes.Receive),
+		},
+	}
 
 	return tres, nil
 }
@@ -875,7 +912,7 @@ func (cl *Client) newPrivateRequest(apiMethod string, params url.Values) (
 	return req, nil
 }
 
-func (cl *Client) trade(method, tipe, pair string, amount, price float64) (
+func (cl *Client) trade(method, tipe, pair string, amount, price tokenomy.Rawfloat) (
 	body []byte, err error,
 ) {
 	assetBase := strings.Split(pair, "_")
@@ -883,8 +920,8 @@ func (cl *Client) trade(method, tipe, pair string, amount, price float64) (
 		return nil, fmt.Errorf("trade: invalid pair name %q", pair)
 	}
 
-	amountStr := strconv.FormatFloat(amount, 'f', 8, 64)
-	priceStr := strconv.FormatFloat(price, 'f', 8, 64)
+	amountStr := amount.String()
+	priceStr := price.String()
 
 	params := map[string][]string{
 		"order_method": {method},

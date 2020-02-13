@@ -4,10 +4,12 @@
 
 package v2
 
+import "github.com/tokenomy/tokenomy-go"
+
 //
 // MarketTradePrices contains list of closed ask and bid on the market.
 //
 type MarketTradePrices struct {
-	Asks []TradePrice `json:"asks"`
-	Bids []TradePrice `json:"bids"`
+	Asks []tokenomy.TradePrice `json:"asks"`
+	Bids []tokenomy.TradePrice `json:"bids"`
 }
