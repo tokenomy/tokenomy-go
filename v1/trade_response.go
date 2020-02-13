@@ -11,7 +11,10 @@ import (
 )
 
 //
-// tradeResponse is data returned from buying, selling, or canceling order.
+// tradeResponse is the data returned from buying, selling, or canceling
+// order.
+// This is the internal struct for v1 that will be converted to common struct
+// tokenomy.TradeResponse.
 //
 type tradeResponse struct {
 	OrderID   int64
@@ -20,12 +23,55 @@ type tradeResponse struct {
 	Error     string
 	ErrorCode string
 	Receive   float64
-	Spend     float64
+	Filled    float64
 	Remain    float64
 	Balance   map[string]float64
 	IsError   bool
 }
 
+//
+// UnmarshalJSON response from trading bid and ask.
+//
+// For example, lets say that we are trading using pair "ten_btc", with amount
+// of "10" (TEN) and price (0.000_02).
+// Here is an example of completed ask response,
+//
+//	{
+//		"is_error": false,
+//		"success": 1,
+//		"sold_ten": "10.00000000",
+//		"receive_btc": "0.00004500",
+//		"remain_ten": "0.00000000",
+//		"order_id": 6657492,
+//		"balance": {
+//			"btc": "9.99382081",
+//			"frozen_btc": "0.00030000",
+//			"frozen_ten": "16.50000000",
+//			"ten": "8689.14604860",
+//			...
+//		}
+//	}
+//
+// The "sold_<coin>" define how many amount have been filled in market.
+//
+// Here is an example of completed bid response,
+//
+//	{
+//		"is_error": false,
+//		"success": 1,
+//		"receive_ten": "9.99999999",
+//		"spend_btc": "0.00020000",
+//		"remain_btc": "0.00000000",
+//		"order_id": 6658409,
+//		"balance": {
+//			"btc": "9.99382081",
+//			"frozen_btc": "0.00030000",
+//			"frozen_ten": "16.50000001",
+//			"ten": "8689.13354860",
+//			...
+//		}
+//	}
+//
 func (tres *tradeResponse) UnmarshalJSON(b []byte) (err error) {
 	var kv map[string]interface{}
 
@@ -60,8 +106,15 @@ func (tres *tradeResponse) UnmarshalJSON(b []byte) (err error) {
 				if err != nil {
 					return err
 				}
+
+			case strings.HasPrefix(k, "sold_"):
+				tres.Filled, err = strconv.ParseFloat(v.(string), 64)
+				if err != nil {
+					return err
+				}
+
 			case strings.HasPrefix(k, "spend_"):
-				tres.Spend, err = strconv.ParseFloat(v.(string), 64)
+				tres.Filled, err = strconv.ParseFloat(v.(string), 64)
 				if err != nil {
 					return err
 				}

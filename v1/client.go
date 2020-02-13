@@ -140,7 +140,7 @@ func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfl
 
 			AmountBase: (amount * price),
 			RemainBase: tokenomy.Rawfloat(intRes.Remain),
-			FilledBase: tokenomy.Rawfloat(intRes.Spend),
+			FilledBase: tokenomy.Rawfloat(intRes.Filled),
 		},
 	}
 
@@ -626,7 +626,7 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfl
 
 			AmountCoin: amount,
 			RemainCoin: tokenomy.Rawfloat(intRes.Remain),
-			FilledCoin: tokenomy.Rawfloat(intRes.Spend),
+			FilledCoin: tokenomy.Rawfloat(intRes.Filled),
 
 			AmountBase: tokenomy.Rawfloat(intRes.Receive),
 		},
