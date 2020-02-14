@@ -38,7 +38,7 @@ func (cancelOrder *CancelOrder) UnmarshalJSON(b []byte) (err error) {
 	}
 
 	for k, v := range kv {
-		valstr := v.(string)
+		valstr, _ := v.(string)
 
 		k = strings.ToLower(k)
 		switch k {
