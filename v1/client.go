@@ -180,8 +180,6 @@ func (cl *Client) TradeCancelAsk(pairName string, orderID int64) (
 		return nil, fmt.Errorf("TradeCancelAsk: " + cancelRes.Error)
 	}
 
-	cancelRes.Return = nil
-
 	tres = &tokenomy.TradeResponse{
 		Order: &tokenomy.Order{
 			ID:     cancelRes.Return.OrderID,
