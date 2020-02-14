@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+
+	libjson "github.com/shuLhan/share/lib/json"
 )
 
 //
@@ -95,7 +97,7 @@ func (tres *tradeResponse) UnmarshalJSON(b []byte) (err error) {
 		case fieldNameErrorCode:
 			tres.ErrorCode = v.(string)
 		case fieldNameBalance:
-			tres.Balance, err = jsonToMapStringFloat64(v.(map[string]interface{}))
+			tres.Balance, err = libjson.ToMapStringFloat64(v.(map[string]interface{}))
 			if err != nil {
 				return err
 			}

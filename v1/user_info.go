@@ -7,6 +7,8 @@ package v1
 import (
 	"encoding/json"
 	"strings"
+
+	libjson "github.com/shuLhan/share/lib/json"
 )
 
 //
@@ -53,10 +55,10 @@ func (userInfo *UserInfo) UnmarshalJSON(b []byte) (err error) {
 			userInfo.unmarshalAddresses(v.(map[string]interface{}))
 		case "balance":
 			balances := v.(map[string]interface{})
-			userInfo.AssetBalance, err = jsonToMapStringFloat64(balances)
+			userInfo.AssetBalance, err = libjson.ToMapStringFloat64(balances)
 		case "balance_hold":
 			balancesHold := v.(map[string]interface{})
-			userInfo.AssetBalanceHold, err = jsonToMapStringFloat64(balancesHold)
+			userInfo.AssetBalanceHold, err = libjson.ToMapStringFloat64(balancesHold)
 		}
 		if err != nil {
 			return err

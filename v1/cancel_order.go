@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+
+	libjson "github.com/shuLhan/share/lib/json"
 )
 
 type cancelOrderResponse struct {
@@ -48,7 +50,7 @@ func (cancelOrder *CancelOrder) UnmarshalJSON(b []byte) (err error) {
 			cancelOrder.Pair = valstr
 		case fieldNameBalance:
 			balances := v.(map[string]interface{})
-			cancelOrder.Balances, err = jsonToMapStringFloat64(balances)
+			cancelOrder.Balances, err = libjson.ToMapStringFloat64(balances)
 		}
 		if err != nil {
 			return err

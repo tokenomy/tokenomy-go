@@ -7,7 +7,6 @@ package v1
 import (
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -80,29 +79,6 @@ var (
 	// invalid or unknown pair's name.
 	ErrInvalidPairName = fmt.Errorf("invalid or empty pair name")
 )
-
-//
-// jsonToMapStringFloat64 convert the map of string-interface{} into map of
-// string-float64.
-//
-func jsonToMapStringFloat64(in map[string]interface{}) (
-	out map[string]float64, err error,
-) {
-	out = make(map[string]float64, len(in))
-
-	for k, v := range in {
-		f64, err := strconv.ParseFloat(v.(string), 64)
-		if err != nil {
-			return nil, err
-		}
-		if f64 == 0 {
-			continue
-		}
-		k = strings.ToLower(k)
-		out[k] = f64
-	}
-	return out, nil
-}
 
 //
 // timestamp return current time in milliseconds as integer.
