@@ -34,6 +34,18 @@ const (
 type Rawfloat float64
 
 //
+// ParseRawfloat convert the string `s` into Rawfloat with precision set to 64
+// bit.
+//
+func ParseRawfloat(s string) (Rawfloat, error) {
+	v, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0, err
+	}
+	return Rawfloat(v), nil
+}
+
+//
 // MarshalJSON convert the Rawfloat value into specific format limited to 8
 // digits precision with the following exceptions: zero value will be returned
 // as "0", and trailing zero digits at precision will be removed.
