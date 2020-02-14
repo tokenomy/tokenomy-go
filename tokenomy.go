@@ -172,6 +172,7 @@ const (
 	ParamNameMemo          = "memo"
 	ParamNameMethod        = "method"
 	ParamNameOrderID       = "order_id"
+	ParamNameOrderMethod   = "order_method"
 	ParamNameOffset        = "offset"
 	ParamNamePair          = "pair"
 	ParamNamePrice         = "price"

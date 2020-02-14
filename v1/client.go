@@ -915,8 +915,8 @@ func (cl *Client) newPrivateRequest(apiMethod string, params url.Values) (
 func (cl *Client) trade(method, tipe, pair string, amount, price tokenomy.Rawfloat) (
 	body []byte, err error,
 ) {
-	assetBase := strings.Split(pair, "_")
-	if len(assetBase) != 2 {
+	assets := strings.Split(pair, "_")
+	if len(assets) != 2 {
 		return nil, fmt.Errorf("trade: invalid pair name %q", pair)
 	}
 
@@ -924,13 +924,15 @@ func (cl *Client) trade(method, tipe, pair string, amount, price tokenomy.Rawflo
 	priceStr := price.String()
 
 	params := map[string][]string{
-		"order_method": {method},
-		"pair":         {pair},
-		"price":        {priceStr},
-		"type":         {tipe},
+		tokenomy.ParamNameOrderMethod: {method},
+		tokenomy.ParamNamePair:        {pair},
+		tokenomy.ParamNameType:        {tipe},
 	}
 
-	params[assetBase[0]] = []string{amountStr}
+	if method == tokenomy.TradeMethodLimit {
+		params[tokenomy.ParamNamePrice] = []string{priceStr}
+		params[assets[0]] = []string{amountStr}
+	}
 
 	body, err = cl.callPrivate(MethodTrade, params)
 	if err != nil {
