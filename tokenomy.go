@@ -15,108 +15,80 @@ import (
 
 //
 // List of known asset names.
+// Last update 2020-02-18.
 //
 const (
-	AssetName0x                  = "zrx"
-	AssetNameAchain              = "achain"
-	AssetNameAelf                = "elf"
-	AssetNameAeternity           = "ae"
-	AssetNameAppCoins            = "appc"
-	AssetNameBasicAttentionToken = "bat"
-	AssetNameBitTorrent          = "btt"
-	AssetNameBitcoin             = "btc"
-	AssetNameBitcoinABC          = "bchabc"
-	AssetNameBitcoinSV           = "bchsv"
-	AssetNameBinanceChain        = "bnb"
-	AssetNameBread               = "brd"
-	AssetNameComet               = "cmt"
-	AssetNameDAEX                = "dax"
-	AssetNameEOS                 = "eos"
-	AssetNameEthereum            = "eth"
-	AssetNameEthereumClassic     = "etc"
-	AssetNameFgram               = "fgram"
-	AssetNameGifto               = "gto"
-	AssetNameGolem               = "gnt"
-	AssetNameGram                = "gram"
-	AssetNameHara                = "hart"
-	AssetNameHonest              = "hnst"
-	AssetNameIDK                 = "idk"
-	AssetNameInmax               = "inx"
-	AssetNameLYFE                = "lyfe"
-	AssetNameLitecoin            = "ltc"
-	AssetNameLoopring            = "lrc"
-	AssetNameLoopringNeo         = "lrn"
-	AssetNameMidasProtocol       = "mas"
-	AssetNameMithril             = "mith"
-	AssetNameMonero              = "xmr"
-	AssetNameNeo                 = "neo"
-	AssetNameOPCoin              = "opc"
-	AssetNameOmiseGO             = "omg"
-	AssetNameOntology            = "ont"
-	AssetNamePaxos               = "pax"
-	AssetNamePlayGame            = "pxg"
-	AssetNamePundiX              = "npxs"
-	AssetNameQASH                = "qash"
-	AssetNameRaidenNetwork       = "rdn"
-	AssetNameSIX                 = "six"
-	AssetNameStatus              = "snt"
-	AssetNameStellar             = "xlm"
-	AssetNameStoriqa             = "stq"
-	AssetNameTRON                = "trx"
-	AssetNameTVND                = "tvnd"
-	AssetNameTether              = "usdt"
-	AssetNameTokenomy            = "ten"
-	AssetNameVEN                 = "ven"
-	AssetNameVeritaseum          = "veri"
-	AssetNameVexanium            = "vex"
-	AssetNameZcash               = "zec"
-	AssetNameZiliqa              = "zil"
+	AssetNameAchain          = "achain"
+	AssetNameBitcoin         = "btc"
+	AssetNameBitcoinabc      = "bchabc"
+	AssetNameBinancechain    = "bnb"
+	AssetNameCybermiles      = "cmt"
+	AssetNameEos             = "eos"
+	AssetNameEthereum        = "eth"
+	AssetNameEthereumclassic = "etc"
+	AssetNameHara            = "hart"
+	AssetNameHonest          = "hnst"
+	AssetNameIdk             = "idk"
+	AssetNameInmax           = "inx"
+	AssetNameLyfe            = "lyfe"
+	AssetNameLitecoin        = "ltc"
+	AssetNameLoopring        = "lrc"
+	AssetNameLoopringNeo     = "lrn"
+	AssetNameMonero          = "xmr"
+	AssetNameNeo             = "neo"
+	AssetNameOpcoin          = "opc"
+	AssetNameOntology        = "ont"
+	AssetNamePlaygame        = "pxg"
+	AssetNameSix             = "six"
+	AssetNameSiacash         = "scc"
+	AssetNameStellar         = "xlm"
+	AssetNameSwipe           = "swipe"
+	AssetNameTron            = "trx"
+	AssetNameTether          = "usdt"
+	AssetNameTokenomy        = "ten"
+	AssetNameVexanium        = "vex"
+	AssetNameXanpool         = "xlp"
+	AssetNameZcash           = "zec"
 )
 
 //
-// List of valid pairs.
+// List of valid pairs. Last update 2020-02-18.
 //
 const (
-	PairBitcoinabcBitcoin  = "bchabc_btc"
-	PairBitcoinsvBitcoin   = "bchsv_btc"
-	PairBittorrentBitcoin  = "btt_btc"
-	PairEosBitcoin         = "eos_btc"
-	PairEthclassicBitcoin  = "etc_btc"
-	PairEthereumBitcoin    = "eth_btc"
-	PairHonestBitcoin      = "hnst_btc"
-	PairLitecoinBitcoin    = "ltc_btc"
-	PairLoopringneoBitcoin = "lrn_btc"
-	PairLyfeBitcoin        = "lyfe_btc"
-	PairMoneroBitcoin      = "xmr_btc"
-	PairOntologyBitcoin    = "ont_btc"
-	PairPlaygameBitcoin    = "pxg_btc"
-	PairPundixBitcoin      = "npxs_btc"
-	PairSixBitcoin         = "six_btc"
-	PairStellarBitcoin     = "xlm_btc"
-	PairStoriqaBitcoin     = "stq_btc"
-	PairTokenomyBitcoin    = "ten_btc"
-	PairTronBitcoin        = "trx_btc"
-	PairVexaniumBitcoin    = "vex_btc"
-	PairZcashBitcoin       = "zec_btc"
+	PairBitcoinabcBitcoin      = AssetNameBitcoinabc + "_" + AssetNameBitcoin
+	PairEosBitcoin             = AssetNameEos + "_" + AssetNameBitcoin
+	PairEthereumBitcoin        = AssetNameEthereum + "_" + AssetNameBitcoin
+	PairEthereumclassicBitcoin = AssetNameEthereumclassic + "_" + AssetNameBitcoin
+	PairHonestBitcoin          = AssetNameHonest + "_" + AssetNameBitcoin
+	PairLitecoinBitcoin        = AssetNameLitecoin + "_" + AssetNameBitcoin
+	PairLoopringBitcoin        = AssetNameLoopring + "_" + AssetNameBitcoin
+	PairMoneroBitcoin          = AssetNameMonero + "_" + AssetNameBitcoin
+	PairOntologyBitcoin        = AssetNameOntology + "_" + AssetNameBitcoin
+	PairPlaygameBitcoin        = AssetNamePlaygame + "_" + AssetNameBitcoin
+	PairSixBitcoin             = AssetNameSix + "_" + AssetNameBitcoin
+	PairStellarBitcoin         = AssetNameStellar + "_" + AssetNameBitcoin
+	PairSwipeBitcoin           = AssetNameSwipe + "_" + AssetNameBitcoin
+	PairTokenomyBitcoin        = AssetNameTokenomy + "_" + AssetNameBitcoin
+	PairTronBitcoin            = AssetNameTron + "_" + AssetNameBitcoin
+	PairVexaniumBitcoin        = AssetNameVexanium + "_" + AssetNameBitcoin
+	PairXanpoolBitcoin         = AssetNameXanpool + "_" + AssetNameBitcoin
+	PairZcashBitcoin           = AssetNameZcash + "_" + AssetNameBitcoin
 
-	PairBitcoinIdk = "btc_idk"
-	PairTetherIdk  = "usdt_idk"
+	PairBitcoinIdk = AssetNameBitcoin + "_" + AssetNameIdk
+	PairLyfeIdk    = AssetNameLyfe + "_" + AssetNameIdk
+	PairSiacashIdk = AssetNameSiacash + "_" + AssetNameIdk
+	PairTetherIdk  = AssetNameTether + "_" + AssetNameIdk
 
-	PairHaraEthereum     = "hart_eth"
-	PairInmaxEthereum    = "inx_eth"
-	PairPundixEthereum   = "npxs_eth"
-	PairStoriqaEthereum  = "stq_eth"
-	PairTokenomyEthereum = "ten_eth"
-	PairTronEthereum     = "trx_eth"
-	PairVexaniumEthereum = "vex_ten"
+	PairHaraEthereum     = AssetNameHara + "_" + AssetNameEthereum
+	PairInmaxEthereum    = AssetNameInmax + "_" + AssetNameEthereum
+	PairTokenomyEthereum = AssetNameTokenomy + "_" + AssetNameEthereum
+	PairTronEthereum     = AssetNameTron + "_" + AssetNameEthereum
 
-	PairBitcoinTether  = "btc_usdt"
-	PairDaexTether     = "dax_usdt"
-	PairEthereumTether = "eth_usdt"
-	PairTokenomyTether = "ten_usdt"
+	PairBitcoinTether  = AssetNameBitcoin + "_" + AssetNameTether
+	PairEthereumTether = AssetNameEthereum + "_" + AssetNameTether
+	PairTokenomyTether = AssetNameTokenomy + "_" + AssetNameTether
 
-	PairSixTokenomy     = "six_ten"
-	PairStoriqaTokenomy = "stq_ten"
+	PairVexaniumTokenomy = AssetNameVexanium + "_" + AssetNameTokenomy
 )
 
 //

@@ -90,43 +90,36 @@ func (env *Environment) initializePairs() {
 	env.pairs = make(map[string]struct{}, 38)
 
 	env.pairs[PairBitcoinabcBitcoin] = struct{}{}
-	env.pairs[PairBitcoinsvBitcoin] = struct{}{}
-	env.pairs[PairBittorrentBitcoin] = struct{}{}
 	env.pairs[PairEosBitcoin] = struct{}{}
-	env.pairs[PairEthclassicBitcoin] = struct{}{}
 	env.pairs[PairEthereumBitcoin] = struct{}{}
+	env.pairs[PairEthereumclassicBitcoin] = struct{}{}
 	env.pairs[PairHonestBitcoin] = struct{}{}
 	env.pairs[PairLitecoinBitcoin] = struct{}{}
-	env.pairs[PairLoopringneoBitcoin] = struct{}{}
-	env.pairs[PairLyfeBitcoin] = struct{}{}
+	env.pairs[PairLoopringBitcoin] = struct{}{}
 	env.pairs[PairMoneroBitcoin] = struct{}{}
 	env.pairs[PairOntologyBitcoin] = struct{}{}
 	env.pairs[PairPlaygameBitcoin] = struct{}{}
-	env.pairs[PairPundixBitcoin] = struct{}{}
 	env.pairs[PairSixBitcoin] = struct{}{}
 	env.pairs[PairStellarBitcoin] = struct{}{}
-	env.pairs[PairStoriqaBitcoin] = struct{}{}
 	env.pairs[PairTokenomyBitcoin] = struct{}{}
 	env.pairs[PairTronBitcoin] = struct{}{}
 	env.pairs[PairVexaniumBitcoin] = struct{}{}
+	env.pairs[PairXanpoolBitcoin] = struct{}{}
 	env.pairs[PairZcashBitcoin] = struct{}{}
 
 	env.pairs[PairBitcoinIdk] = struct{}{}
+	env.pairs[PairLyfeIdk] = struct{}{}
+	env.pairs[PairSiacashIdk] = struct{}{}
 	env.pairs[PairTetherIdk] = struct{}{}
 
 	env.pairs[PairHaraEthereum] = struct{}{}
 	env.pairs[PairInmaxEthereum] = struct{}{}
-	env.pairs[PairPundixEthereum] = struct{}{}
-	env.pairs[PairStoriqaEthereum] = struct{}{}
 	env.pairs[PairTokenomyEthereum] = struct{}{}
 	env.pairs[PairTronEthereum] = struct{}{}
-	env.pairs[PairVexaniumEthereum] = struct{}{}
 
 	env.pairs[PairBitcoinTether] = struct{}{}
-	env.pairs[PairDaexTether] = struct{}{}
 	env.pairs[PairEthereumTether] = struct{}{}
 	env.pairs[PairTokenomyTether] = struct{}{}
 
-	env.pairs[PairSixTokenomy] = struct{}{}
-	env.pairs[PairStoriqaTokenomy] = struct{}{}
+	env.pairs[PairVexaniumTokenomy] = struct{}{}
 }
