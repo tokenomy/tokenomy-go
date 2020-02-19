@@ -1,12 +1,20 @@
-# tokenomy-go
+#  tokenomy-go
 
 [![GoDoc](https://godoc.org/github.com/tokenomy/tokenomy-go?status.svg)](https://godoc.org/github.com/tokenomy/tokenomy-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tokenomy/tokenomy-go)](https://goreportcard.com/report/github.com/tokenomy/tokenomy-go)
 
-This module provide a client library for accessing Tokenomy API v1 and v2
-using Go programming language.
-For more information about API v1 see https://exchange.tokenomy.com/help/api.
-For more information about API v2 see
-https://exchange.tokenomy.com/help/api/v2.
+This is the official Go module for client of Tokenomy API v1 and v2.
+
+Documentation for API v1 is available at
+[API v1 help page](https://exchange.tokenomy.com/help/api) and the
+[Go doc page](https://pkg.go.dev/github.com/tokenomy/tokenomy-go/v1?tab=doc).
+
+Documentation for API v2 is available at
+[API v2 help page](https://exchange.tokenomy.com/help/api/v2) and the
+[Go doc page](https://pkg.go.dev/github.com/tokenomy/tokenomy-go/v2?tab=doc).
+
+Note that, this module is in development state and subject to changes in the
+future.
 
 Tokenomy provide public and private APIs.
 The public APIs can be accessed directly, without any keys or credential.
@@ -14,12 +22,12 @@ The private APIs can only be accessed by using token and secret keys (API
 credential).
 
 An API credential can be retrieved manually by logging in into your
-Tokenomy Exchange account (https://exchange.tokenomy.com) and open the
-"Trade API" menu section or https://exchange.tokenomy.com/trade_api.
+[Tokenomy Exchange account](https://exchange.tokenomy.com) and open the
+["Trade API" menu section](https://exchange.tokenomy.com/trade_api).
 Please keep these credentials safe and do not reveal it to any external party.
 
 
-##  License
+#  License
 
 ```
 Copyright (c) 2019 Tokenomy Technologies Pte. Ltd. All rights reserved.
