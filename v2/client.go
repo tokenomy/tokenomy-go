@@ -59,7 +59,7 @@ func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
 			DualStack: true,
 		}).DialContext,
 		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: env.IsInsecure,
+			InsecureSkipVerify: env.IsInsecure, //nolint: gosec
 		},
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          100,
@@ -530,7 +530,7 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfloat) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
-	return cl.trade(apiTradeAsk, tokenomy.TradeTypeAsk, method, pairName, amount, price)
+	return cl.trade(apiTradeAsk, method, pairName, amount, price)
 }
 
 //
@@ -552,11 +552,11 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfl
 func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfloat) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
-	return cl.trade(apiTradeBid, tokenomy.TradeTypeBid, method, pairName, amount, price)
+	return cl.trade(apiTradeBid, method, pairName, amount, price)
 }
 
 func (cl *Client) trade(
-	api, tipe, method, pairName string,
+	api, method, pairName string,
 	amount, price tokenomy.Rawfloat,
 ) (
 	trade *tokenomy.TradeResponse, err error,

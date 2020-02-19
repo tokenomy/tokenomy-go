@@ -59,7 +59,7 @@ func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
 			DualStack: true,
 		}).DialContext,
 		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: env.IsInsecure,
+			InsecureSkipVerify: env.IsInsecure, //nolint: gosec
 		},
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          100,

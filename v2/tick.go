@@ -10,14 +10,29 @@ import "github.com/tokenomy/tokenomy-go"
 // Tick contains the pair tick information.
 //
 type Tick struct {
-	PairName   string            `json:"pair"`
-	Bid        tokenomy.Rawfloat `json:"bid"`         // Bid contains the highest buy price in open buy orders.
-	Ask        tokenomy.Rawfloat `json:"ask"`         // Ask contains the lowest sell price in open sell orders.
-	High       tokenomy.Rawfloat `json:"high"`        // High contains the highest price in closed orders from last 24 hours.
-	Low        tokenomy.Rawfloat `json:"low"`         // Low contains the lowest price in closed orders from last 24 hours.
-	LastPrice  tokenomy.Rawfloat `json:"last_price"`  // LastPrice contains the last traded price.
-	VolumeBase tokenomy.Rawfloat `json:"volume_base"` // VolumeBase contains the traded base asset.
-	VolumeCoin tokenomy.Rawfloat `json:"volume_coin"` // VolumeCoin contains the traded coin asset.
+	PairName string `json:"pair"`
+
+	// Bid contains the highest buy price in open buy orders.
+	Bid tokenomy.Rawfloat `json:"bid"`
+
+	// Ask contains the lowest sell price in open sell orders.
+	Ask tokenomy.Rawfloat `json:"ask"`
+
+	// High contains the highest price in closed orders from last 24
+	// hours.
+	High tokenomy.Rawfloat `json:"high"`
+
+	// Low contains the lowest price in closed orders from last 24 hours.
+	Low tokenomy.Rawfloat `json:"low"`
+
+	// LastPrice contains the last traded price.
+	LastPrice tokenomy.Rawfloat `json:"last_price"`
+
+	// VolumeBase contains the traded base asset.
+	VolumeBase tokenomy.Rawfloat `json:"volume_base"`
+
+	// VolumeCoin contains the traded coin asset.
+	VolumeCoin tokenomy.Rawfloat `json:"volume_coin"`
 }
 
 //
