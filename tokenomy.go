@@ -64,7 +64,6 @@ const (
 	PairLoopringBitcoin        = AssetNameLoopring + "_" + AssetNameBitcoin
 	PairMoneroBitcoin          = AssetNameMonero + "_" + AssetNameBitcoin
 	PairOntologyBitcoin        = AssetNameOntology + "_" + AssetNameBitcoin
-	PairPlaygameBitcoin        = AssetNamePlaygame + "_" + AssetNameBitcoin
 	PairSixBitcoin             = AssetNameSix + "_" + AssetNameBitcoin
 	PairStellarBitcoin         = AssetNameStellar + "_" + AssetNameBitcoin
 	PairSwipeBitcoin           = AssetNameSwipe + "_" + AssetNameBitcoin
@@ -74,13 +73,15 @@ const (
 	PairXanpoolBitcoin         = AssetNameXanpool + "_" + AssetNameBitcoin
 	PairZcashBitcoin           = AssetNameZcash + "_" + AssetNameBitcoin
 
-	PairBitcoinIdk = AssetNameBitcoin + "_" + AssetNameIdk
-	PairLyfeIdk    = AssetNameLyfe + "_" + AssetNameIdk
-	PairSiacashIdk = AssetNameSiacash + "_" + AssetNameIdk
-	PairTetherIdk  = AssetNameTether + "_" + AssetNameIdk
+	PairBitcoinIdk  = AssetNameBitcoin + "_" + AssetNameIdk
+	PairHonestIdk   = AssetNameHonest + "_" + AssetNameIdk
+	PairInmaxIdk    = AssetNameInmax + "_" + AssetNameIdk
+	PairLyfeIdk     = AssetNameLyfe + "_" + AssetNameIdk
+	PairPlaygameIdk = AssetNamePlaygame + "_" + AssetNameIdk
+	PairSiacashIdk  = AssetNameSiacash + "_" + AssetNameIdk
+	PairTetherIdk   = AssetNameTether + "_" + AssetNameIdk
 
 	PairHaraEthereum     = AssetNameHara + "_" + AssetNameEthereum
-	PairInmaxEthereum    = AssetNameInmax + "_" + AssetNameEthereum
 	PairTokenomyEthereum = AssetNameTokenomy + "_" + AssetNameEthereum
 	PairTronEthereum     = AssetNameTron + "_" + AssetNameEthereum
 

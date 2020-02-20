@@ -98,7 +98,6 @@ func (env *Environment) initializePairs() {
 	env.pairs[PairLoopringBitcoin] = struct{}{}
 	env.pairs[PairMoneroBitcoin] = struct{}{}
 	env.pairs[PairOntologyBitcoin] = struct{}{}
-	env.pairs[PairPlaygameBitcoin] = struct{}{}
 	env.pairs[PairSixBitcoin] = struct{}{}
 	env.pairs[PairStellarBitcoin] = struct{}{}
 	env.pairs[PairTokenomyBitcoin] = struct{}{}
@@ -108,12 +107,14 @@ func (env *Environment) initializePairs() {
 	env.pairs[PairZcashBitcoin] = struct{}{}
 
 	env.pairs[PairBitcoinIdk] = struct{}{}
+	env.pairs[PairHonestIdk] = struct{}{}
+	env.pairs[PairInmaxIdk] = struct{}{}
 	env.pairs[PairLyfeIdk] = struct{}{}
+	env.pairs[PairPlaygameIdk] = struct{}{}
 	env.pairs[PairSiacashIdk] = struct{}{}
 	env.pairs[PairTetherIdk] = struct{}{}
 
 	env.pairs[PairHaraEthereum] = struct{}{}
-	env.pairs[PairInmaxEthereum] = struct{}{}
 	env.pairs[PairTokenomyEthereum] = struct{}{}
 	env.pairs[PairTronEthereum] = struct{}{}
 
