@@ -30,7 +30,7 @@ Please keep these credentials safe and do not reveal it to any external party.
 #  License
 
 ```
-Copyright (c) 2019 Tokenomy Technologies Pte. Ltd. All rights reserved.
+Copyright (c) 2019 Tokenomy Technologies Ltd. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
