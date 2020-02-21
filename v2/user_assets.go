@@ -12,8 +12,8 @@ import (
 // UserAssets contains mapping between asset name and its value.
 //
 type UserAssets struct {
-	Balances          map[string]tokenomy.Rawfloat `json:"balances"`
-	FrozenBalances    map[string]tokenomy.Rawfloat `json:"frozen_balances"`
+	Balances          map[string]tokenomy.Rawfloat `json:"balances,omitempty"`
+	FrozenBalances    map[string]tokenomy.Rawfloat `json:"frozen_balances,omitempty"`
 	BalancesInt       map[string]int64             `json:"-"`
 	FrozenBalancesInt map[string]int64             `json:"-"`
 }

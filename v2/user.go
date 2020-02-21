@@ -12,7 +12,7 @@ type User struct {
 	ID       int64       `json:"id"`
 	Email    string      `json:"email"`
 	FullName string      `json:"full_name"` // User's first name and last name from profile.
-	Wallets  UserWallets `json:"wallets"`
+	Wallets  UserWallets `json:"wallets,omitempty"`
 
 	*UserAssets
 }
