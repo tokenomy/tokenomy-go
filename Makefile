@@ -14,7 +14,11 @@ LINTER_OPTS := --enable-all \
 	--disable wsl \
 	--disable gomnd
 
-all: lint test
+all: build lint test
+
+build:
+	go build ./...
+	go test -run=noop ./...
 
 lint:
 	-golangci-lint run $(LINTER_OPTS) ./...
