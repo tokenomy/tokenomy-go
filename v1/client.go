@@ -142,7 +142,10 @@ func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfl
 			RemainBase: tokenomy.Rawfloat(intRes.Remain),
 			FilledBase: tokenomy.Rawfloat(intRes.Filled),
 		},
+		User: tokenomy.User{},
 	}
+
+	tres.User.UserAssets = convertBalance(intRes.Balance)
 
 	return tres, nil
 }
@@ -187,6 +190,11 @@ func (cl *Client) TradeCancelAsk(pairName string, orderID int64) (
 			Type:   cancelRes.Return.Type,
 			Status: "cancelled",
 		},
+		User: tokenomy.User{},
+	}
+
+	if cancelRes.Return != nil {
+		tres.User.UserAssets = convertBalance(cancelRes.Return.Balances)
 	}
 
 	return tres, nil
@@ -232,6 +240,10 @@ func (cl *Client) TradeCancelBid(pairName string, orderID int64) (
 			Type:   cancelRes.Return.Type,
 			Status: "cancelled",
 		},
+		User: tokenomy.User{},
+	}
+	if cancelRes.Return != nil {
+		tres.User.UserAssets = convertBalance(cancelRes.Return.Balances)
 	}
 
 	return tres, nil
@@ -628,7 +640,10 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfl
 
 			AmountBase: tokenomy.Rawfloat(intRes.Receive),
 		},
+		User: tokenomy.User{},
 	}
+
+	tres.User.UserAssets = convertBalance(intRes.Balance)
 
 	return tres, nil
 }

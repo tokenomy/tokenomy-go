@@ -26,7 +26,7 @@ import (
 // Client for Tokenomy REST API v2.
 //
 type Client struct {
-	User *User
+	User *tokenomy.User
 	conn *http.Client
 	env  *tokenomy.Environment
 }
@@ -276,7 +276,7 @@ func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
 //
 // This method require authentication.
 //
-func (cl *Client) UserInfo() (user *User, err error) {
+func (cl *Client) UserInfo() (user *tokenomy.User, err error) {
 	params := url.Values{}
 
 	b, err := cl.doSecureRequest(http.MethodGet, apiUserInfo, params)
@@ -284,7 +284,7 @@ func (cl *Client) UserInfo() (user *User, err error) {
 		return nil, fmt.Errorf("UserInfo: %w", err)
 	}
 
-	user = &User{}
+	user = &tokenomy.User{}
 	res := &Response{
 		Data: user,
 	}

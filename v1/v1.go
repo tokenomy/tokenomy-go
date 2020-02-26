@@ -7,7 +7,10 @@ package v1
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
+
+	"github.com/tokenomy/tokenomy-go"
 )
 
 const (
@@ -79,6 +82,24 @@ var (
 	// invalid or unknown pair's name.
 	ErrInvalidPairName = fmt.Errorf("invalid or empty pair name")
 )
+
+//
+// convertBalance convert the v1's Balance to tokenomy's UserAssets.
+//
+func convertBalance(balances map[string]float64) (userAssets *tokenomy.UserAssets) {
+	userAssets = tokenomy.NewUserAssets()
+
+	for k, v := range balances {
+		if strings.HasPrefix(k, "frozen_") {
+			k = strings.TrimPrefix(k, "frozen_")
+			userAssets.FrozenBalances[k] = tokenomy.Rawfloat(v)
+		} else {
+			userAssets.Balances[k] = tokenomy.Rawfloat(v)
+		}
+	}
+
+	return userAssets
+}
 
 //
 // timestamp return current time in milliseconds as integer.
