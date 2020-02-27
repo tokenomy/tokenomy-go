@@ -13,9 +13,9 @@ import (
 )
 
 type cancelOrderResponse struct {
-	Success int
-	Error   string
-	Return  *CancelOrder
+	Success int          `json:"success"`
+	Error   string       `json:"error,omitempty"`
+	Return  *CancelOrder `json:"return"`
 }
 
 //
@@ -23,10 +23,10 @@ type cancelOrderResponse struct {
 // method.
 //
 type CancelOrder struct {
-	OrderID  int64
-	Type     string
-	Pair     string
-	Balances map[string]float64
+	OrderID  int64              `json:"order_id"`
+	Type     string             `json:"type"`
+	Pair     string             `json:"pair"`
+	Balances map[string]float64 `json:"balance"`
 }
 
 func (cancelOrder *CancelOrder) UnmarshalJSON(b []byte) (err error) {
