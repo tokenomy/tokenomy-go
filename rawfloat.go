@@ -11,7 +11,7 @@ import (
 
 const (
 	// Maximum precision when converting the Rawfloat value to string.
-	maxPrecision = 9
+	maxPrecision = 8
 )
 
 //
@@ -68,29 +68,32 @@ func (f Rawfloat) String() (s string) {
 
 	decimalIndex := strings.IndexByte(s, '.')
 
-	if decimalIndex > 0 {
-		s = strings.TrimRight(s, "0")
-
-		lastZero := 0
-		for x := decimalIndex + 1; x < len(s); x++ {
-			if s[x] != '0' {
-				lastZero = x
-				break
-			}
-		}
-
-		if lastZero < maxPrecision {
-			// Rule (3.1).
-			if len(s) > decimalIndex+maxPrecision {
-				s = s[:decimalIndex+maxPrecision]
-			}
-		} else {
-			// Rule (3.2)
-			s = s[:lastZero+1]
-		}
-
-		s = strings.TrimRight(s, ".")
+	if decimalIndex < 0 {
+		return s
 	}
+
+	s = strings.TrimRight(s, "0")
+
+	lastZero := 0
+	for x := decimalIndex + 1; x < len(s); x++ {
+		if s[x] != '0' {
+			lastZero = x
+			break
+		}
+	}
+
+	decimalPrecision := decimalIndex + maxPrecision + 1
+	if lastZero < decimalPrecision {
+		// Rule (3.1).
+		if len(s) > decimalPrecision {
+			s = s[:decimalPrecision]
+		}
+	} else {
+		// Rule (3.2)
+		s = s[:lastZero+1]
+	}
+
+	s = strings.TrimRight(s, ".")
 
 	return s
 }

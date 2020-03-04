@@ -67,6 +67,10 @@ func TestRawfloat_MarshalJSON(t *testing.T) {
 		desc: "With precisions",
 		t:    T{0.123_456_789_0},
 		exp:  `{"rawfloat":0.12345678}`,
+	}, {
+		desc: "With precisions",
+		t:    T{142660378.65368736},
+		exp:  `{"rawfloat":142660378.65368736}`,
 	}}
 
 	for _, c := range cases {
