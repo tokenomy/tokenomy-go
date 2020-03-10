@@ -5,31 +5,24 @@
 package tokenomy
 
 import (
+	"math"
 	"strconv"
 	"strings"
 )
 
 const (
-	// Maximum precision when converting the Rawfloat value to string.
-	maxPrecision = 8
+	// MaxPrecision define maximum precision when rounding Rawfloat value
+	// and converting it to string.
+	MaxPrecision = 8
+)
+
+var (
+	basePrecision = math.Pow10(MaxPrecision)
 )
 
 //
 // Rawfloat represent internal float64 with custom String and marshaling for
 // JSON.
-// The rules for converting the float to string are,
-//
-//	(1) If the value is zero it should return "0", not "0.000000"
-//	(2) If the value does not have mantissa, it should return only the
-//	base value without precision.  For example 123.00 must be printed as
-//	"123".
-//	(3) If the value contains more than 8 digits mantissa, then
-//	(3.1) if one of last 8 digits in mantissa is not zero, then the
-//	printed value should be limited to 8 digits only.  For example,
-//	0.000_000_016 should be printed as "0.00000001" without rounding.
-//	(3.2) if all of last 8 digits mantissa is zero, the printed value
-//	should be limited to the last non-zero.  For example 0.000_000_0001
-//	should be printed as "0.0000000001" not "0".
 //
 type Rawfloat float64
 
@@ -55,7 +48,31 @@ func (f Rawfloat) MarshalJSON() ([]byte, error) {
 }
 
 //
+// Round the value into the maximum precision value.
+//
+func (f *Rawfloat) Round() {
+	rf := float64(*f)
+	rf = rf * basePrecision
+	rf = math.Round(rf)
+	rf = rf / basePrecision
+	*f = Rawfloat(rf)
+}
+
+//
 // String convert the Rawfloat to string.
+//
+// The rules for converting the float to string are,
+//
+// (1) If the value is zero it should return "0", not "0.000000"
+//
+// (2) If the value does not have mantissa, it should return only the
+// base value without precision.  For example 123.00 must be printed as
+// "123".
+//
+// (3) if one of last 8 digits in mantissa is not zero, then the
+// printed value should be limited to 8 digits only.  For example,
+// 0.000_000_016 should be printed as "0.00000002" with rounding to max
+// precision.
 //
 func (f Rawfloat) String() (s string) {
 	// Rule (1).
@@ -63,8 +80,7 @@ func (f Rawfloat) String() (s string) {
 		return "0"
 	}
 
-	// Rule (2), automatically handled by FormatFloat.
-	s = strconv.FormatFloat(float64(f), 'f', -1, 64)
+	s = strconv.FormatFloat(float64(f), 'f', 8, 64)
 
 	decimalIndex := strings.IndexByte(s, '.')
 
@@ -82,14 +98,14 @@ func (f Rawfloat) String() (s string) {
 		}
 	}
 
-	decimalPrecision := decimalIndex + maxPrecision + 1
+	decimalPrecision := decimalIndex + MaxPrecision + 1
 	if lastZero < decimalPrecision {
-		// Rule (3.1).
+		// Rule (3)
 		if len(s) > decimalPrecision {
 			s = s[:decimalPrecision]
 		}
 	} else {
-		// Rule (3.2)
+		// Rule (4)
 		s = s[:lastZero+1]
 	}
 

@@ -38,7 +38,7 @@ func TestRawfloat_MarshalJSON(t *testing.T) {
 	}, {
 		desc: "With mantissa zero 8 digits",
 		t:    T{0.000_000_001},
-		exp:  `{"rawfloat":0.000000001}`,
+		exp:  `{"rawfloat":0}`,
 	}, {
 		desc: "With all mantissa is zero",
 		t:    T{0.000_000_000},
@@ -46,15 +46,15 @@ func TestRawfloat_MarshalJSON(t *testing.T) {
 	}, {
 		desc: "With precision > maxPrecision (1)",
 		t:    T{0.000_000_001},
-		exp:  `{"rawfloat":0.000000001}`,
+		exp:  `{"rawfloat":0}`,
 	}, {
 		desc: "With precision > maxPrecision (2)",
-		t:    T{0.000_000_0016},
-		exp:  `{"rawfloat":0.000000001}`,
+		t:    T{0.000_000_016},
+		exp:  `{"rawfloat":0.00000002}`,
 	}, {
 		desc: "With precision > maxPrecision (3)",
 		t:    T{0.000_000_001000},
-		exp:  `{"rawfloat":0.000000001}`,
+		exp:  `{"rawfloat":0}`,
 	}, {
 		desc: "With no precisions",
 		t:    T{123_456_789_0.0},
@@ -66,11 +66,15 @@ func TestRawfloat_MarshalJSON(t *testing.T) {
 	}, {
 		desc: "With precisions",
 		t:    T{0.123_456_789_0},
-		exp:  `{"rawfloat":0.12345678}`,
+		exp:  `{"rawfloat":0.12345679}`,
 	}, {
-		desc: "With precisions",
-		t:    T{142660378.65368736},
+		desc: "With precisions (2)",
+		t:    T{142_660_378.653_687_36},
 		exp:  `{"rawfloat":142660378.65368736}`,
+	}, {
+		desc: "With precisions (3)",
+		t:    T{9_193_394_308.857_713_70},
+		exp:  `{"rawfloat":9193394308.8577137}`,
 	}}
 
 	for _, c := range cases {
@@ -83,4 +87,17 @@ func TestRawfloat_MarshalJSON(t *testing.T) {
 
 		test.Assert(t, "MarshalJSON", c.exp, string(got), true)
 	}
+}
+
+func TestRawfloat_Round(t *testing.T) {
+	org := Rawfloat(0.123456789)
+	rf := org
+
+	exp := Rawfloat(0.12345679)
+
+	test.Assert(t, "Round before", org, rf, true)
+
+	rf.Round()
+
+	test.Assert(t, "Round after", exp, rf, true)
 }
