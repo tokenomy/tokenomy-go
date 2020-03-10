@@ -10,7 +10,7 @@ package tokenomy
 //
 type Order struct {
 	ID         int64    `json:"id"`
-	Pair       string   `json:"-"`
+	Pair       string   `json:"pair,omitempty"`
 	Type       string   `json:"type,omitempty"` // Type of order, either "sell" or "buy".
 	Method     string   `json:"method"`         // Method of order, either "limit" or "market".
 	SubmitTime int64    `json:"submit_time"`
