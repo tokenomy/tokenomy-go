@@ -4,7 +4,7 @@
 
 package v2
 
-import "github.com/tokenomy/tokenomy-go"
+import "github.com/shuLhan/share/lib/math/big"
 
 //
 // Tick contains the pair tick information.
@@ -13,36 +13,36 @@ type Tick struct {
 	PairName string `json:"pair"`
 
 	// Bid contains the highest buy price in open buy orders.
-	Bid tokenomy.Rawfloat `json:"bid"`
+	Bid *big.Rat `json:"bid"`
 
 	// Ask contains the lowest sell price in open sell orders.
-	Ask tokenomy.Rawfloat `json:"ask"`
+	Ask *big.Rat `json:"ask"`
 
 	// High contains the highest price in closed orders from last 24
 	// hours.
-	High tokenomy.Rawfloat `json:"high"`
+	High *big.Rat `json:"high"`
 
 	// Low contains the lowest price in closed orders from last 24 hours.
-	Low tokenomy.Rawfloat `json:"low"`
+	Low *big.Rat `json:"low"`
 
 	// LastPrice contains the last traded price.
-	LastPrice tokenomy.Rawfloat `json:"last_price"`
+	LastPrice *big.Rat `json:"last_price"`
 
 	// VolumeBase contains the traded base asset.
-	VolumeBase tokenomy.Rawfloat `json:"volume_base"`
+	VolumeBase *big.Rat `json:"volume_base"`
 
 	// VolumeCoin contains the traded coin asset.
-	VolumeCoin tokenomy.Rawfloat `json:"volume_coin"`
+	VolumeCoin *big.Rat `json:"volume_coin"`
 }
 
 //
 // IsZero will return true if all fields' value is zero.
 //
 func (tick *Tick) IsZero() bool {
-	if tick.Ask == 0 && tick.Bid == 0 &&
-		tick.High == 0 && tick.Low == 0 &&
-		tick.LastPrice == 0 &&
-		tick.VolumeBase == 0 && tick.VolumeCoin == 0 {
+	if tick.Ask.IsZero() && tick.Bid.IsZero() &&
+		tick.High.IsZero() && tick.Low.IsZero() &&
+		tick.LastPrice.IsZero() &&
+		tick.VolumeBase.IsZero() && tick.VolumeCoin.IsZero() {
 		return true
 	}
 	return false

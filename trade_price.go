@@ -4,13 +4,15 @@
 
 package tokenomy
 
+import "github.com/shuLhan/share/lib/math/big"
+
 //
 // TradePrice contains the information about completed trade.
 //
 type TradePrice struct {
 	ID         int64    `json:"id"`
 	TradeTime  int64    `json:"trade_time"`
-	Amount     Rawfloat `json:"amount"`
-	AmountCoin Rawfloat `json:"amount_coin"`
-	Price      Rawfloat `json:"price"`
+	Amount     *big.Rat `json:"amount"`
+	AmountCoin *big.Rat `json:"amount_coin"`
+	Price      *big.Rat `json:"price"`
 }

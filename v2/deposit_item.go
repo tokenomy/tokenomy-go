@@ -4,16 +4,16 @@
 
 package v2
 
-import "github.com/tokenomy/tokenomy-go"
+import "github.com/shuLhan/share/lib/math/big"
 
 //
 // DepositItem contains the information of deposit.
 //
 type DepositItem struct {
-	ID          int64             `json:"id"`
-	Asset       string            `json:"asset,omitempty"`
-	Status      string            `json:"status"`
-	Amount      tokenomy.Rawfloat `json:"amount"`
-	FinalAmount tokenomy.Rawfloat `json:"final_amount"`
-	SuccessTime int64             `json:"success_time"`
+	ID          int64    `json:"id"`
+	Asset       string   `json:"asset,omitempty"`
+	Status      string   `json:"status"`
+	Amount      *big.Rat `json:"amount"`
+	FinalAmount *big.Rat `json:"final_amount"`
+	SuccessTime int64    `json:"success_time"`
 }

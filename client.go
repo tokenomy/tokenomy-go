@@ -4,12 +4,14 @@
 
 package tokenomy
 
+import "github.com/shuLhan/share/lib/math/big"
+
 //
 // Client is an interface for API v1 and v2.
 //
 type Client interface {
-	TradeAsk(method, pairName string, amount, price Rawfloat) (*TradeResponse, error)
-	TradeBid(method, pairName string, amount, price Rawfloat) (*TradeResponse, error)
+	TradeAsk(method, pairName string, amount, price *big.Rat) (*TradeResponse, error)
+	TradeBid(method, pairName string, amount, price *big.Rat) (*TradeResponse, error)
 	TradeCancelAsk(pairName string, orderID int64) (*TradeResponse, error)
 	TradeCancelBid(pairName string, orderID int64) (*TradeResponse, error)
 }

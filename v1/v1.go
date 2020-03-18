@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/shuLhan/share/lib/math/big"
+
 	"github.com/tokenomy/tokenomy-go"
 )
 
@@ -92,9 +94,9 @@ func convertBalance(balances map[string]float64) (userAssets *tokenomy.UserAsset
 	for k, v := range balances {
 		if strings.HasPrefix(k, "frozen_") {
 			k = strings.TrimPrefix(k, "frozen_")
-			userAssets.FrozenBalances[k] = tokenomy.Rawfloat(v)
+			userAssets.FrozenBalances[k] = big.NewRat(v)
 		} else {
-			userAssets.Balances[k] = tokenomy.Rawfloat(v)
+			userAssets.Balances[k] = big.NewRat(v)
 		}
 	}
 

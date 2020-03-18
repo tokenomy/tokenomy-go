@@ -4,12 +4,16 @@
 
 package tokenomy
 
+import (
+	big "github.com/shuLhan/share/lib/math/big"
+)
+
 //
 // UserAssets contains mapping between asset name and its value.
 //
 type UserAssets struct {
-	Balances          map[string]Rawfloat `json:"balances,omitempty"`
-	FrozenBalances    map[string]Rawfloat `json:"frozen_balances,omitempty"`
+	Balances          map[string]*big.Rat `json:"balances,omitempty"`
+	FrozenBalances    map[string]*big.Rat `json:"frozen_balances,omitempty"`
 	BalancesInt       map[string]int64    `json:"-"`
 	FrozenBalancesInt map[string]int64    `json:"-"`
 }
@@ -19,9 +23,9 @@ type UserAssets struct {
 //
 func NewUserAssets() (assets *UserAssets) {
 	return &UserAssets{
-		Balances:          make(map[string]Rawfloat),
+		Balances:          make(map[string]*big.Rat),
 		BalancesInt:       make(map[string]int64),
-		FrozenBalances:    make(map[string]Rawfloat),
+		FrozenBalances:    make(map[string]*big.Rat),
 		FrozenBalancesInt: make(map[string]int64),
 	}
 }
@@ -31,17 +35,17 @@ func NewUserAssets() (assets *UserAssets) {
 //
 func (assets *UserAssets) Copy() *UserAssets {
 	newAssets := &UserAssets{
-		Balances:          make(map[string]Rawfloat, len(assets.Balances)),
-		FrozenBalances:    make(map[string]Rawfloat, len(assets.FrozenBalances)),
+		Balances:          make(map[string]*big.Rat, len(assets.Balances)),
+		FrozenBalances:    make(map[string]*big.Rat, len(assets.FrozenBalances)),
 		BalancesInt:       make(map[string]int64, len(assets.BalancesInt)),
 		FrozenBalancesInt: make(map[string]int64, len(assets.FrozenBalancesInt)),
 	}
 
 	for k, v := range assets.Balances {
-		newAssets.Balances[k] = v
+		newAssets.Balances[k] = big.NewRat(v)
 	}
 	for k, v := range assets.FrozenBalances {
-		newAssets.FrozenBalances[k] = v
+		newAssets.FrozenBalances[k] = big.NewRat(v)
 	}
 	for k, v := range assets.BalancesInt {
 		newAssets.BalancesInt[k] = v

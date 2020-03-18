@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/shuLhan/share/lib/math/big"
 	"github.com/tokenomy/tokenomy-go"
 )
 
@@ -20,8 +21,11 @@ func ExampleClient_TradeBid() {
 		log.Fatal(err)
 	}
 
+	amount := big.NewRat(100)
+	price := big.NewRat(0.00005)
+
 	tres, err := cl.TradeBid(tokenomy.TradeMethodLimit,
-		tokenomy.PairTokenomyBitcoin, 100, 0.00005)
+		tokenomy.PairTokenomyBitcoin, amount, price)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,8 +41,11 @@ func ExampleClient_TradeBid_by_market() {
 		log.Fatal(err)
 	}
 
+	amount := big.NewRat(0.0001)
+	price := big.NewRat(0)
+
 	tres, err := cl.TradeBid(tokenomy.TradeMethodMarket,
-		tokenomy.PairTokenomyBitcoin, 0.0001, 0)
+		tokenomy.PairTokenomyBitcoin, amount, price)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -319,8 +326,11 @@ func ExampleClient_TradeAsk_by_market() {
 		log.Fatal(err)
 	}
 
+	amount := big.NewRat(20)
+	price := big.NewRat(0)
+
 	tres, err := cl.TradeAsk(tokenomy.TradeMethodMarket,
-		tokenomy.PairTokenomyBitcoin, 20, 0)
+		tokenomy.PairTokenomyBitcoin, amount, price)
 	if err != nil {
 		log.Fatal(err)
 	}

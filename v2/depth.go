@@ -4,7 +4,7 @@
 
 package v2
 
-import "github.com/tokenomy/tokenomy-go"
+import "github.com/shuLhan/share/lib/math/big"
 
 //
 // Depth contains total amount of remaining order grouped by price in open
@@ -12,6 +12,6 @@ import "github.com/tokenomy/tokenomy-go"
 // Each depth is specific to pair.
 //
 type Depth struct {
-	Amount tokenomy.Rawfloat `json:"amount"`
-	Price  tokenomy.Rawfloat `json:"price"`
+	Amount *big.Rat `json:"amount"`
+	Price  *big.Rat `json:"price"`
 }

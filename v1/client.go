@@ -19,6 +19,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/shuLhan/share/lib/math/big"
+
 	"github.com/tokenomy/tokenomy-go"
 )
 
@@ -106,7 +108,7 @@ func (cl *Client) Authenticate() (err error) {
 //
 // This method require authentication.
 //
-func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfloat) (
+func (cl *Client) TradeBid(method, pairName string, amount, price *big.Rat) (
 	tres *tokenomy.TradeResponse, err error,
 ) {
 	resBody, err := cl.trade(method, tokenomy.TradeTypeBid, pairName, amount, price)
@@ -136,11 +138,11 @@ func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfl
 			Price: price,
 
 			AmountCoin: amount,
-			FilledCoin: tokenomy.Rawfloat(intRes.Receive),
+			FilledCoin: big.NewRat(intRes.Receive),
 
-			AmountBase: (amount * price),
-			RemainBase: tokenomy.Rawfloat(intRes.Remain),
-			FilledBase: tokenomy.Rawfloat(intRes.Filled),
+			AmountBase: big.MulRat(amount, price),
+			RemainBase: big.NewRat(intRes.Remain),
+			FilledBase: big.NewRat(intRes.Filled),
 		},
 		User: tokenomy.User{},
 	}
@@ -605,7 +607,7 @@ func (cl *Client) MarketOrdersOpen(pairName string) (orderBook *OrderBook, err e
 //
 // This method require authentication.
 //
-func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfloat) (
+func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 	tres *tokenomy.TradeResponse, err error,
 ) {
 	resBody, err := cl.trade(method, tokenomy.TradeTypeAsk, pairName, amount, price)
@@ -635,10 +637,10 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfl
 			Price: price,
 
 			AmountCoin: amount,
-			RemainCoin: tokenomy.Rawfloat(intRes.Remain),
-			FilledCoin: tokenomy.Rawfloat(intRes.Filled),
+			RemainCoin: big.NewRat(intRes.Remain),
+			FilledCoin: big.NewRat(intRes.Filled),
 
-			AmountBase: tokenomy.Rawfloat(intRes.Receive),
+			AmountBase: big.NewRat(intRes.Receive),
 		},
 		User: tokenomy.User{},
 	}
@@ -925,7 +927,8 @@ func (cl *Client) newPrivateRequest(apiMethod string, params url.Values) (
 	return req, nil
 }
 
-func (cl *Client) trade(method, tipe, pair string, amount, price tokenomy.Rawfloat) (
+//nolint: interfacer
+func (cl *Client) trade(method, tipe, pair string, amount, price *big.Rat) (
 	body []byte, err error,
 ) {
 	assets := strings.Split(pair, "_")

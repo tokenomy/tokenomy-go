@@ -18,6 +18,7 @@ import (
 	"time"
 
 	liberrors "github.com/shuLhan/share/lib/errors"
+	"github.com/shuLhan/share/lib/math/big"
 
 	"github.com/tokenomy/tokenomy-go"
 )
@@ -527,7 +528,7 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 // The price parameter define the number of base that we want to sell the
 // amount of coin.
 //
-func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfloat) (
+func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
 	return cl.trade(apiTradeAsk, method, pairName, amount, price)
@@ -549,7 +550,7 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price tokenomy.Rawfl
 // The price parameter define the number of base that we want to buy the
 // amount of coin.
 //
-func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfloat) (
+func (cl *Client) TradeBid(method, pairName string, amount, price *big.Rat) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
 	return cl.trade(apiTradeBid, method, pairName, amount, price)
@@ -557,7 +558,7 @@ func (cl *Client) TradeBid(method, pairName string, amount, price tokenomy.Rawfl
 
 func (cl *Client) trade(
 	api, method, pairName string,
-	amount, price tokenomy.Rawfloat,
+	amount, price *big.Rat,
 ) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
@@ -580,13 +581,13 @@ func (cl *Client) trade(
 	}
 	params.Set(tokenomy.ParamNamePair, pairName)
 
-	if amount <= 0 {
+	if amount.IsLessOrEqual(0) {
 		return nil, tokenomy.ErrInvalidAmount
 	}
 	params.Set(tokenomy.ParamNameAmount, amount.String())
 
 	if method == tokenomy.TradeMethodLimit {
-		if price <= 0 {
+		if price.IsLessOrEqual(0) {
 			return nil, tokenomy.ErrInvalidPrice
 		}
 		params.Set(tokenomy.ParamNamePrice, price.String())

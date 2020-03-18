@@ -4,10 +4,10 @@
 
 package v2
 
-import "github.com/tokenomy/tokenomy-go"
+import "github.com/shuLhan/share/lib/math/big"
 
 //
 // MarketPrices contains mapping between pair and its latest price in the
 // market.
 //
-type MarketPrices map[string]tokenomy.Rawfloat
+type MarketPrices map[string]*big.Rat
