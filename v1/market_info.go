@@ -4,17 +4,19 @@
 
 package v1
 
+import "github.com/shuLhan/share/lib/math/big"
+
 type PairPrecision struct {
 	Price  int
 	Amount int
 }
 
 type PairAmountLimit struct {
-	Min float64
+	Min *big.Rat
 }
 
 type PairPriceLimit struct {
-	Min float64
+	Min *big.Rat
 }
 
 type PairLimits struct {

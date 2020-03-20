@@ -147,7 +147,7 @@ func (cl *Client) TradeBid(method, pairName string, amount, price *big.Rat) (
 		User: tokenomy.User{},
 	}
 
-	tres.User.UserAssets = convertBalance(intRes.Balance)
+	tres.User.UserAssets = convertBalance(intRes.Balances)
 
 	return tres, nil
 }
@@ -645,7 +645,7 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 		User: tokenomy.User{},
 	}
 
-	tres.User.UserAssets = convertBalance(intRes.Balance)
+	tres.User.UserAssets = convertBalance(intRes.Balances)
 
 	return tres, nil
 }

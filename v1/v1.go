@@ -88,7 +88,7 @@ var (
 //
 // convertBalance convert the v1's Balance to tokenomy's UserAssets.
 //
-func convertBalance(balances map[string]float64) (userAssets *tokenomy.UserAssets) {
+func convertBalance(balances map[string]*big.Rat) (userAssets *tokenomy.UserAssets) {
 	userAssets = tokenomy.NewUserAssets()
 
 	for k, v := range balances {

@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	libjson "github.com/shuLhan/share/lib/json"
+	"github.com/shuLhan/share/lib/math/big"
 )
 
 type cancelOrderResponse struct {
@@ -23,10 +23,10 @@ type cancelOrderResponse struct {
 // method.
 //
 type CancelOrder struct {
-	OrderID  int64              `json:"order_id"`
-	Type     string             `json:"type"`
-	Pair     string             `json:"pair"`
-	Balances map[string]float64 `json:"balance"`
+	OrderID  int64               `json:"order_id"`
+	Type     string              `json:"type"`
+	Pair     string              `json:"pair"`
+	Balances map[string]*big.Rat `json:"balance"`
 }
 
 func (cancelOrder *CancelOrder) UnmarshalJSON(b []byte) (err error) {
@@ -50,7 +50,10 @@ func (cancelOrder *CancelOrder) UnmarshalJSON(b []byte) (err error) {
 			cancelOrder.Pair = valstr
 		case fieldNameBalance:
 			balances := v.(map[string]interface{})
-			cancelOrder.Balances, err = libjson.ToMapStringFloat64(balances)
+			cancelOrder.Balances = make(map[string]*big.Rat, len(balances))
+			for asset, bal := range balances {
+				cancelOrder.Balances[asset] = big.NewRat(bal)
+			}
 		}
 		if err != nil {
 			return err

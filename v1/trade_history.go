@@ -6,9 +6,12 @@ package v1
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/shuLhan/share/lib/math/big"
 )
 
 type tradeHistoryResponse struct {
@@ -31,10 +34,10 @@ type TradeHistory struct {
 	OrderID           int64
 	Type              string
 	CurrencyName      string
-	Amount            float64
+	Amount            *big.Rat
 	BaseCurrency      string
-	BaseCurrencyPrice float64
-	Price             float64
+	BaseCurrencyPrice *big.Rat
+	Price             *big.Rat
 	Time              time.Time
 	TimePrint         string
 }
@@ -59,11 +62,17 @@ func (tradeHistory *TradeHistory) UnmarshalJSON(b []byte) (err error) {
 		case fieldNameType:
 			tradeHistory.Type = valstr
 		case fieldNameBaseCurrencyPrice:
-			tradeHistory.BaseCurrencyPrice, err = strconv.ParseFloat(valstr, 64)
+			tradeHistory.BaseCurrencyPrice = big.NewRat(valstr)
+			if tradeHistory.BaseCurrencyPrice == nil {
+				err = fmt.Errorf("invalid %q value %q", k, valstr)
+			}
 		case fieldNameBaseCurrency:
 			tradeHistory.BaseCurrency = valstr
 		case fieldNamePrice:
-			tradeHistory.Price, err = strconv.ParseFloat(valstr, 64)
+			tradeHistory.Price = big.NewRat(valstr)
+			if tradeHistory.Price == nil {
+				err = fmt.Errorf("invalid %q value %q", k, valstr)
+			}
 		case fieldNameTradeTime:
 			ts, err := strconv.ParseInt(valstr, 10, 64)
 			if err != nil {
@@ -77,7 +86,10 @@ func (tradeHistory *TradeHistory) UnmarshalJSON(b []byte) (err error) {
 		// amount of order.
 		default:
 			tradeHistory.CurrencyName = k
-			tradeHistory.Amount, err = strconv.ParseFloat(valstr, 64)
+			tradeHistory.Amount = big.NewRat(valstr)
+			if tradeHistory.Amount == nil {
+				err = fmt.Errorf("invalid %q value %q", k, valstr)
+			}
 		}
 		if err != nil {
 			return err

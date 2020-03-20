@@ -6,9 +6,12 @@ package v1
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/shuLhan/share/lib/math/big"
 )
 
 type orderHistoryResponse struct {
@@ -29,13 +32,13 @@ type OrderHistory struct {
 	PairName    string
 	OrderID     int64
 	Type        string
-	Price       float64
+	Price       *big.Rat
 	SubmitAt    time.Time
 	FinishAt    time.Time
 	Method      string
 	Status      string
-	OrderPrice  float64
-	AssetRemain float64
+	OrderPrice  *big.Rat
+	AssetRemain *big.Rat
 }
 
 func (oh *OrderHistory) UnmarshalJSON(b []byte) (err error) {
@@ -57,7 +60,10 @@ func (oh *OrderHistory) UnmarshalJSON(b []byte) (err error) {
 		case fieldNameType:
 			oh.Type = valstr
 		case fieldNamePrice:
-			oh.Price, err = strconv.ParseFloat(valstr, 64)
+			oh.Price = big.NewRat(valstr)
+			if oh.Price == nil {
+				err = fmt.Errorf("invalid %q value %q", k, valstr)
+			}
 		case fieldNameSubmitTime:
 			i64, err = strconv.ParseInt(valstr, 10, 64)
 			if err != nil {
@@ -77,9 +83,15 @@ func (oh *OrderHistory) UnmarshalJSON(b []byte) (err error) {
 		default:
 			switch {
 			case strings.HasPrefix(k, "order_"):
-				oh.OrderPrice, err = strconv.ParseFloat(valstr, 64)
+				oh.OrderPrice = big.NewRat(valstr)
+				if oh.OrderPrice == nil {
+					err = fmt.Errorf("invalid %q value %q", k, valstr)
+				}
 			case strings.HasPrefix(k, "remain_"):
-				oh.AssetRemain, err = strconv.ParseFloat(valstr, 64)
+				oh.AssetRemain = big.NewRat(valstr)
+				if oh.AssetRemain == nil {
+					err = fmt.Errorf("invalid %q value %q", k, valstr)
+				}
 			}
 		}
 		if err != nil {

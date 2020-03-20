@@ -6,10 +6,10 @@ package v1
 
 import (
 	"encoding/json"
-	"strconv"
+	"fmt"
 	"strings"
 
-	libjson "github.com/shuLhan/share/lib/json"
+	"github.com/shuLhan/share/lib/math/big"
 )
 
 //
@@ -24,10 +24,10 @@ type tradeResponse struct {
 	Success   int64
 	Error     string
 	ErrorCode string
-	Receive   float64
-	Filled    float64
-	Remain    float64
-	Balance   map[string]float64
+	Receive   *big.Rat
+	Filled    *big.Rat
+	Remain    *big.Rat
+	Balances  map[string]*big.Rat
 	IsError   bool
 }
 
@@ -97,34 +97,36 @@ func (tres *tradeResponse) UnmarshalJSON(b []byte) (err error) {
 		case fieldNameErrorCode:
 			tres.ErrorCode = v.(string)
 		case fieldNameBalance:
-			tres.Balance, err = libjson.ToMapStringFloat64(v.(map[string]interface{}))
-			if err != nil {
-				return err
+			balances := v.(map[string]interface{})
+			tres.Balances = make(map[string]*big.Rat, len(balances))
+			for asset, bal := range balances {
+				tres.Balances[asset] = big.NewRat(bal)
 			}
+
 		default:
 			switch {
 			case strings.HasPrefix(k, "receive_"):
-				tres.Receive, err = strconv.ParseFloat(v.(string), 64)
-				if err != nil {
-					return err
+				tres.Receive = big.NewRat(v.(string))
+				if tres.Receive == nil {
+					return fmt.Errorf("invalid %q value %v", k, v)
 				}
 
 			case strings.HasPrefix(k, "sold_"):
-				tres.Filled, err = strconv.ParseFloat(v.(string), 64)
-				if err != nil {
-					return err
+				tres.Filled = big.NewRat(v.(string))
+				if tres.Filled == nil {
+					return fmt.Errorf("invalid %q value %v", k, v)
 				}
 
 			case strings.HasPrefix(k, "spend_"):
-				tres.Filled, err = strconv.ParseFloat(v.(string), 64)
-				if err != nil {
-					return err
+				tres.Filled = big.NewRat(v.(string))
+				if tres.Filled == nil {
+					return fmt.Errorf("invalid %q value %v", k, v)
 				}
 
 			case strings.HasPrefix(k, "remain_"):
-				tres.Remain, err = strconv.ParseFloat(v.(string), 64)
-				if err != nil {
-					return err
+				tres.Remain = big.NewRat(v.(string))
+				if tres.Remain == nil {
+					return fmt.Errorf("invalid %q value %v", k, v)
 				}
 			}
 		}

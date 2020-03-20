@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	libjson "github.com/shuLhan/share/lib/json"
+	"github.com/shuLhan/share/lib/math/big"
 )
 
 //
@@ -28,9 +28,9 @@ type UserInfo struct {
 	ID               string `json:"user_id"`
 	Name             string
 	Email            string
-	AssetAddress     map[string]string  `json:"address"`
-	AssetBalance     map[string]float64 `json:"balance"`
-	AssetBalanceHold map[string]float64 `json:"balance_hold"`
+	AssetAddress     map[string]string   `json:"address"`
+	AssetBalance     map[string]*big.Rat `json:"balance"`
+	AssetBalanceHold map[string]*big.Rat `json:"balance_hold"`
 }
 
 func (userInfo *UserInfo) UnmarshalJSON(b []byte) (err error) {
@@ -55,10 +55,16 @@ func (userInfo *UserInfo) UnmarshalJSON(b []byte) (err error) {
 			userInfo.unmarshalAddresses(v.(map[string]interface{}))
 		case "balance":
 			balances := v.(map[string]interface{})
-			userInfo.AssetBalance, err = libjson.ToMapStringFloat64(balances)
+			userInfo.AssetBalance = make(map[string]*big.Rat, len(balances))
+			for asset, bal := range balances {
+				userInfo.AssetBalance[asset] = big.NewRat(bal)
+			}
 		case "balance_hold":
 			balancesHold := v.(map[string]interface{})
-			userInfo.AssetBalanceHold, err = libjson.ToMapStringFloat64(balancesHold)
+			userInfo.AssetBalanceHold = make(map[string]*big.Rat, len(balancesHold))
+			for asset, bal := range balancesHold {
+				userInfo.AssetBalanceHold[asset] = big.NewRat(bal)
+			}
 		}
 		if err != nil {
 			return err

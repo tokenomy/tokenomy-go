@@ -7,15 +7,16 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
+
+	"github.com/shuLhan/share/lib/math/big"
 )
 
 //
 // Order contains the number of amount and price of open order.
 //
 type Order struct {
-	Amount float64
-	Price  float64
+	Amount *big.Rat
+	Price  *big.Rat
 }
 
 func (order *Order) UnmarshalJSON(b []byte) (err error) {
@@ -30,14 +31,14 @@ func (order *Order) UnmarshalJSON(b []byte) (err error) {
 		return fmt.Errorf("order: UnmarshalJSON: invalid length of order")
 	}
 
-	order.Price, err = strconv.ParseFloat(vals[0], 64)
-	if err != nil {
-		return err
+	order.Price = big.NewRat(vals[0])
+	if order.Price == nil {
+		return fmt.Errorf("order: invalid price value %q", vals[0])
 	}
 
-	order.Amount, err = strconv.ParseFloat(vals[1], 64)
-	if err != nil {
-		return err
+	order.Amount = big.NewRat(vals[1])
+	if order.Amount == nil {
+		return fmt.Errorf("order: invalid amount value %q", vals[1])
 	}
 
 	return nil

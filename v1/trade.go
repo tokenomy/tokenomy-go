@@ -6,9 +6,12 @@ package v1
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/shuLhan/share/lib/math/big"
 )
 
 //
@@ -18,8 +21,8 @@ type Trade struct {
 	ID     int64
 	Type   string
 	Date   time.Time
-	Amount float64
-	Price  float64
+	Amount *big.Rat
+	Price  *big.Rat
 }
 
 func (trade *Trade) UnmarshalJSON(b []byte) (err error) {
@@ -41,9 +44,15 @@ func (trade *Trade) UnmarshalJSON(b []byte) (err error) {
 			}
 			trade.Date = time.Unix(ts, 0)
 		case fieldNamePrice:
-			trade.Price, err = strconv.ParseFloat(v, 64)
+			trade.Price = big.NewRat(v)
+			if trade.Price == nil {
+				err = fmt.Errorf("invalid price value %q", v)
+			}
 		case fieldNameAmount:
-			trade.Amount, err = strconv.ParseFloat(v, 64)
+			trade.Amount = big.NewRat(v)
+			if trade.Amount == nil {
+				err = fmt.Errorf("invalid amount value %q", v)
+			}
 		case fieldNameTID:
 			trade.ID, err = strconv.ParseInt(v, 10, 64)
 		case fieldNameType:
