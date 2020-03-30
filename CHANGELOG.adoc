@@ -1,0 +1,51 @@
+= CHANGELOG
+
+==  tokenomy-go v0.1.0
+
+List of features in this release,
+
+*  REST client for API v1, and
+*  REST client for API v2
+
+
+List of functionalities for each client,
+
+*  Market,
+**  Info: list of all available pairs including limit information and
+    market status.
+**  OrdersOpen: list the public open order book (buy and sell) for
+    specific pair.
+**  Summaries: retrieve the summary of all traded pairs, highest price,
+    lowest price, volume, last price, token/coin name.
+    This API method can also be used to discover all current traded pairs.
+**  Ticker: get the price summary of an individual pair.
+**  Trades: get the latest trades for a particular pair.
+
+*  Trade,
+**  Ask: put the sell order for specific asset at specific amount and
+    price into the market.
+**  Bid: put the buy order for specific asset at specific amount and price
+    into the market.
+**  CancelAsk: cancel the sell (ask) order on specific pair name and order
+    ID.
+**  CancelBid: cancel the buy (bid) order on specific pair name and order ID.
+
+*  User,
+**  Info: fetch the user's balance and information.
+**  Order: get the detail of a specific user's open order by pair name and
+    order ID.
+**  OrdersClosed: list user's closed order history (buy and sell).
+**  OrdersOpen list the current user's open order (buy and sell) by pair
+    name.
+**  Trades: list all user's history of trade.
+**  Transactions: list all user's history of deposits and withdrawals from
+    all assets.
+**  Withdraw: withdraw user assets into another address. This method accept
+    withdrawing all coins except TEN.
+
+
+List of functionalities only on client API v2,
+
+*  Market,
+**  Depths: fetch list of market's depth for specific pair.
+**  Prices: return list of all latest pair's prices.
