@@ -87,7 +87,7 @@ func (env *Environment) IsValidPairName(pairName string) (ok bool) {
 }
 
 func (env *Environment) initializePairs() {
-	env.pairs = make(map[string]struct{}, 38)
+	env.pairs = make(map[string]struct{})
 
 	env.pairs[PairBitcoinabcBitcoin] = struct{}{}
 	env.pairs[PairEosBitcoin] = struct{}{}
@@ -100,6 +100,7 @@ func (env *Environment) initializePairs() {
 	env.pairs[PairOntologyBitcoin] = struct{}{}
 	env.pairs[PairSixBitcoin] = struct{}{}
 	env.pairs[PairStellarBitcoin] = struct{}{}
+	env.pairs[PairSwipeBitcoin] = struct{}{}
 	env.pairs[PairTokenomyBitcoin] = struct{}{}
 	env.pairs[PairTronBitcoin] = struct{}{}
 	env.pairs[PairVexaniumBitcoin] = struct{}{}
@@ -107,20 +108,19 @@ func (env *Environment) initializePairs() {
 	env.pairs[PairZcashBitcoin] = struct{}{}
 
 	env.pairs[PairBitcoinIdk] = struct{}{}
+	env.pairs[PairDaiIdk] = struct{}{}
+	env.pairs[PairHaraIdk] = struct{}{}
 	env.pairs[PairHonestIdk] = struct{}{}
 	env.pairs[PairInmaxIdk] = struct{}{}
 	env.pairs[PairLyfeIdk] = struct{}{}
+	env.pairs[PairMakerIdk] = struct{}{}
 	env.pairs[PairPlaygameIdk] = struct{}{}
 	env.pairs[PairSiacashIdk] = struct{}{}
+	env.pairs[PairSwipeIdk] = struct{}{}
 	env.pairs[PairTetherIdk] = struct{}{}
-
-	env.pairs[PairHaraEthereum] = struct{}{}
-	env.pairs[PairTokenomyEthereum] = struct{}{}
-	env.pairs[PairTronEthereum] = struct{}{}
+	env.pairs[PairTokenomyIdk] = struct{}{}
 
 	env.pairs[PairBitcoinTether] = struct{}{}
 	env.pairs[PairEthereumTether] = struct{}{}
 	env.pairs[PairTokenomyTether] = struct{}{}
-
-	env.pairs[PairVexaniumTokenomy] = struct{}{}
 }

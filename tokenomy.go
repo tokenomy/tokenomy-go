@@ -15,14 +15,15 @@ import (
 
 //
 // List of known asset names.
-// Last update 2020-02-18.
+// Last update on 2020-03-30.
 //
 const (
 	AssetNameAchain          = "achain"
+	AssetNameBinancechain    = "bnb"
 	AssetNameBitcoin         = "btc"
 	AssetNameBitcoinabc      = "bchabc"
-	AssetNameBinancechain    = "bnb"
 	AssetNameCybermiles      = "cmt"
+	AssetNameDai             = "dai"
 	AssetNameEos             = "eos"
 	AssetNameEthereum        = "eth"
 	AssetNameEthereumclassic = "etc"
@@ -30,29 +31,30 @@ const (
 	AssetNameHonest          = "hnst"
 	AssetNameIdk             = "idk"
 	AssetNameInmax           = "inx"
-	AssetNameLyfe            = "lyfe"
 	AssetNameLitecoin        = "ltc"
 	AssetNameLoopring        = "lrc"
 	AssetNameLoopringNeo     = "lrn"
+	AssetNameLyfe            = "lyfe"
+	AssetNameMaker           = "mkr"
 	AssetNameMonero          = "xmr"
 	AssetNameNeo             = "neo"
-	AssetNameOpcoin          = "opc"
 	AssetNameOntology        = "ont"
 	AssetNamePlaygame        = "pxg"
-	AssetNameSix             = "six"
 	AssetNameSiacash         = "scc"
+	AssetNameSix             = "six"
 	AssetNameStellar         = "xlm"
 	AssetNameSwipe           = "swipe"
-	AssetNameTron            = "trx"
 	AssetNameTether          = "usdt"
 	AssetNameTokenomy        = "ten"
+	AssetNameTron            = "trx"
 	AssetNameVexanium        = "vex"
 	AssetNameXanpool         = "xlp"
 	AssetNameZcash           = "zec"
 )
 
 //
-// List of valid pairs. Last update 2020-02-18.
+// List of valid pairs.
+// Last update on 2020-03-30.
 //
 const (
 	PairBitcoinabcBitcoin      = AssetNameBitcoinabc + "_" + AssetNameBitcoin
@@ -74,22 +76,21 @@ const (
 	PairZcashBitcoin           = AssetNameZcash + "_" + AssetNameBitcoin
 
 	PairBitcoinIdk  = AssetNameBitcoin + "_" + AssetNameIdk
+	PairDaiIdk      = AssetNameDai + "_" + AssetNameIdk
+	PairHaraIdk     = AssetNameHara + "_" + AssetNameIdk
 	PairHonestIdk   = AssetNameHonest + "_" + AssetNameIdk
 	PairInmaxIdk    = AssetNameInmax + "_" + AssetNameIdk
 	PairLyfeIdk     = AssetNameLyfe + "_" + AssetNameIdk
+	PairMakerIdk    = AssetNameMaker + "_" + AssetNameIdk
 	PairPlaygameIdk = AssetNamePlaygame + "_" + AssetNameIdk
 	PairSiacashIdk  = AssetNameSiacash + "_" + AssetNameIdk
+	PairSwipeIdk    = AssetNameSwipe + "_" + AssetNameIdk
 	PairTetherIdk   = AssetNameTether + "_" + AssetNameIdk
-
-	PairHaraEthereum     = AssetNameHara + "_" + AssetNameEthereum
-	PairTokenomyEthereum = AssetNameTokenomy + "_" + AssetNameEthereum
-	PairTronEthereum     = AssetNameTron + "_" + AssetNameEthereum
+	PairTokenomyIdk = AssetNameTokenomy + "_" + AssetNameIdk
 
 	PairBitcoinTether  = AssetNameBitcoin + "_" + AssetNameTether
 	PairEthereumTether = AssetNameEthereum + "_" + AssetNameTether
 	PairTokenomyTether = AssetNameTokenomy + "_" + AssetNameTether
-
-	PairVexaniumTokenomy = AssetNameVexanium + "_" + AssetNameTokenomy
 )
 
 //
