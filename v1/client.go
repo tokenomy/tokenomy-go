@@ -99,8 +99,8 @@ func (cl *Client) Authenticate() (err error) {
 }
 
 //
-// TradeBid put the buy order for the asset at specific amount and price into
-// the market.
+// TradeBid put the buy order for the specific asset at specific amount and
+// price into the market.
 //
 // On success, it will return the information about status of transaction and
 // remaining balance.
@@ -573,8 +573,8 @@ func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
 }
 
 //
-// MarketOrdersOpen list the public open order book (buy and sell) for spesific
-// pair.
+// MarketOrdersOpen list the public open order book (buy and sell) for
+// specific pair.
 //
 func (cl *Client) MarketOrdersOpen(pairName string) (orderBook *OrderBook, err error) {
 	if len(pairName) == 0 {
@@ -603,7 +603,8 @@ func (cl *Client) MarketOrdersOpen(pairName string) (orderBook *OrderBook, err e
 }
 
 //
-// TradeAsk put the sell order into open orders at specific amount and price.
+// TradeAsk put the sell order for specific asset at specific amount and
+// price.
 //
 // This method require authentication.
 //
