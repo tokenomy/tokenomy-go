@@ -12,17 +12,17 @@ import "github.com/shuLhan/share/lib/math/big"
 type Tick struct {
 	PairName string `json:"pair"`
 
-	// Bid contains the highest buy price in open buy orders.
+	// Bid contains the highest buy price in open buy.
 	Bid *big.Rat `json:"bid"`
 
-	// Ask contains the lowest sell price in open sell orders.
+	// Ask contains the lowest sell price in open sell.
 	Ask *big.Rat `json:"ask"`
 
-	// High contains the highest price in closed orders from last 24
+	// High contains the highest price in closed trades from last 24
 	// hours.
 	High *big.Rat `json:"high"`
 
-	// Low contains the lowest price in closed orders from last 24 hours.
+	// Low contains the lowest price in closed trades from last 24 hours.
 	Low *big.Rat `json:"low"`
 
 	// LastPrice contains the last traded price.

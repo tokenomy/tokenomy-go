@@ -132,17 +132,17 @@ func (cl *Client) TradeBid(method, pairName string, amount, price *big.Rat) (
 	}
 
 	tres = &tokenomy.TradeResponse{
-		Order: &tokenomy.Order{
+		Trade: &tokenomy.Trade{
 			ID:    intRes.OrderID,
 			Pair:  pairName,
 			Price: price,
 
-			AmountCoin: amount,
-			FilledCoin: big.NewRat(intRes.Receive),
+			CoinAmount: amount,
+			CoinFilled: big.NewRat(intRes.Receive),
 
-			AmountBase: big.MulRat(amount, price),
-			RemainBase: big.NewRat(intRes.Remain),
-			FilledBase: big.NewRat(intRes.Filled),
+			BaseAmount: big.MulRat(amount, price),
+			BaseRemain: big.NewRat(intRes.Remain),
+			BaseFilled: big.NewRat(intRes.Filled),
 		},
 		User: tokenomy.User{},
 	}
@@ -186,7 +186,7 @@ func (cl *Client) TradeCancelAsk(pairName string, orderID int64) (
 	}
 
 	tres = &tokenomy.TradeResponse{
-		Order: &tokenomy.Order{
+		Trade: &tokenomy.Trade{
 			ID:     cancelRes.Return.OrderID,
 			Pair:   pairName,
 			Type:   cancelRes.Return.Type,
@@ -236,7 +236,7 @@ func (cl *Client) TradeCancelBid(pairName string, orderID int64) (
 	}
 
 	tres = &tokenomy.TradeResponse{
-		Order: &tokenomy.Order{
+		Trade: &tokenomy.Trade{
 			ID:     cancelRes.Return.OrderID,
 			Pair:   pairName,
 			Type:   cancelRes.Return.Type,
@@ -252,8 +252,8 @@ func (cl *Client) TradeCancelBid(pairName string, orderID int64) (
 }
 
 //
-// UserOrder get the detail of a specific user's open order by pair name and
-// order ID.
+// UserOrder get the detail of a specific user's open trade by pair name and
+// trade ID.
 //
 // This method require authentication.
 //
@@ -632,16 +632,16 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 	}
 
 	tres = &tokenomy.TradeResponse{
-		Order: &tokenomy.Order{
+		Trade: &tokenomy.Trade{
 			ID:    intRes.OrderID,
 			Pair:  pairName,
 			Price: price,
 
-			AmountCoin: amount,
-			RemainCoin: big.NewRat(intRes.Remain),
-			FilledCoin: big.NewRat(intRes.Filled),
+			CoinAmount: amount,
+			CoinRemain: big.NewRat(intRes.Remain),
+			CoinFilled: big.NewRat(intRes.Filled),
 
-			AmountBase: big.NewRat(intRes.Receive),
+			BaseAmount: big.NewRat(intRes.Receive),
 		},
 		User: tokenomy.User{},
 	}

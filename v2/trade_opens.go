@@ -7,9 +7,9 @@ package v2
 import "github.com/tokenomy/tokenomy-go"
 
 //
-// OpenOrders contains the open ask and bid orders in the market place.
+// TradeOpens contains the open asks and bids in the market place.
 //
-type OpenOrders struct {
-	Asks []tokenomy.Order `json:"asks"`
-	Bids []tokenomy.Order `json:"bids"`
+type TradeOpens struct {
+	Asks []tokenomy.Trade `json:"asks"`
+	Bids []tokenomy.Trade `json:"bids"`
 }

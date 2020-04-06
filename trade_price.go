@@ -12,7 +12,7 @@ import "github.com/shuLhan/share/lib/math/big"
 type TradePrice struct {
 	ID         int64    `json:"id"`
 	TradeTime  int64    `json:"trade_time"`
-	Amount     *big.Rat `json:"amount"`
-	AmountCoin *big.Rat `json:"amount_coin"`
+	BaseAmount *big.Rat `json:"base_amount"`
+	CoinAmount *big.Rat `json:"coin_amount"`
 	Price      *big.Rat `json:"price"`
 }

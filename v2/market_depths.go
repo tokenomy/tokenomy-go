@@ -5,7 +5,7 @@
 package v2
 
 //
-// MarketDepths contains list of depth on open ask and bid orders.
+// MarketDepths contains list of depth on open asks and bids.
 //
 type MarketDepths struct {
 	Asks []Depth `json:"asks"`

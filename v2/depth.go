@@ -7,8 +7,8 @@ package v2
 import "github.com/shuLhan/share/lib/math/big"
 
 //
-// Depth contains total amount of remaining order grouped by price in open
-// orders.
+// Depth contains total amount of remaining trade grouped by price in open
+// trades.
 // Each depth is specific to pair.
 //
 type Depth struct {

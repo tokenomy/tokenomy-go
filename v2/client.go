@@ -148,7 +148,7 @@ func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
 // MarketTradesOpen return list of all open trades in the market, specific to
 // pair's name, grouped by ask and bid.
 //
-func (cl *Client) MarketTradesOpen(pairName string) (openTrades *OpenOrders, err error) {
+func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradeOpens, err error) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
 	}
@@ -158,7 +158,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *OpenOrders, err
 		return nil, fmt.Errorf("MarketTradesOpen: %w", err)
 	}
 
-	openTrades = &OpenOrders{}
+	openTrades = &TradeOpens{}
 	res := &Response{
 		Data: openTrades,
 	}
@@ -324,7 +324,7 @@ func (cl *Client) UserTrades(
 	pairName string,
 	offset, limit, idAfter, idBefore, timeAfter, timeBefore int64,
 ) (
-	trades []Trade, err error,
+	trades []tokenomy.Trade, err error,
 ) {
 	if !cl.env.IsValidPairName(pairName) {
 		return nil, tokenomy.ErrInvalidPair
@@ -376,7 +376,9 @@ func (cl *Client) UserTrades(
 //
 // This method require authentication.
 //
-func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (trades []Trade, err error) {
+func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
+	trades []tokenomy.Trade, err error,
+) {
 	if !cl.env.IsValidPairName(pairName) {
 		return nil, tokenomy.ErrInvalidPair
 	}
@@ -414,7 +416,7 @@ func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (trades
 //
 // This method require authentication.
 //
-func (cl *Client) UserTradesOpen(pairName string) (openTrades *OpenOrders, err error) {
+func (cl *Client) UserTradesOpen(pairName string) (openTrades *TradeOpens, err error) {
 	if !cl.env.IsValidPairName(pairName) {
 		return nil, tokenomy.ErrInvalidPair
 	}
@@ -428,7 +430,7 @@ func (cl *Client) UserTradesOpen(pairName string) (openTrades *OpenOrders, err e
 		return nil, fmt.Errorf("UserTradesOpen: %w", err)
 	}
 
-	openTrades = &OpenOrders{}
+	openTrades = &TradeOpens{}
 	res := &Response{
 		Data: openTrades,
 	}
@@ -442,12 +444,14 @@ func (cl *Client) UserTradesOpen(pairName string) (openTrades *OpenOrders, err e
 }
 
 //
-// UserOrder fetch a single user order information based on pair's name and
-// order ID.
+// UserTrade fetch a single user's trade information based on pair's name and
+// trade ID.
 //
 // This method require authentication.
 //
-func (cl *Client) UserOrder(pairName string, id int64) (order *tokenomy.Order, err error) {
+func (cl *Client) UserTrade(pairName string, id int64) (
+	trade *tokenomy.Trade, err error,
+) {
 	if !cl.env.IsValidPairName(pairName) {
 		return nil, tokenomy.ErrInvalidPair
 	}
@@ -459,12 +463,12 @@ func (cl *Client) UserOrder(pairName string, id int64) (order *tokenomy.Order, e
 
 	b, err := cl.doSecureRequest(http.MethodGet, apiUserTrade, params)
 	if err != nil {
-		return nil, fmt.Errorf("UserOrder: %w", err)
+		return nil, fmt.Errorf("UserTrade: %w", err)
 	}
 
-	order = &tokenomy.Order{}
+	trade = &tokenomy.Trade{}
 	res := &Response{
-		Data: order,
+		Data: trade,
 	}
 
 	err = json.Unmarshal(b, res)
@@ -472,7 +476,7 @@ func (cl *Client) UserOrder(pairName string, id int64) (order *tokenomy.Order, e
 		return nil, err
 	}
 
-	return order, nil
+	return trade, nil
 }
 
 //
@@ -608,13 +612,13 @@ func (cl *Client) trade(
 		return nil, err
 	}
 
-	trade.Order.Pair = pairName
+	trade.Trade.Pair = pairName
 
 	return trade, nil
 }
 
 //
-// TradeCancelAsk cancel the specific open sell order by pair and ID.
+// TradeCancelAsk cancel the specific open sell by pair and ID.
 //
 func (cl *Client) TradeCancelAsk(pairName string, id int64) (
 	trade *tokenomy.TradeResponse, err error,
@@ -623,7 +627,7 @@ func (cl *Client) TradeCancelAsk(pairName string, id int64) (
 }
 
 //
-// TradeCancelBid cancel the specific open buy order by pair and ID.
+// TradeCancelBid cancel the specific open buy by pair and ID.
 //
 func (cl *Client) TradeCancelBid(pairName string, id int64) (
 	trade *tokenomy.TradeResponse, err error,

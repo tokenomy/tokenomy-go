@@ -10,8 +10,8 @@ package tokenomy
 // of deals.
 //
 type TradeResponse struct {
-	Order *Order `json:"order"`
+	Trade *Trade `json:"trade"`
 	User  User   `json:"user"`
-	// Deals contains matched orders, only available on v2.
+	// Deals contains matched trades, only available on v2.
 	Deals []TradePrice `json:"deals,omitempty"`
 }
