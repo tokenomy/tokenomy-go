@@ -145,22 +145,22 @@ func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
 }
 
 //
-// MarketOrdersOpen return list of all open orders in the market, specific to
+// MarketTradesOpen return list of all open trades in the market, specific to
 // pair's name, grouped by ask and bid.
 //
-func (cl *Client) MarketOrdersOpen(pairName string) (openOrders *OpenOrders, err error) {
+func (cl *Client) MarketTradesOpen(pairName string) (openTrades *OpenOrders, err error) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doGet(apiMarketOrdersOpen, params)
+	b, err := cl.doGet(apiMarketTradesOpen, params)
 	if err != nil {
-		return nil, fmt.Errorf("MarketOrdersOpen: %w", err)
+		return nil, fmt.Errorf("MarketTradesOpen: %w", err)
 	}
 
-	openOrders = &OpenOrders{}
+	openTrades = &OpenOrders{}
 	res := &Response{
-		Data: openOrders,
+		Data: openTrades,
 	}
 
 	err = json.Unmarshal(b, res)
@@ -168,7 +168,7 @@ func (cl *Client) MarketOrdersOpen(pairName string) (openOrders *OpenOrders, err
 		return nil, err
 	}
 
-	return openOrders, nil
+	return openTrades, nil
 }
 
 //
@@ -222,7 +222,7 @@ func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
 }
 
 //
-// MarketTrades return list of all closed orders in the market, specific to
+// MarketTrades return list of all closed trades in the market, specific to
 // pair's name, grouped by ask and bid.
 //
 func (cl *Client) MarketTrades(pairName string) (tradePrices *MarketTradePrices, err error) {
@@ -370,13 +370,13 @@ func (cl *Client) UserTrades(
 }
 
 //
-// UserOrdersClosed fetch the user closed orders based on pair's name.
+// UserTradesClosed fetch the user closed trades based on pair's name.
 // The offset parameter define the beginning of record and limit parameter
 // define the maximum record in result set.
 //
 // This method require authentication.
 //
-func (cl *Client) UserOrdersClosed(pairName string, offset, limit int64) (trades []Trade, err error) {
+func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (trades []Trade, err error) {
 	if !cl.env.IsValidPairName(pairName) {
 		return nil, tokenomy.ErrInvalidPair
 	}
@@ -392,9 +392,9 @@ func (cl *Client) UserOrdersClosed(pairName string, offset, limit int64) (trades
 		params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
 	}
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserOrdersClosed, params)
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserTradesClosed, params)
 	if err != nil {
-		return nil, fmt.Errorf("UserOrdersClosed: %w", err)
+		return nil, fmt.Errorf("UserTradesClosed: %w", err)
 	}
 
 	res := &Response{
@@ -410,11 +410,11 @@ func (cl *Client) UserOrdersClosed(pairName string, offset, limit int64) (trades
 }
 
 //
-// UserOrdersOpen fetch the user open orders based on pair's name.
+// UserTradesOpen fetch the user open trades based on pair's name.
 //
 // This method require authentication.
 //
-func (cl *Client) UserOrdersOpen(pairName string) (openOrders *OpenOrders, err error) {
+func (cl *Client) UserTradesOpen(pairName string) (openTrades *OpenOrders, err error) {
 	if !cl.env.IsValidPairName(pairName) {
 		return nil, tokenomy.ErrInvalidPair
 	}
@@ -423,14 +423,14 @@ func (cl *Client) UserOrdersOpen(pairName string) (openOrders *OpenOrders, err e
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserOrdersOpen, params)
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserTradesOpen, params)
 	if err != nil {
-		return nil, fmt.Errorf("UserOrdersOpen: %w", err)
+		return nil, fmt.Errorf("UserTradesOpen: %w", err)
 	}
 
-	openOrders = &OpenOrders{}
+	openTrades = &OpenOrders{}
 	res := &Response{
-		Data: openOrders,
+		Data: openTrades,
 	}
 
 	err = json.Unmarshal(b, res)
@@ -438,7 +438,7 @@ func (cl *Client) UserOrdersOpen(pairName string) (openOrders *OpenOrders, err e
 		return nil, err
 	}
 
-	return openOrders, nil
+	return openTrades, nil
 }
 
 //
@@ -457,7 +457,7 @@ func (cl *Client) UserOrder(pairName string, id int64) (order *tokenomy.Order, e
 		tokenomy.ParamNameTradeID: []string{strconv.FormatInt(id, 10)},
 	}
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserOrder, params)
+	b, err := cl.doSecureRequest(http.MethodGet, apiUserTrade, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserOrder: %w", err)
 	}

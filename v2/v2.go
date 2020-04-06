@@ -18,7 +18,7 @@ const (
 
 	apiMarketDepths     = "/v2/market/depths"
 	apiMarketInfo       = "/v2/market/info"
-	apiMarketOrdersOpen = "/v2/market/orders/open"
+	apiMarketTradesOpen = "/v2/market/trades/open"
 	apiMarketPrices     = "/v2/market/prices"
 	apiMarketTicker     = "/v2/market/ticker"
 	apiMarketTrades     = "/v2/market/trades"
@@ -26,9 +26,9 @@ const (
 
 	apiUserInfo         = "/v2/user/info"
 	apiUserTrades       = "/v2/user/trades"
-	apiUserOrdersClosed = "/v2/user/orders/closed"
-	apiUserOrdersOpen   = "/v2/user/orders/open"
-	apiUserOrder        = "/v2/user/order"
+	apiUserTradesClosed = "/v2/user/trades/closed"
+	apiUserTradesOpen   = "/v2/user/trades/open"
+	apiUserTrade        = "/v2/user/trade"
 	apiUserTransactions = "/v2/user/transactions"
 
 	apiTradeAsk       = "/v2/trade/ask"
