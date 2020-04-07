@@ -1,5 +1,28 @@
 = CHANGELOG
 
+==  tokenomy-go v0.2.0
+
+This release refactoring the struct Order and Trade in v2 to make it
+consistent.
+In v1, we use the term "order" and "trade" to convey the same information.
+In v2, we use the term "trade" for all information related to trading,
+either open or closed.
+
+===  Breaking changes
+
+*  Change the market trades open API from "/v2/market/orders/open" to
+   "/v2/market/trades/open"
+
+*  Change the user's trades open API from "/v2/user/orders/open" to
+   "/v2/user/trades/open"
+
+*  Change the user's trades closed API from "/v2/user/orders/closed" to
+   "/v2/user/trades/closed"
+
+*  Change the user's trade information API from "/v2/user/order" to
+   "/v2/user/trade"
+
+
 ==  tokenomy-go v0.1.0
 
 List of features in this release,
