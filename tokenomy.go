@@ -15,6 +15,8 @@ import (
 
 //
 // List of known asset names.
+// The list is updated rarely, it may contains asset that has been delisted
+// or did not contains new asset in the Tokenomy server.
 // Last update on 2020-03-30.
 //
 const (
@@ -54,6 +56,8 @@ const (
 
 //
 // List of valid pairs.
+// The list is updated rarely, so it may contains pairs that has been delisted
+// or did not contains new pairs in the Tokenomy server.
 // Last update on 2020-03-30.
 //
 const (

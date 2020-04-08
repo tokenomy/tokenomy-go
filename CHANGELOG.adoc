@@ -1,5 +1,17 @@
 = CHANGELOG
 
+==  tokenomy-go v0.2.1
+
+v2: remove pair checks, let the server do the check
+
+Due to changes on pairs on the server, client may still use the old
+module that contains delisted pairs or not contains new pairs.
+This may cause an unexpected errors on the client side.
+
+To minimize this error, we remove the check on pairs and let the server
+do them.
+
+
 ==  tokenomy-go v0.2.0
 
 This release refactoring the struct Order and Trade in v2 to make it

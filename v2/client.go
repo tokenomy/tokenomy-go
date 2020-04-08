@@ -326,10 +326,6 @@ func (cl *Client) UserTrades(
 ) (
 	trades []tokenomy.Trade, err error,
 ) {
-	if !cl.env.IsValidPairName(pairName) {
-		return nil, tokenomy.ErrInvalidPair
-	}
-
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
 	}
@@ -379,10 +375,6 @@ func (cl *Client) UserTrades(
 func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
 	trades []tokenomy.Trade, err error,
 ) {
-	if !cl.env.IsValidPairName(pairName) {
-		return nil, tokenomy.ErrInvalidPair
-	}
-
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
 	}
@@ -417,10 +409,6 @@ func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
 // This method require authentication.
 //
 func (cl *Client) UserTradesOpen(pairName string) (openTrades *TradeOpens, err error) {
-	if !cl.env.IsValidPairName(pairName) {
-		return nil, tokenomy.ErrInvalidPair
-	}
-
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
 	}
@@ -452,10 +440,6 @@ func (cl *Client) UserTradesOpen(pairName string) (openTrades *TradeOpens, err e
 func (cl *Client) UserTrade(pairName string, id int64) (
 	trade *tokenomy.Trade, err error,
 ) {
-	if !cl.env.IsValidPairName(pairName) {
-		return nil, tokenomy.ErrInvalidPair
-	}
-
 	params := url.Values{
 		tokenomy.ParamNamePair:    []string{pairName},
 		tokenomy.ParamNameTradeID: []string{strconv.FormatInt(id, 10)},
@@ -580,9 +564,6 @@ func (cl *Client) trade(
 	}
 	params.Set(tokenomy.ParamNameTradeMethod, method)
 
-	if !cl.env.IsValidPairName(pairName) {
-		return nil, tokenomy.ErrInvalidPair
-	}
 	params.Set(tokenomy.ParamNamePair, pairName)
 
 	if amount.IsLessOrEqual(0) {
@@ -640,9 +621,6 @@ func (cl *Client) cancel(api, pairName string, id int64) (
 ) {
 	params := url.Values{}
 
-	if !cl.env.IsValidPairName(pairName) {
-		return nil, tokenomy.ErrInvalidPair
-	}
 	params.Set(tokenomy.ParamNamePair, pairName)
 
 	if id <= 0 {
