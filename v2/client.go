@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 	"time"
 
 	liberrors "github.com/shuLhan/share/lib/errors"
@@ -408,7 +407,9 @@ func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
 //
 // This method require authentication.
 //
-func (cl *Client) UserTradesOpen(pairName string) (openTrades *TradeOpens, err error) {
+func (cl *Client) UserTradesOpen(pairName string) (
+	pairTradeOpens PairTradeOpens, err error,
+) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
 	}
@@ -418,9 +419,9 @@ func (cl *Client) UserTradesOpen(pairName string) (openTrades *TradeOpens, err e
 		return nil, fmt.Errorf("UserTradesOpen: %w", err)
 	}
 
-	openTrades = &TradeOpens{}
+	pairTradeOpens = make(PairTradeOpens, 0)
 	res := &Response{
-		Data: openTrades,
+		Data: pairTradeOpens,
 	}
 
 	err = json.Unmarshal(b, res)
@@ -428,7 +429,7 @@ func (cl *Client) UserTradesOpen(pairName string) (openTrades *TradeOpens, err e
 		return nil, err
 	}
 
-	return openTrades, nil
+	return pairTradeOpens, nil
 }
 
 //
@@ -503,10 +504,10 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 //
 // TradeAsk request to sell the coin on market with specific method, amount,
 // and price.
-// The method parameter define the mode of sell, its either "market" or
-// "limit", default to "market" if its empty.
+// The method parameter define the mode of sell, its either "market" (default)
+// or "limit".
 // If the method is "market", it will only accept amount parameter, otherwise
-// if the methid is "limit", the amount and price must not be zero.
+// if the method is "limit", the amount and price must not be zero.
 //
 // The pairName parameter define the coin and base assets to be traded, in the
 // following format: "coin_base".
@@ -550,32 +551,9 @@ func (cl *Client) trade(
 ) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
-	params := url.Values{}
-
-	if len(method) == 0 {
-		method = tokenomy.TradeMethodMarket
-	} else {
-		method = strings.ToLower(method)
-		switch method {
-		case tokenomy.TradeMethodMarket, tokenomy.TradeMethodLimit:
-		default:
-			return nil, tokenomy.ErrInvalidTradeMethod
-		}
-	}
-	params.Set(tokenomy.ParamNameTradeMethod, method)
-
-	params.Set(tokenomy.ParamNamePair, pairName)
-
-	if amount.IsLessOrEqual(0) {
-		return nil, tokenomy.ErrInvalidAmount
-	}
-	params.Set(tokenomy.ParamNameAmount, amount.String())
-
-	if method == tokenomy.TradeMethodLimit {
-		if price.IsLessOrEqual(0) {
-			return nil, tokenomy.ErrInvalidPrice
-		}
-		params.Set(tokenomy.ParamNamePrice, price.String())
+	params, _, err := generateTradeParams(method, pairName, amount, price)
+	if err != nil {
+		return nil, err
 	}
 
 	b, err := cl.doSecureRequest(http.MethodPost, api, params)

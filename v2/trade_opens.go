@@ -4,7 +4,9 @@
 
 package v2
 
-import "github.com/tokenomy/tokenomy-go"
+import (
+	"github.com/tokenomy/tokenomy-go"
+)
 
 //
 // TradeOpens contains the open asks and bids in the market place.

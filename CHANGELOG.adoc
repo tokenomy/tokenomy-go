@@ -1,5 +1,13 @@
 = CHANGELOG
 
+==  tokenomy-go v0.3.0
+
+v2: implement private WebSocket client
+
+The private WebSocket client can handle trade, trade cancellation,
+and listing open trades.
+
+
 ==  tokenomy-go v0.2.1
 
 v2: remove pair checks, let the server do the check
