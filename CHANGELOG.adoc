@@ -7,6 +7,10 @@
 *  v2: add method to get trade information in private WebSocket
 *  v2: add method to get user information in private WebSocket
 
+===  Enhancements
+
+*  all: define default dial and request/response timeout for HTTP client
+
 
 ==  tokenomy-go v0.3.0
 

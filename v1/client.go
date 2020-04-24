@@ -56,9 +56,7 @@ func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
 	transport := http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
-			Timeout:   30 * time.Second,
-			KeepAlive: 30 * time.Second,
-			DualStack: true,
+			Timeout: tokenomy.DefaultDialTimeout,
 		}).DialContext,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: env.IsInsecure, //nolint: gosec
@@ -73,6 +71,7 @@ func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
 	cl = &Client{
 		conn: &http.Client{
 			Transport: &transport,
+			Timeout:   tokenomy.DefaultTimeout,
 		},
 		env: env,
 	}
