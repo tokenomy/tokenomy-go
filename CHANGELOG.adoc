@@ -1,5 +1,13 @@
 = CHANGELOG
 
+==  tokenomy-go v0.4.0
+
+===  New features
+
+*  v2: add method to get trade information in private WebSocket
+*  v2: add method to get user information in private WebSocket
+
+
 ==  tokenomy-go v0.3.0
 
 v2: implement private WebSocket client

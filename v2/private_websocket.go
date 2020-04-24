@@ -182,6 +182,54 @@ func (cl *PrivateWebSocket) TradeCancelBid(pairName string, id int64) (
 }
 
 //
+// UserInfo fetch the user information and balances.
+//
+func (cl *PrivateWebSocket) UserInfo() (user *tokenomy.User, err error) {
+	res, err := cl.send(http.MethodGet, apiUserInfo, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	user = &tokenomy.User{}
+	err = json.Unmarshal([]byte(res.Body), user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+//
+// UserTradeInfo fetch a single user's trade information based on pair's name
+// and trade ID.
+//
+func (cl *PrivateWebSocket) UserTradeInfo(pairName string, id int64) (
+	trade *tokenomy.Trade, err error,
+) {
+	if len(pairName) == 0 {
+		return nil, tokenomy.ErrInvalidPair
+	}
+	wsparams := &WebSocketParams{
+		Pair:    pairName,
+		TradeID: id,
+	}
+
+	res, err := cl.send(http.MethodGet, apiUserTrade, wsparams)
+	if err != nil {
+		return nil, err
+	}
+
+	trade = &tokenomy.Trade{}
+
+	err = json.Unmarshal([]byte(res.Body), trade)
+	if err != nil {
+		return nil, err
+	}
+
+	return trade, nil
+}
+
+//
 // UserTradesOpen fetch the user open trades based on pair's name.
 //
 func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
@@ -214,9 +262,13 @@ func (cl *PrivateWebSocket) send(
 ) (
 	res *websocket.Response, err error,
 ) {
-	body, err := wsparams.Pack()
-	if err != nil {
-		return nil, err
+	var body []byte
+
+	if wsparams != nil {
+		body, err = wsparams.Pack()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	req := &websocket.Request{
