@@ -11,14 +11,13 @@ import "github.com/shuLhan/share/lib/math/big"
 // closed.
 //
 type Trade struct {
-	ID      int64    `json:"id,omitempty"`
-	TradeID int64    `json:"trade_id,omitempty"`
-	Pair    string   `json:"pair,omitempty"`
-	Type    string   `json:"type,omitempty"`   // Its either "sell" or "buy".
-	Method  string   `json:"method,omitempty"` // Its either "limit" or "market".
-	Status  string   `json:"status,omitempty"` // Status for closed trade.
-	Price   *big.Rat `json:"price,omitempty"`
-	Fee     *big.Rat `json:"fee,omitempty"`
+	ID     int64    `json:"id,omitempty"`
+	Pair   string   `json:"pair,omitempty"`
+	Type   string   `json:"type,omitempty"`   // Its either "sell" or "buy".
+	Method string   `json:"method,omitempty"` // Its either "limit" or "market".
+	Status string   `json:"status,omitempty"` // Status for closed trade.
+	Price  *big.Rat `json:"price,omitempty"`
+	Fee    *big.Rat `json:"fee,omitempty"`
 
 	BaseAsset  string   `json:"base_asset,omitempty"`
 	BaseAmount *big.Rat `json:"base_amount,omitempty"`

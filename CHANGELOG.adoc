@@ -2,6 +2,10 @@
 
 ==  tokenomy-go v0.4.0
 
+===  Breaking changes
+
+*  trade: remove the ambiguous TradeID field
+
 ===  New features
 
 *  v2: add method to get trade information in private WebSocket
