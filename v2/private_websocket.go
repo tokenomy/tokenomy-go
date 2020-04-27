@@ -38,6 +38,7 @@ type PrivateWebSocket struct {
 	// market.
 	HandleTradesClosed TradesClosedHandler
 
+	env  *tokenomy.Environment
 	conn *websocket.Client
 
 	requestsLocker sync.Mutex
@@ -58,18 +59,9 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 		env.Address = defPrivateWebSocketEndpoint
 	}
 
-	params := make(url.Values, 0)
-
-	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
-
-	payload := params.Encode()
-	sign := tokenomy.Sign(payload, env.Secret)
-
-	endpoint := env.Address + "?" + payload
-
 	cl = &PrivateWebSocket{
+		env: env,
 		conn: &websocket.Client{
-			Endpoint: endpoint,
 			TLSConfig: &tls.Config{
 				InsecureSkipVerify: env.IsInsecure,
 			},
@@ -78,15 +70,13 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 		requests: make(map[uint64](chan *websocket.Response)),
 	}
 
-	cl.conn.Headers.Set(tokenomy.HeaderNameKey, env.Token)
-	cl.conn.Headers.Set(tokenomy.HeaderNameSign, sign)
+	cl.conn.HandleText = cl.handleText
+	cl.conn.HandleQuit = cl.handleUnexpectedQuit
 
-	err = cl.conn.Connect()
+	err = cl.connect()
 	if err != nil {
 		return nil, fmt.Errorf("NewPrivateWebSocket: %w", err)
 	}
-
-	cl.conn.HandleText = cl.handleText
 
 	return cl, nil
 }
@@ -304,6 +294,27 @@ func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
 	return pairTradeOpens, nil
 }
 
+func (cl *PrivateWebSocket) connect() error {
+	params := make(url.Values, 0)
+
+	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
+
+	payload := params.Encode()
+	sign := tokenomy.Sign(payload, cl.env.Secret)
+
+	cl.conn.Endpoint = cl.env.Address + "?" + payload
+
+	cl.conn.Headers.Set(tokenomy.HeaderNameKey, cl.env.Token)
+	cl.conn.Headers.Set(tokenomy.HeaderNameSign, sign)
+
+	err := cl.conn.Connect()
+	if err != nil {
+		return fmt.Errorf("connect: %w", err)
+	}
+
+	return nil
+}
+
 func (cl *PrivateWebSocket) send(
 	method, target string, wsparams *WebSocketParams,
 ) (
@@ -409,6 +420,20 @@ func (cl *PrivateWebSocket) handleText(
 	}
 
 	return nil
+}
+
+func (cl *PrivateWebSocket) handleUnexpectedQuit() {
+	log.Println("handleUnexpectedQuit: disconnected ...")
+	for {
+		err := cl.connect()
+		if err != nil {
+			log.Printf("Connect: %s", err.Error())
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		break
+	}
+	log.Println("handleUnexpectedQuit: reconnected ...")
 }
 
 func (cl *PrivateWebSocket) requestPush(req *websocket.Request) (

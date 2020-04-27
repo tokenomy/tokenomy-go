@@ -14,6 +14,7 @@
 
 ===  Enhancements
 
+*  v2: handle reconnect when PrivateWebSocket receive unexpected quit
 *  all: define default dial and request/response timeout for HTTP client
 
 
