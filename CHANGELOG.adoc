@@ -8,6 +8,7 @@
 
 ===  New features
 
+*  v2: add methods to cancel open ask/bid using Trade object
 *  v2: add method to get trade information in private WebSocket
 *  v2: add method to get user information in private WebSocket
 

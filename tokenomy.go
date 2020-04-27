@@ -224,6 +224,11 @@ var (
 		Message: `invalid or empty trade method, its either "limit" or "market"`,
 		Name:    "ERR_INVALID_TRADE_METHOD",
 	}
+	ErrInvalidTradeType = &errors.E{
+		Code:    http.StatusBadRequest,
+		Message: `invalid or empty trade type, its either "buy" or "sell"`,
+		Name:    "ERR_INVALID_TRADE_TYPE",
+	}
 
 	ErrAssetKYCRequired = &errors.E{
 		Code:    http.StatusForbidden,

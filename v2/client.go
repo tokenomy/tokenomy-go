@@ -576,6 +576,30 @@ func (cl *Client) trade(
 }
 
 //
+// TradeCancel cancel the open trade using ID and pair information in Trade.
+//
+func (cl *Client) TradeCancel(trade *tokenomy.Trade) (*tokenomy.Trade, error) {
+	var (
+		tradeResponse *tokenomy.TradeResponse
+		err           error
+	)
+
+	switch trade.Type {
+	case tokenomy.TradeTypeAsk:
+		tradeResponse, err = cl.TradeCancelAsk(trade.Pair, trade.ID)
+	case tokenomy.TradeTypeBid:
+		tradeResponse, err = cl.TradeCancelBid(trade.Pair, trade.ID)
+	default:
+		return nil, tokenomy.ErrInvalidTradeType
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return tradeResponse.Trade, nil
+}
+
+//
 // TradeCancelAsk cancel the specific open sell by pair and ID.
 //
 func (cl *Client) TradeCancelAsk(pairName string, id int64) (
