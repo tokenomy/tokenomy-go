@@ -92,6 +92,21 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 }
 
 //
+// Close the connection and release all the resource.
+//
+func (cl *PrivateWebSocket) Close() error {
+	cl.requestsLocker.Lock()
+	for id, ch := range cl.requests {
+		ch <- nil
+		close(ch)
+		delete(cl.requests, id)
+	}
+	cl.requestsLocker.Unlock()
+
+	return cl.conn.SendClose(0, nil)
+}
+
+//
 // TradeAsk request to sell the coin on market with specific method, amount,
 // and price.
 // The method parameter define the mode of sell, its either "market" (default)
