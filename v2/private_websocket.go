@@ -93,7 +93,7 @@ func (cl *PrivateWebSocket) Close() error {
 	}
 	cl.requestsLocker.Unlock()
 
-	return cl.conn.SendClose(0, nil)
+	return cl.conn.Close()
 }
 
 //
