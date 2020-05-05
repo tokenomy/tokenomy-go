@@ -418,7 +418,7 @@ func (cl *Client) UserTradesOpen(pairName string) (
 		return nil, fmt.Errorf("UserTradesOpen: %w", err)
 	}
 
-	pairTradeOpens = make(PairTradeOpens, 0)
+	pairTradeOpens = make(PairTradeOpens)
 	res := &Response{
 		Data: pairTradeOpens,
 	}

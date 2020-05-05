@@ -63,7 +63,7 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 		env: env,
 		conn: &websocket.Client{
 			TLSConfig: &tls.Config{
-				InsecureSkipVerify: env.IsInsecure,
+				InsecureSkipVerify: env.IsInsecure, //nolint: gosec
 			},
 			Headers: make(http.Header),
 		},
@@ -284,7 +284,7 @@ func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
 		return nil, err
 	}
 
-	pairTradeOpens = make(PairTradeOpens, 0)
+	pairTradeOpens = make(PairTradeOpens)
 
 	err = json.Unmarshal([]byte(res.Body), &pairTradeOpens)
 	if err != nil {
@@ -295,7 +295,7 @@ func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
 }
 
 func (cl *PrivateWebSocket) connect() error {
-	params := make(url.Values, 0)
+	params := make(url.Values)
 
 	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
 
@@ -403,8 +403,7 @@ func (cl *PrivateWebSocket) handleText(
 	}
 
 	// Handle broadcast from server.
-	switch res.Message {
-	case apiUserTradesClosed:
+	if res.Message == apiUserTradesClosed {
 		if cl.HandleTradesClosed == nil {
 			return nil
 		}

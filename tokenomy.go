@@ -170,11 +170,11 @@ const DefaultLimit = 1000
 
 // DefaultDialTimeout define maximum time waiting for connection to be
 // fully accepted.
-var DefaultDialTimeout = 10 * time.Second
+var DefaultDialTimeout = 10 * time.Second //nolint: gochecknoglobals
 
 // DefaultTimeout define maximum time waiting for response in each HTTP
 // or WebSocket request.
-var DefaultTimeout = 16 * time.Second
+var DefaultTimeout = 16 * time.Second //nolint: gochecknoglobals
 
 // List of valid sort.
 const (
