@@ -14,8 +14,13 @@
 
 ===  Enhancements
 
+*  v2: add method to close WebSocket connection
 *  v2: handle reconnect when PrivateWebSocket receive unexpected quit
 *  all: define default dial and request/response timeout for HTTP client
+
+===  Bug fixes
+
+*  v2: fix wrong method on PrivateWebSocket cancel trade request
 
 
 ==  tokenomy-go v0.3.0

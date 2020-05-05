@@ -199,7 +199,7 @@ func (cl *PrivateWebSocket) TradeCancelAsk(pairName string, id int64) (
 		Pair:    pairName,
 		TradeID: id,
 	}
-	return cl.sendTradeRequest(http.MethodPost, apiTradeCancelAsk, wsparams)
+	return cl.sendTradeRequest(http.MethodDelete, apiTradeCancelAsk, wsparams)
 }
 
 //
@@ -215,7 +215,7 @@ func (cl *PrivateWebSocket) TradeCancelBid(pairName string, id int64) (
 		Pair:    pairName,
 		TradeID: id,
 	}
-	return cl.sendTradeRequest(http.MethodPost, apiTradeCancelBid, wsparams)
+	return cl.sendTradeRequest(http.MethodDelete, apiTradeCancelBid, wsparams)
 }
 
 //
