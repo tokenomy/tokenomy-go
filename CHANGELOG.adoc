@@ -1,6 +1,6 @@
 = CHANGELOG
 
-==  tokenomy-go v0.4.0
+==  tokenomy-go v0.4.0 (2020.05.05)
 
 ===  Breaking changes
 
