@@ -6,7 +6,6 @@ package tokenomy
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 )
@@ -46,8 +45,6 @@ type Environment struct {
 // TOKENOMY_TOKEN and TOKENOMY_SECRET.
 //
 func NewEnvironment(token, secret string) (env *Environment) {
-	log.SetFlags(0)
-
 	env = &Environment{
 		Address: os.Getenv(EnvNameAddress),
 		Token:   os.Getenv(EnvNameToken),
