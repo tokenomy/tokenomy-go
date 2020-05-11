@@ -115,6 +115,14 @@ const (
 )
 
 //
+// List of valid trade's status.
+//
+const (
+	TradeStatusCancelled = "cancelled"
+	TradeStatusFilled    = "filled"
+)
+
+//
 // List of knowns environment variables.
 //
 const (

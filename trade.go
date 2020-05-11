@@ -15,7 +15,7 @@ type Trade struct {
 	Pair   string   `json:"pair,omitempty"`
 	Type   string   `json:"type,omitempty"`   // Its either "sell" or "buy".
 	Method string   `json:"method,omitempty"` // Its either "limit" or "market".
-	Status string   `json:"status,omitempty"` // Status for closed trade.
+	Status string   `json:"status,omitempty"` // Status for closed trade, its either "cancelled" or "filled".
 	Price  *big.Rat `json:"price,omitempty"`
 	Fee    *big.Rat `json:"fee,omitempty"`
 
