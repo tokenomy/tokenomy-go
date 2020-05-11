@@ -21,10 +21,6 @@ import (
 	"github.com/tokenomy/tokenomy-go"
 )
 
-const (
-	defPrivateWebSocketEndpoint = "wss://api.tokenomy.com/v2/user/ws"
-)
-
 // TradesClosedHandler define a callback when receiving trades closed
 // broadcast from server.
 type TradesClosedHandler func(trade *tokenomy.Trade)
@@ -56,7 +52,7 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 		env = tokenomy.NewEnvironment("", "")
 	}
 	if len(env.Address) == 0 {
-		env.Address = defPrivateWebSocketEndpoint
+		env.Address = DefaultAddress
 	}
 
 	cl = &PrivateWebSocket{
@@ -302,7 +298,7 @@ func (cl *PrivateWebSocket) connect() error {
 	payload := params.Encode()
 	sign := tokenomy.Sign(payload, cl.env.Secret)
 
-	cl.conn.Endpoint = cl.env.Address + "?" + payload
+	cl.conn.Endpoint = cl.env.Address + wsPrivateEndpoint + "?" + payload
 
 	cl.conn.Headers.Set(tokenomy.HeaderNameKey, cl.env.Token)
 	cl.conn.Headers.Set(tokenomy.HeaderNameSign, sign)
