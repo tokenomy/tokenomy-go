@@ -6,6 +6,7 @@ pipeline {
   }
 
   environment {
+    PATH="/usr/local/bin:$PATH"
     VERSION="${env.BUILD_NUMBER}"
     GOOS="linux"
     GOARCH="amd64"
