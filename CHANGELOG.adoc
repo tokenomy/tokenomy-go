@@ -1,5 +1,14 @@
 = CHANGELOG
 
+==  tokenomy-go v0.4.1 (2020.05.12)
+
+===  Enhancements
+
+*  environment: remove setting log flags to 0
+*  v2: use the same default address for private WebSocket
+*  Add constants for list of valid trade's status
+
+
 ==  tokenomy-go v0.4.0 (2020.05.05)
 
 ===  Breaking changes
