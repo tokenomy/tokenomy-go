@@ -12,7 +12,8 @@ LINTER_OPTS := --enable-all \
 	--disable godox \
 	--disable gocognit \
 	--disable wsl \
-	--disable gomnd
+	--disable gomnd \
+	--disable goerr113
 
 all: build lint test
 

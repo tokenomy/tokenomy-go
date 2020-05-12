@@ -141,7 +141,7 @@ const (
 	HeaderNameKey         = "Key"
 )
 
-// List of known HTTP header values
+// List of known HTTP header values.
 const (
 	ContentTypeForm = "application/x-www-form-urlencoded"
 )
