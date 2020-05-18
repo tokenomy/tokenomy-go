@@ -1,5 +1,15 @@
 = CHANGELOG
 
+==  tokenomy-go v0.4.2 (2020.05.18)
+
+===  Enhancements
+
+*  UserNotifications: new type to represent user's notification preferences
+
+The user notification preferences will be returned when calling
+"/v2/user/info".
+
+
 ==  tokenomy-go v0.4.1 (2020.05.12)
 
 ===  Enhancements
