@@ -9,10 +9,11 @@ package tokenomy
 // frozen balances.
 //
 type User struct {
-	ID       int64       `json:"id"`
-	Email    string      `json:"email"`
-	FullName string      `json:"full_name"` // User's first name and last name from profile.
-	Wallets  UserWallets `json:"wallets,omitempty"`
+	ID            int64              `json:"id"`
+	Email         string             `json:"email"`
+	FullName      string             `json:"full_name"`
+	Notifications *UserNotifications `json:"notifications,omitempty"`
+	Wallets       UserWallets        `json:"wallets,omitempty"`
 
 	*UserAssets
 }
