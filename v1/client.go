@@ -58,14 +58,16 @@ func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
 		DialContext: (&net.Dialer{
 			Timeout: tokenomy.DefaultDialTimeout,
 		}).DialContext,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: env.IsInsecure, //nolint: gosec
-		},
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          100,
 		IdleConnTimeout:       90 * time.Second,
 		TLSHandshakeTimeout:   10 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
+	}
+	if env.IsInsecure {
+		transport.TLSClientConfig = &tls.Config{
+			InsecureSkipVerify: env.IsInsecure, //nolint: gosec
+		}
 	}
 
 	cl = &Client{

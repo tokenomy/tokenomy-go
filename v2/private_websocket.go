@@ -58,12 +58,14 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 	cl = &PrivateWebSocket{
 		env: env,
 		conn: &websocket.Client{
-			TLSConfig: &tls.Config{
-				InsecureSkipVerify: env.IsInsecure, //nolint: gosec
-			},
 			Headers: make(http.Header),
 		},
 		requests: make(map[uint64](chan *websocket.Response)),
+	}
+	if env.IsInsecure {
+		cl.conn.TLSConfig = &tls.Config{
+			InsecureSkipVerify: env.IsInsecure, //nolint: gosec
+		}
 	}
 
 	cl.conn.HandleText = cl.handleText
