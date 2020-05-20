@@ -1,5 +1,19 @@
 = CHANGELOG
 
+==  tokenomy-go v0.4.3 (2020.05.20)
+
+===  Bug fixes
+
+*  all: set TLSConfig only if IsInsecure is set
+
+When connecting to HTTP only address, for example when testing, setting
+Environment.IsInsecure to true make the connection timeout due to
+connection is still using TLS.
+
+This changes fix this issue by initializing TLSConfig only if
+Environment.IsInsecure is set.
+
+
 ==  tokenomy-go v0.4.2 (2020.05.18)
 
 ===  Enhancements
