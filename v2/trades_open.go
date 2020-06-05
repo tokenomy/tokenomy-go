@@ -9,9 +9,9 @@ import (
 )
 
 //
-// TradeOpens contains the open asks and bids in the market place.
+// TradesOpen contains the open asks and bids in the market place.
 //
-type TradeOpens struct {
+type TradesOpen struct {
 	Asks []tokenomy.Trade `json:"asks"`
 	Bids []tokenomy.Trade `json:"bids"`
 }

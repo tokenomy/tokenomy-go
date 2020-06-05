@@ -280,7 +280,7 @@ func (cl *PrivateWebSocket) UserTradeInfo(pairName string, id int64) (
 // UserTradesOpen fetch the user open trades based on pair's name.
 //
 func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
-	pairTradeOpens PairTradeOpens, err error,
+	pairTradesOpen PairTradesOpen, err error,
 ) {
 	wsparams := &WebSocketParams{
 		Pair: pairName,
@@ -296,14 +296,14 @@ func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
 		return nil, err
 	}
 
-	pairTradeOpens = make(PairTradeOpens)
+	pairTradesOpen = make(PairTradesOpen)
 
-	err = json.Unmarshal(resb, &pairTradeOpens)
+	err = json.Unmarshal(resb, &pairTradesOpen)
 	if err != nil {
 		return nil, err
 	}
 
-	return pairTradeOpens, nil
+	return pairTradesOpen, nil
 }
 
 func (cl *PrivateWebSocket) connect() error {

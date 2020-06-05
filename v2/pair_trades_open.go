@@ -5,6 +5,6 @@
 package v2
 
 //
-// PairTradeOpens contains mapping of pair and their open trades information.
+// PairTradesOpen contains mapping of pair and their open trades information.
 //
-type PairTradeOpens map[string]TradeOpens
+type PairTradesOpen map[string]TradesOpen

@@ -148,7 +148,7 @@ func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
 // MarketTradesOpen return list of all open trades in the market, specific to
 // pair's name, grouped by ask and bid.
 //
-func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradeOpens, err error) {
+func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err error) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
 	}
@@ -158,7 +158,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradeOpens, err
 		return nil, fmt.Errorf("MarketTradesOpen: %w", err)
 	}
 
-	openTrades = &TradeOpens{}
+	openTrades = &TradesOpen{}
 	res := &Response{
 		Data: openTrades,
 	}
@@ -411,7 +411,7 @@ func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
 // This method require authentication.
 //
 func (cl *Client) UserTradesOpen(pairName string) (
-	pairTradeOpens PairTradeOpens, err error,
+	pairTradesOpen PairTradesOpen, err error,
 ) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
@@ -422,9 +422,9 @@ func (cl *Client) UserTradesOpen(pairName string) (
 		return nil, fmt.Errorf("UserTradesOpen: %w", err)
 	}
 
-	pairTradeOpens = make(PairTradeOpens)
+	pairTradesOpen = make(PairTradesOpen)
 	res := &Response{
-		Data: pairTradeOpens,
+		Data: pairTradesOpen,
 	}
 
 	err = json.Unmarshal(b, res)
@@ -432,7 +432,7 @@ func (cl *Client) UserTradesOpen(pairName string) (
 		return nil, err
 	}
 
-	return pairTradeOpens, nil
+	return pairTradesOpen, nil
 }
 
 //
