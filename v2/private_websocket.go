@@ -6,6 +6,7 @@ package v2
 
 import (
 	"crypto/tls"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -225,8 +226,14 @@ func (cl *PrivateWebSocket) UserInfo() (user *tokenomy.User, err error) {
 		return nil, err
 	}
 
+	resb, err := base64.StdEncoding.DecodeString(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	user = &tokenomy.User{}
-	err = json.Unmarshal([]byte(res.Body), user)
+
+	err = json.Unmarshal(resb, user)
 	if err != nil {
 		return nil, err
 	}
@@ -254,9 +261,14 @@ func (cl *PrivateWebSocket) UserTradeInfo(pairName string, id int64) (
 		return nil, err
 	}
 
+	resb, err := base64.StdEncoding.DecodeString(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	trade = &tokenomy.Trade{}
 
-	err = json.Unmarshal([]byte(res.Body), trade)
+	err = json.Unmarshal(resb, trade)
 	if err != nil {
 		return nil, err
 	}
@@ -282,9 +294,14 @@ func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
 		return nil, err
 	}
 
+	resb, err := base64.StdEncoding.DecodeString(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	pairTradeOpens = make(PairTradeOpens)
 
-	err = json.Unmarshal([]byte(res.Body), &pairTradeOpens)
+	err = json.Unmarshal(resb, &pairTradeOpens)
 	if err != nil {
 		return nil, err
 	}
@@ -331,7 +348,7 @@ func (cl *PrivateWebSocket) send(
 		ID:     uint64(time.Now().UnixNano()),
 		Method: method,
 		Target: target,
-		Body:   string(body),
+		Body:   base64.StdEncoding.EncodeToString(body),
 	}
 
 	payload, err := json.Marshal(req)
@@ -366,9 +383,14 @@ func (cl *PrivateWebSocket) sendTradeRequest(
 		return nil, err
 	}
 
+	resb, err := base64.StdEncoding.DecodeString(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	trade = &tokenomy.TradeResponse{}
 
-	err = json.Unmarshal([]byte(res.Body), trade)
+	err = json.Unmarshal(resb, trade)
 	if err != nil {
 		return nil, err
 	}
@@ -406,8 +428,15 @@ func (cl *PrivateWebSocket) handleText(
 			return nil
 		}
 
+		resb, err := base64.StdEncoding.DecodeString(res.Body)
+		if err != nil {
+			log.Printf("handleText: %s %s",
+				apiUserTradesClosed, err.Error())
+			return nil
+		}
+
 		trade := &tokenomy.Trade{}
-		err = json.Unmarshal([]byte(res.Body), trade)
+		err = json.Unmarshal(resb, trade)
 		if err != nil {
 			log.Printf("handleText: %s %s",
 				apiUserTradesClosed, err.Error())
