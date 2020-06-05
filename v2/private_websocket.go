@@ -282,9 +282,6 @@ func (cl *PrivateWebSocket) UserTradeInfo(pairName string, id int64) (
 func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
 	pairTradeOpens PairTradeOpens, err error,
 ) {
-	if len(pairName) == 0 {
-		return nil, tokenomy.ErrInvalidPair
-	}
 	wsparams := &WebSocketParams{
 		Pair: pairName,
 	}

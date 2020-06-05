@@ -30,6 +30,13 @@ The new request using base64 would be like,
   }
 
 
+===  Enhancements
+
+*  v2: allow empty pair on private WebSocket UserTradesOpen
+
+If pair is empty it will return all open trades in all pairs.
+
+
 ==  tokenomy-go v0.4.4 (2020.06.05)
 
 ===  Bug fixes
