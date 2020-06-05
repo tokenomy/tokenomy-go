@@ -11,6 +11,7 @@ import "github.com/shuLhan/share/lib/math/big"
 //
 type TradePrice struct {
 	ID         int64    `json:"id"`
+	Pair       string   `json:"pair"`
 	TradeTime  int64    `json:"trade_time"`
 	BaseAmount *big.Rat `json:"base_amount"`
 	CoinAmount *big.Rat `json:"coin_amount"`
