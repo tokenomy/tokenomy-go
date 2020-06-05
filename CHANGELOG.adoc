@@ -29,7 +29,6 @@ The new request using base64 would be like,
       "body": "eyJwYWlyIjoidGVuX2J0YyJ9"
   }
 
-
 ===  Enhancements
 
 *  v2: allow empty pair on private WebSocket UserTradesOpen
