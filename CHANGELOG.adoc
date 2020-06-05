@@ -1,5 +1,16 @@
 = CHANGELOG
 
+==  tokenomy-go v0.6.0 (2020.06.05)
+
+===  Breaking changes
+
+*  all: rename TradeOpens to TradesOpen
+*  all: move MarketTradePrices to base package
+    
+While at it, add field Pair to trade prices so client can know the
+pair where trade belong to.
+
+
 ==  tokenomy-go v0.5.0 (2020.06.05)
 
 ===  Breaking changes
