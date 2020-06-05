@@ -937,6 +937,14 @@ func (cl *Client) trade(method, tipe, pair string, amount, price *big.Rat) (
 		return nil, fmt.Errorf("trade: invalid pair name %q", pair)
 	}
 
+	var assetName string
+
+	if tipe == tokenomy.TradeTypeAsk {
+		assetName = assets[0]
+	} else {
+		assetName = assets[1]
+	}
+
 	amountStr := amount.String()
 	priceStr := price.String()
 
@@ -944,11 +952,11 @@ func (cl *Client) trade(method, tipe, pair string, amount, price *big.Rat) (
 		tokenomy.ParamNameOrderMethod: {method},
 		tokenomy.ParamNamePair:        {pair},
 		tokenomy.ParamNameType:        {tipe},
+		assetName:                     {amountStr},
 	}
 
 	if method == tokenomy.TradeMethodLimit {
 		params[tokenomy.ParamNamePrice] = []string{priceStr}
-		params[assets[0]] = []string{amountStr}
 	}
 
 	body, err = cl.callPrivate(MethodTrade, params)
