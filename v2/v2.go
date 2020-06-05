@@ -49,7 +49,7 @@ func generateTradeParams(method, pairName string, amount, price *big.Rat) (
 ) {
 	params = url.Values{}
 	if len(method) == 0 {
-		method = tokenomy.TradeMethodMarket
+		method = tokenomy.TradeMethodLimit
 	} else {
 		method = strings.ToLower(method)
 		switch method {
