@@ -4,17 +4,6 @@
 
 .PHONY: all lint test
 
-LINTER_OPTS := --enable-all \
-	--disable gocyclo \
-	--disable dupl \
-	--disable maligned \
-	--disable funlen \
-	--disable godox \
-	--disable gocognit \
-	--disable wsl \
-	--disable gomnd \
-	--disable goerr113
-
 all: build lint test
 
 build:
@@ -22,7 +11,7 @@ build:
 	go test -run=noop ./...
 
 lint:
-	-golangci-lint run $(LINTER_OPTS) ./...
+	-golangci-lint run ./...
 
 test:
 	go test -race -p=1 ./...

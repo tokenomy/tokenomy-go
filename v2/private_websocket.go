@@ -64,7 +64,7 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 	}
 	if env.IsInsecure {
 		cl.conn.TLSConfig = &tls.Config{
-			InsecureSkipVerify: env.IsInsecure, //nolint: gosec
+			InsecureSkipVerify: env.IsInsecure,
 		}
 	}
 

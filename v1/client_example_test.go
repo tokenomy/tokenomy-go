@@ -54,7 +54,6 @@ func ExampleClient_TradeBid_by_market() {
 	fmt.Printf("Trade bid by market response: %+v\n", tres)
 }
 
-//nolint:dupl
 func ExampleClient_TradeCancelBid() {
 	env := tokenomy.NewEnvironment("", "")
 
@@ -101,7 +100,6 @@ func ExampleClient_TradeCancelBid() {
 	fmt.Printf("Cancel bid response: %+v\n", cancelRes)
 }
 
-//nolint:dupl
 func ExampleClient_TradeCancelAsk() {
 	env := tokenomy.NewEnvironment("", "")
 

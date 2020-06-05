@@ -64,7 +64,7 @@ func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
 	}
 	if env.IsInsecure {
 		transport.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: env.IsInsecure, //nolint: gosec
+			InsecureSkipVerify: env.IsInsecure,
 		}
 	}
 
