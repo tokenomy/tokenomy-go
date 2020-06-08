@@ -59,7 +59,7 @@ func generateTradeParams(method, pairName string, amount, price *big.Rat) (
 		}
 	}
 
-	if amount.IsLessOrEqual(0) {
+	if amount == nil || amount.IsLessOrEqual(0) {
 		return nil, nil, tokenomy.ErrInvalidAmount
 	}
 
@@ -74,7 +74,7 @@ func generateTradeParams(method, pairName string, amount, price *big.Rat) (
 	}
 
 	if method == tokenomy.TradeMethodLimit {
-		if price.IsLessOrEqual(0) {
+		if price == nil || price.IsLessOrEqual(0) {
 			return nil, nil, tokenomy.ErrInvalidPrice
 		}
 		params.Set(tokenomy.ParamNamePrice, price.String())
