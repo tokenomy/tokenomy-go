@@ -1,12 +1,27 @@
 = CHANGELOG
 
+==  tokenomy-go v0.7.0 (2020.06.xx)
+
+===  Breaking changes
+
+*  all: replace TradePrice with Trade
+
+   Basically, TradePrice type and its contents is Trade with less fields.
+   We can use the Trade type and fill only the required fields and it will
+   convert to JSON with the same output.
+
+===  Bug fixes
+
+*  v2: check for nil on amount and price
+
+
 ==  tokenomy-go v0.6.0 (2020.06.05)
 
 ===  Breaking changes
 
 *  all: rename TradeOpens to TradesOpen
 *  all: move MarketTradePrices to base package
-    
+
 While at it, add field Pair to trade prices so client can know the
 pair where trade belong to.
 

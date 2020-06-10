@@ -13,5 +13,5 @@ type TradeResponse struct {
 	Trade *Trade `json:"trade"`
 	User  User   `json:"user"`
 	// Deals contains matched trades, only available on v2.
-	Deals []TradePrice `json:"deals,omitempty"`
+	Deals []Trade `json:"deals,omitempty"`
 }

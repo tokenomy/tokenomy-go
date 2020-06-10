@@ -8,6 +8,6 @@ package tokenomy
 // MarketTradePrices contains list of closed trade grouped by asks and bids.
 //
 type MarketTradePrices struct {
-	Asks []TradePrice `json:"asks"`
-	Bids []TradePrice `json:"bids"`
+	Asks []Trade `json:"asks"`
+	Bids []Trade `json:"bids"`
 }

@@ -29,6 +29,6 @@ type Trade struct {
 	CoinRemain *big.Rat `json:"coin_remain,omitempty"`
 	CoinFilled *big.Rat `json:"coin_filled,omitempty"`
 
-	SubmitTime int64 `json:"submit_time"`
+	SubmitTime int64 `json:"submit_time,omitempty"`
 	FinishTime int64 `json:"finish_time,omitempty"`
 }
