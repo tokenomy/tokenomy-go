@@ -18,7 +18,7 @@ import (
 // List of known asset names.
 // The list is updated rarely, it may contains asset that has been delisted
 // or did not contains new asset in the Tokenomy server.
-// Last update on 2020-03-30.
+// Last update on 2020-06-11.
 //
 const (
 	AssetNameAchain          = "achain"
@@ -38,6 +38,7 @@ const (
 	AssetNameLoopring        = "lrc"
 	AssetNameLoopringNeo     = "lrn"
 	AssetNameLyfe            = "lyfe"
+	AssetNameLyfebep         = "lyfebep"
 	AssetNameMaker           = "mkr"
 	AssetNameMonero          = "xmr"
 	AssetNameNeo             = "neo"
@@ -59,7 +60,7 @@ const (
 // List of valid pairs.
 // The list is updated rarely, so it may contains pairs that has been delisted
 // or did not contains new pairs in the Tokenomy server.
-// Last update on 2020-03-30.
+// Last update on 2020-06-11.
 //
 const (
 	PairBitcoinabcBitcoin      = AssetNameBitcoinabc + "_" + AssetNameBitcoin
@@ -85,7 +86,7 @@ const (
 	PairHaraIdk     = AssetNameHara + "_" + AssetNameIdk
 	PairHonestIdk   = AssetNameHonest + "_" + AssetNameIdk
 	PairInmaxIdk    = AssetNameInmax + "_" + AssetNameIdk
-	PairLyfeIdk     = AssetNameLyfe + "_" + AssetNameIdk
+	PairLyfebepIdk  = AssetNameLyfebep + "_" + AssetNameIdk
 	PairMakerIdk    = AssetNameMaker + "_" + AssetNameIdk
 	PairPlaygameIdk = AssetNamePlaygame + "_" + AssetNameIdk
 	PairSiacashIdk  = AssetNameSiacash + "_" + AssetNameIdk
@@ -95,6 +96,7 @@ const (
 
 	PairBitcoinTether  = AssetNameBitcoin + "_" + AssetNameTether
 	PairEthereumTether = AssetNameEthereum + "_" + AssetNameTether
+	PairIdkTether      = AssetNameIdk + "_" + AssetNameTether
 	PairTokenomyTether = AssetNameTokenomy + "_" + AssetNameTether
 )
 
