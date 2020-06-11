@@ -136,9 +136,8 @@ const (
 // List of knowns HTTP headers.
 //
 const (
-	HeaderNameContentType = "Content-Type"
-	HeaderNameSign        = "Sign"
-	HeaderNameKey         = "Key"
+	HeaderNameSign = "Sign"
+	HeaderNameKey  = "Key"
 )
 
 // List of known HTTP header values.
@@ -158,6 +157,7 @@ const (
 	ParamNameLimit         = "limit"
 	ParamNameMemo          = "memo"
 	ParamNameMethod        = "method"
+	ParamNameNonce         = "nonce"
 	ParamNameOrderID       = "order_id"
 	ParamNameOrderMethod   = "order_method"
 	ParamNameOffset        = "offset"

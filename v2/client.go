@@ -5,18 +5,13 @@
 package v2
 
 import (
-	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net"
-	"net/http"
+	stdhttp "net/http"
 	"net/url"
 	"strconv"
-	"time"
 
-	liberrors "github.com/shuLhan/share/lib/errors"
+	"github.com/shuLhan/share/lib/http"
 	"github.com/shuLhan/share/lib/math/big"
 
 	"github.com/tokenomy/tokenomy-go"
@@ -51,29 +46,9 @@ func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
 		env.Address = DefaultAddress
 	}
 
-	transport := http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout: tokenomy.DefaultDialTimeout,
-		}).DialContext,
-		ForceAttemptHTTP2:     true,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   10 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-	}
-	if env.IsInsecure {
-		transport.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: env.IsInsecure,
-		}
-	}
-
 	cl = &Client{
-		conn: &http.Client{
-			Transport: &transport,
-			Timeout:   tokenomy.DefaultTimeout,
-		},
-		env: env,
+		conn: http.NewClient(env.Address, nil, env.IsInsecure),
+		env:  env,
 	}
 
 	if len(cl.env.Token) > 0 {
@@ -104,7 +79,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doGet(apiMarketDepths, params)
+	_, resBody, err := cl.conn.Get(nil, apiMarketSummaries, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketDepths: %w", err)
 	}
@@ -114,7 +89,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 		Data: depths,
 	}
 
-	err = json.Unmarshal(b, res)
+	err = json.Unmarshal(resBody, res)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +101,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 // MarketInfo return information about all the pair in the platform.
 //
 func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
-	b, err := cl.doGet(apiMarketInfo, url.Values{})
+	_, resBody, err := cl.conn.Get(nil, apiMarketInfo, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketInfo: %w", err)
 	}
@@ -136,7 +111,7 @@ func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
 		Data: marketInfos,
 	}
 
-	err = json.Unmarshal(b, res)
+	err = json.Unmarshal(resBody, res)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +128,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doGet(apiMarketTradesOpen, params)
+	_, resBody, err := cl.conn.Get(nil, apiMarketTradesOpen, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTradesOpen: %w", err)
 	}
@@ -163,7 +138,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 		Data: openTrades,
 	}
 
-	err = json.Unmarshal(b, res)
+	err = json.Unmarshal(resBody, res)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +152,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 	params := url.Values{}
 
-	b, err := cl.doGet(apiMarketPrices, params)
+	_, resBody, err := cl.conn.Get(nil, apiMarketPrices, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketPrices: %w", err)
 	}
@@ -187,7 +162,7 @@ func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 		Data: marketPrices,
 	}
 
-	err = json.Unmarshal(b, res)
+	err = json.Unmarshal(resBody, res)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +178,7 @@ func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doGet(apiMarketTicker, params)
+	_, resBody, err := cl.conn.Get(nil, apiMarketTicker, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTicker: %w", err)
 	}
@@ -213,7 +188,7 @@ func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
 		Data: tick,
 	}
 
-	err = json.Unmarshal(b, res)
+	err = json.Unmarshal(resBody, res)
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +207,7 @@ func (cl *Client) MarketTrades(pairName string) (
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doGet(apiMarketTrades, params)
+	_, resBody, err := cl.conn.Get(nil, apiMarketTrades, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTrades: %w", err)
 	}
@@ -242,7 +217,7 @@ func (cl *Client) MarketTrades(pairName string) (
 		Data: tradePrices,
 	}
 
-	err = json.Unmarshal(b, res)
+	err = json.Unmarshal(resBody, res)
 	if err != nil {
 		return nil, err
 	}
@@ -254,9 +229,7 @@ func (cl *Client) MarketTrades(pairName string) (
 // MarketSummaries return the summaries (ticker) of all pairs.
 //
 func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
-	params := url.Values{}
-
-	b, err := cl.doGet(apiMarketSummaries, params)
+	_, resBody, err := cl.conn.Get(nil, apiMarketSummaries, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketSummaries: %w", err)
 	}
@@ -266,7 +239,7 @@ func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
 		Data: summaries,
 	}
 
-	err = json.Unmarshal(b, res)
+	err = json.Unmarshal(resBody, res)
 	if err != nil {
 		return nil, err
 	}
@@ -282,7 +255,7 @@ func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
 func (cl *Client) UserInfo() (user *tokenomy.User, err error) {
 	params := url.Values{}
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserInfo, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserInfo, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserInfo: %w", err)
 	}
@@ -350,13 +323,13 @@ func (cl *Client) UserTrades(
 		params.Set(tokenomy.ParamNameTimeBefore, strconv.FormatInt(timeBefore, 10))
 	}
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserTrades, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTrades, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTrades: %w", err)
 	}
 
 	res := &Response{
-		Data: trades,
+		Data: &trades,
 	}
 
 	err = json.Unmarshal(b, res)
@@ -384,17 +357,18 @@ func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
 	if offset > 0 {
 		params.Set(tokenomy.ParamNameOffset, strconv.FormatInt(offset, 10))
 	}
-	if limit > 0 && limit <= tokenomy.DefaultLimit {
-		params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
+	if limit <= 0 || limit > tokenomy.DefaultLimit {
+		limit = tokenomy.DefaultLimit
 	}
+	params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserTradesClosed, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTradesClosed, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTradesClosed: %w", err)
 	}
 
 	res := &Response{
-		Data: trades,
+		Data: &trades,
 	}
 
 	err = json.Unmarshal(b, res)
@@ -417,14 +391,14 @@ func (cl *Client) UserTradesOpen(pairName string) (
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserTradesOpen, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTradesOpen, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTradesOpen: %w", err)
 	}
 
 	pairTradesOpen = make(PairTradesOpen)
 	res := &Response{
-		Data: pairTradesOpen,
+		Data: &pairTradesOpen,
 	}
 
 	err = json.Unmarshal(b, res)
@@ -436,12 +410,12 @@ func (cl *Client) UserTradesOpen(pairName string) (
 }
 
 //
-// UserTrade fetch a single user's trade information based on pair's name and
-// trade ID.
+// UserTradeInfo fetch a single user's trade information based on pair's name
+// and trade ID.
 //
 // This method require authentication.
 //
-func (cl *Client) UserTrade(pairName string, id int64) (
+func (cl *Client) UserTradeInfo(pairName string, id int64) (
 	trade *tokenomy.Trade, err error,
 ) {
 	params := url.Values{
@@ -449,7 +423,7 @@ func (cl *Client) UserTrade(pairName string, id int64) (
 		tokenomy.ParamNameTradeID: []string{strconv.FormatInt(id, 10)},
 	}
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserTrade, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTrade, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTrade: %w", err)
 	}
@@ -486,7 +460,7 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 		params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
 	}
 
-	b, err := cl.doSecureRequest(http.MethodGet, apiUserTransactions, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTransactions, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTransactions: %w", err)
 	}
@@ -559,7 +533,7 @@ func (cl *Client) trade(
 		return nil, err
 	}
 
-	b, err := cl.doSecureRequest(http.MethodPost, api, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodPost, api, params)
 	if err != nil {
 		return nil, err
 	}
@@ -633,7 +607,7 @@ func (cl *Client) cancel(api, pairName string, id int64) (
 	}
 	params.Set(tokenomy.ParamNameTradeID, strconv.FormatInt(id, 10))
 
-	b, err := cl.doSecureRequest(http.MethodDelete, api, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodDelete, api, params)
 	if err != nil {
 		return nil, err
 	}
@@ -651,87 +625,42 @@ func (cl *Client) cancel(api, pairName string, id int64) (
 	return trade, nil
 }
 
-//
-// doGet create and send request without authentication on specific
-// "path" with additional "params".
-//
-func (cl *Client) doGet(path string, params url.Values) (b []byte, err error) {
-	req, err := http.NewRequest(http.MethodGet, cl.env.Address, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.URL.Path = path
-	req.URL.RawQuery = params.Encode()
-
-	return cl.send(req)
-}
-
 func (cl *Client) doSecureRequest(httpMethod, path string, params url.Values) (
-	b []byte, err error,
+	resBody []byte, err error,
 ) {
 	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
 
 	payload := params.Encode()
 	sign := tokenomy.Sign(payload, cl.env.Secret)
 
-	req, err := http.NewRequest(httpMethod, cl.env.Address, nil)
-	if err != nil {
-		return nil, err
+	headers := stdhttp.Header{
+		tokenomy.HeaderNameKey:  []string{cl.env.Token},
+		tokenomy.HeaderNameSign: []string{sign},
 	}
 
-	req.URL.Path = path
-	req.Header.Set(tokenomy.HeaderNameKey, cl.env.Token)
-	req.Header.Set(tokenomy.HeaderNameSign, sign)
+	var httpres *stdhttp.Response
 
 	switch httpMethod {
-	case http.MethodGet, http.MethodDelete:
-		req.URL.RawQuery = payload
-	case http.MethodPost, http.MethodPut:
-		req.Body = ioutil.NopCloser(bytes.NewBuffer([]byte(payload)))
-		req.Header.Set(tokenomy.HeaderNameContentType, tokenomy.ContentTypeForm)
-	}
-
-	return cl.send(req)
-}
-
-func (cl *Client) send(req *http.Request) (b []byte, err error) {
-	if cl.env.Debug > 0 {
-		fmt.Printf(">>> send: %+v\n", req)
-	}
-
-	httpres, err := cl.conn.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	defer httpres.Body.Close()
-
-	b, err = ioutil.ReadAll(httpres.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if cl.env.Debug > 0 {
-		fmt.Printf("<<< send: %s\n", b)
+	case stdhttp.MethodGet:
+		httpres, resBody, err = cl.conn.Get(headers, path, params)
+	case stdhttp.MethodDelete:
+		httpres, resBody, err = cl.conn.Delete(headers, path, params)
+	case stdhttp.MethodPost:
+		httpres, resBody, err = cl.conn.PostForm(headers, path, params)
 	}
 
 	if httpres.StatusCode >= 400 {
 		res := &Response{}
 
-		err = json.Unmarshal(b, res)
+		err = json.Unmarshal(resBody, res)
 		if err != nil {
-			return nil, err
+			return resBody, err
 		}
 
-		err = &liberrors.E{
-			Code:    httpres.StatusCode,
-			Message: res.Message,
-			Name:    res.Name,
-		}
+		res.Code = httpres.StatusCode
 
-		return nil, err
+		return nil, &res.E
 	}
 
-	return b, nil
+	return resBody, nil
 }

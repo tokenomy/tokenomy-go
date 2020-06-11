@@ -17,13 +17,13 @@ import (
 
 const (
 	DefaultAddress = "https://exchange.tokenomy.com"
-	defPrivatePath = "/tapi"
 )
 
 //
-// List of public APIs.
+// List of APIs.
 //
 const (
+	apiPrivate          = "/tapi"
 	apiMarketSummaries  = "/api/summaries"
 	apiMarketTicker     = "/api/%s/ticker"
 	apiMarketTrades     = "/api/%s/trades"

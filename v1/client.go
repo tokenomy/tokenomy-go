@@ -7,18 +7,16 @@ package v1
 import (
 	"crypto/hmac"
 	"crypto/sha512"
-	"crypto/tls"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net"
-	"net/http"
+	stdhttp "net/http"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/shuLhan/share/lib/http"
 	"github.com/shuLhan/share/lib/math/big"
 
 	"github.com/tokenomy/tokenomy-go"
@@ -53,29 +51,9 @@ func NewClient(env *tokenomy.Environment) (cl *Client, err error) {
 		env.Address = DefaultAddress
 	}
 
-	transport := http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout: tokenomy.DefaultDialTimeout,
-		}).DialContext,
-		ForceAttemptHTTP2:     true,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   10 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-	}
-	if env.IsInsecure {
-		transport.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: env.IsInsecure,
-		}
-	}
-
 	cl = &Client{
-		conn: &http.Client{
-			Transport: &transport,
-			Timeout:   tokenomy.DefaultTimeout,
-		},
-		env: env,
+		conn: http.NewClient(env.Address, nil, env.IsInsecure),
+		env:  env,
 	}
 
 	if len(cl.env.Token) > 0 {
@@ -92,8 +70,7 @@ func (cl *Client) Authenticate() (err error) {
 	// Test the token and secret by requesting user information.
 	_, err = cl.UserInfo()
 	if err != nil {
-		err = fmt.Errorf("Authenticate: " + err.Error())
-		return err
+		return fmt.Errorf("Authenticate: %w", err)
 	}
 
 	return nil
@@ -301,7 +278,7 @@ func (cl *Client) MarketTicker(pairName string) (pair *Pair, err error) {
 
 	apiPath := fmt.Sprintf(apiMarketTicker, pairName)
 
-	body, err := cl.callPublic(apiPath)
+	_, body, err := cl.conn.PostForm(nil, apiPath, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTicker: " + err.Error())
 	}
@@ -333,7 +310,7 @@ func (cl *Client) MarketTrades(pairName string) (trades []*Trade, err error) {
 
 	apiPath := fmt.Sprintf(apiMarketTrades, pairName)
 
-	body, err := cl.callPublic(apiPath)
+	_, body, err := cl.conn.PostForm(nil, apiPath, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTrades: " + err.Error())
 	}
@@ -364,7 +341,7 @@ func (cl *Client) UserOrdersOpen(pairName string) (
 	}
 
 	params := url.Values{}
-	params.Set("pair", pairName)
+	params.Set(tokenomy.ParamNamePair, pairName)
 
 	resBody, err := cl.callPrivate(MethodUserOrdersOpen, params)
 	if err != nil {
@@ -554,7 +531,7 @@ func (cl *Client) UserTransactions() (transHistory *TransactionHistory, err erro
 // market status.
 //
 func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
-	body, err := cl.callPublic(apiMarketInfo)
+	_, body, err := cl.conn.PostForm(nil, apiMarketInfo, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketInfo: " + err.Error())
 	}
@@ -584,7 +561,7 @@ func (cl *Client) MarketOrdersOpen(pairName string) (orderBook *OrderBook, err e
 
 	apiPath := fmt.Sprintf(apiMarketOrdersOpen, pairName)
 
-	body, err := cl.callPublic(apiPath)
+	_, body, err := cl.conn.PostForm(nil, apiPath, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketOrdersOpen: " + err.Error())
 	}
@@ -658,7 +635,7 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 // This API method can also be used to discover all current traded pairs.
 //
 func (cl *Client) MarketSummaries() (summary *Summary, err error) {
-	body, err := cl.callPublic(apiMarketSummaries)
+	_, body, err := cl.conn.PostForm(nil, apiMarketSummaries, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -777,63 +754,23 @@ func (cl *Client) callPrivate(method string, params url.Values) (
 		return nil, ErrUnauthenticated
 	}
 
-	req, err := cl.newPrivateRequest(method, params)
-	if err != nil {
-		err = fmt.Errorf("callPrivate: " + err.Error())
-		return nil, err
-	}
+	params.Set(tokenomy.ParamNameNonce, timestampAsString())
+	params.Set(tokenomy.ParamNameMethod, method)
 
-	if cl.env.Debug >= 2 {
-		fmt.Printf("<<< callPrivate: request: %+v\n", req)
-	}
+	sign := cl.encodeToString([]byte(params.Encode()))
 
-	res, err := cl.conn.Do(req)
-	if err != nil {
-		err = fmt.Errorf("callPrivate: " + err.Error())
-		return nil, err
-	}
-
-	body, err = ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		err = fmt.Errorf("callPrivate: " + err.Error())
-		return nil, err
-	}
-
-	return body, nil
-}
-
-//
-// callPublic call public API with specific path.
-// On success, it will return HTTP response body.
-// On fail, it will return an empty body and an error.
-//
-func (cl *Client) callPublic(publicPath string) (body []byte, err error) {
-	req := &http.Request{
-		Method: http.MethodPost,
-		Header: http.Header{
-			"Content-Type": []string{
-				"application/x-www-form-urlencoded",
-			},
+	headers := stdhttp.Header{
+		tokenomy.HeaderNameKey: []string{
+			cl.env.Token,
+		},
+		tokenomy.HeaderNameSign: []string{
+			sign,
 		},
 	}
 
-	req.URL, err = url.Parse(cl.env.Address + publicPath)
+	_, body, err = cl.conn.PostForm(headers, apiPrivate, params)
 	if err != nil {
-		return nil, fmt.Errorf("callPublic: " + err.Error())
-	}
-
-	res, err := cl.conn.Do(req)
-	if err != nil {
-		err = fmt.Errorf("callPublic: " + err.Error())
-		return nil, err
-	}
-
-	body, err = ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	if err != nil {
-		err = fmt.Errorf("callPublic: " + err.Error())
-		return nil, err
+		return nil, fmt.Errorf("callPrivate: %w", err)
 	}
 
 	return body, nil
@@ -871,62 +808,6 @@ func (cl *Client) encodeToString(in []byte) string {
 	_, _ = mac.Write(in)
 
 	return hex.EncodeToString(mac.Sum(nil))
-}
-
-//
-// newPrivateRequest create a new HTTP request for private API with specific
-// "method" and custom parameters "params" as form values in POST body.
-//
-func (cl *Client) newPrivateRequest(apiMethod string, params url.Values) (
-	req *http.Request, err error,
-) {
-	q := url.Values{
-		"nonce": []string{
-			timestampAsString(),
-		},
-		"method": []string{
-			apiMethod,
-		},
-	}
-
-	vparams := map[string][]string(params)
-	for k, v := range vparams {
-		if len(v) > 0 {
-			q.Set(k, v[0])
-		}
-	}
-
-	reqBody := q.Encode()
-
-	if cl.env.Debug >= 2 {
-		fmt.Printf("<<< newPrivateRequest: request body: %s\n", reqBody)
-	}
-
-	sign := cl.encodeToString([]byte(reqBody))
-
-	req = &http.Request{
-		Method: http.MethodPost,
-		Header: http.Header{
-			"Content-Type": []string{
-				"application/x-www-form-urlencoded",
-			},
-			"Key": []string{
-				cl.env.Token,
-			},
-			"Sign": []string{
-				sign,
-			},
-		},
-		Body: ioutil.NopCloser(strings.NewReader(reqBody)),
-	}
-
-	req.URL, err = url.Parse(cl.env.Address + defPrivatePath)
-	if err != nil {
-		err = fmt.Errorf("newPrivateRequest: " + err.Error())
-		return nil, err
-	}
-
-	return req, nil
 }
 
 func (cl *Client) trade(method, tipe, pair string, amount, price *big.Rat) (
