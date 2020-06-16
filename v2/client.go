@@ -163,7 +163,7 @@ func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 
 	marketPrices = make(MarketPrices)
 	res := &Response{
-		Data: marketPrices,
+		Data: &marketPrices,
 	}
 
 	err = json.Unmarshal(resBody, res)
