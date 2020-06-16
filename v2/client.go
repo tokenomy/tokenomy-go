@@ -205,7 +205,7 @@ func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
 // pair's name, grouped by ask and bid.
 //
 func (cl *Client) MarketTrades(pairName string) (
-	tradePrices *tokenomy.MarketTradePrices, err error,
+	tradePrices *tokenomy.MarketTrades, err error,
 ) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
@@ -216,7 +216,7 @@ func (cl *Client) MarketTrades(pairName string) (
 		return nil, fmt.Errorf("MarketTrades: %w", err)
 	}
 
-	tradePrices = &tokenomy.MarketTradePrices{}
+	tradePrices = &tokenomy.MarketTrades{}
 	res := &Response{
 		Data: tradePrices,
 	}
