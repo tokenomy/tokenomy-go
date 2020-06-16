@@ -483,6 +483,66 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 }
 
 //
+// UserWithdraw withdraw your assets into another address.
+// This method accept withdrawing all coins except TEN.
+//
+// This method require the "withdraw" permission, otherwise it will return a
+// “No permission” error.
+//
+// You also need to prepare a Callback URL, when setting up the API keys.
+// Callback URL is an URL that our system will call to verify your withdrawal
+// request.
+// Various parameters will be sent to Callback URL so please make
+// sure that this information is in your application.
+// If all the data is correct, the callback URL should return HTTP response
+// 200 with string “ok” (without quotes), and we will process the withdrawn in
+// our system, otherwise the request will be fail.
+//
+func (cl *Client) UserWithdraw(
+	requestID, asset, address, memo string,
+	amount *big.Rat,
+) (withdraw *WithdrawItem, err error) {
+	if len(requestID) == 0 {
+		return nil, tokenomy.ErrInvalidRequestID
+	}
+	if len(asset) == 0 {
+		return nil, tokenomy.ErrInvalidAsset
+	}
+	if len(address) == 0 {
+		return nil, tokenomy.ErrWalletAddress
+	}
+	if amount == nil || amount.IsLessOrEqual(0) {
+		return nil, tokenomy.ErrInvalidAmount
+	}
+
+	params := url.Values{
+		tokenomy.ParamNameRequestID: []string{requestID},
+		tokenomy.ParamNameAsset:     []string{asset},
+		tokenomy.ParamNameAddress:   []string{address},
+		tokenomy.ParamNameMemo:      []string{memo},
+		tokenomy.ParamNameAmount:    []string{amount.String()},
+	}
+
+	b, err := cl.doSecureRequest(stdhttp.MethodPost, apiUserWithdraw,
+		params)
+	if err != nil {
+		return nil, err
+	}
+
+	withdraw = &WithdrawItem{}
+	res := &Response{
+		Data: withdraw,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, fmt.Errorf("UserWithdraw: %w", err)
+	}
+
+	return withdraw, nil
+}
+
+//
 // TradeAsk request to sell the coin on market with specific method, amount,
 // and price.
 // The method parameter define the mode of sell, its either "market" (default)

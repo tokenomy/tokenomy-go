@@ -255,6 +255,12 @@ var (
 		Message: `the traded asset require user account to accept terms of sale`,
 		Name:    "ERR_ASSET_TERMS_REQUIRED",
 	}
+
+	ErrWalletAddress = &errors.E{
+		Code:    http.StatusBadRequest,
+		Message: "invalid or empty wallet address",
+		Name:    "ERR_WALLET_ADDRESS",
+	}
 )
 
 //
