@@ -79,7 +79,11 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	_, resBody, err := cl.conn.Get(nil, apiMarketSummaries, params)
+	if len(pairName) == 0 {
+		return nil, tokenomy.ErrInvalidPair
+	}
+
+	_, resBody, err := cl.conn.Get(nil, apiMarketDepths, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketDepths: %w", err)
 	}
