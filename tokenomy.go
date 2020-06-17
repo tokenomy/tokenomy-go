@@ -8,6 +8,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha512"
 	"encoding/hex"
+	"log"
 	"net/http"
 
 	"github.com/shuLhan/share/lib/errors"
@@ -250,15 +251,15 @@ var (
 )
 
 //
-// Sign sign the payload using secret and return it as encoded
-// hexadecimal characters.
+// Sign the payload using secret and return it as encoded hexadecimal
+// characters.
 //
 func Sign(payload, secret string) string {
 	hasher := hmac.New(sha512.New, []byte(secret))
 
 	_, err := hasher.Write([]byte(payload))
 	if err != nil {
-		return ""
+		log.Fatal("Sign: ", err.Error())
 	}
 
 	signed := hasher.Sum(nil)
