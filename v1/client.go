@@ -5,9 +5,6 @@
 package v1
 
 import (
-	"crypto/hmac"
-	"crypto/sha512"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	stdhttp "net/http"
@@ -757,7 +754,7 @@ func (cl *Client) callPrivate(method string, params url.Values) (
 	params.Set(tokenomy.ParamNameNonce, timestampAsString())
 	params.Set(tokenomy.ParamNameMethod, method)
 
-	sign := cl.encodeToString([]byte(params.Encode()))
+	sign := tokenomy.Sign(params.Encode(), cl.env.Secret)
 
 	headers := stdhttp.Header{
 		tokenomy.HeaderNameKey: []string{
@@ -796,18 +793,6 @@ func (cl *Client) cancelOrder(tipe, pairName string, orderID int64) (
 	}
 
 	return body, nil
-}
-
-//
-// encodeToString return the hex encoding of data hashed with client's API
-// secret key.
-//
-func (cl *Client) encodeToString(in []byte) string {
-	mac := hmac.New(sha512.New, []byte(cl.env.Secret))
-
-	_, _ = mac.Write(in)
-
-	return hex.EncodeToString(mac.Sum(nil))
 }
 
 func (cl *Client) trade(method, tipe, pair string, amount, price *big.Rat) (
