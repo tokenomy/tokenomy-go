@@ -27,9 +27,9 @@ import (
 type TradesClosedHandler func(trade *tokenomy.Trade)
 
 //
-// PrivateWebSocket define the WebSocket client for private usage.
+// WebSocketPrivate define the private WebSocket client for APIv2.
 //
-type PrivateWebSocket struct {
+type WebSocketPrivate struct {
 	// HandleTradesClosed define the callback that will be called
 	// automatically by client when one of the user's trades closed in the
 	// market.
@@ -43,11 +43,11 @@ type PrivateWebSocket struct {
 }
 
 //
-// NewPrivateWebSocket create and initialize new WebSocket connection to
+// NewWebSocketPrivate create and initialize new WebSocket connection to
 // private endpoint.
 //
-func NewPrivateWebSocket(env *tokenomy.Environment) (
-	cl *PrivateWebSocket, err error,
+func NewWebSocketPrivate(env *tokenomy.Environment) (
+	cl *WebSocketPrivate, err error,
 ) {
 	if env == nil {
 		env = tokenomy.NewEnvironment("", "")
@@ -56,7 +56,7 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 		env.Address = DefaultAddress
 	}
 
-	cl = &PrivateWebSocket{
+	cl = &WebSocketPrivate{
 		env: env,
 		conn: &websocket.Client{
 			Headers: make(http.Header),
@@ -74,7 +74,7 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 
 	err = cl.connect()
 	if err != nil {
-		return nil, fmt.Errorf("NewPrivateWebSocket: %w", err)
+		return nil, fmt.Errorf("NewWebSocketPrivate: %w", err)
 	}
 
 	return cl, nil
@@ -83,7 +83,7 @@ func NewPrivateWebSocket(env *tokenomy.Environment) (
 //
 // Close the connection and release all the resource.
 //
-func (cl *PrivateWebSocket) Close() error {
+func (cl *WebSocketPrivate) Close() error {
 	cl.requestsLocker.Lock()
 	for id, ch := range cl.requests {
 		ch <- nil
@@ -111,7 +111,7 @@ func (cl *PrivateWebSocket) Close() error {
 // The price parameter define the number of base that we want to sell the
 // amount of coin.
 //
-func (cl *PrivateWebSocket) TradeAsk(
+func (cl *WebSocketPrivate) TradeAsk(
 	method, pairName string, amount, price *big.Rat,
 ) (
 	trade *tokenomy.TradeResponse, err error,
@@ -140,7 +140,7 @@ func (cl *PrivateWebSocket) TradeAsk(
 // The price parameter define the number of base that we want to buy the
 // amount of coin.
 //
-func (cl *PrivateWebSocket) TradeBid(
+func (cl *WebSocketPrivate) TradeBid(
 	method, pairName string, amount, price *big.Rat,
 ) (
 	trade *tokenomy.TradeResponse, err error,
@@ -156,7 +156,7 @@ func (cl *PrivateWebSocket) TradeBid(
 //
 // TradeCancel cancel the open trade using ID and pair information in Trade.
 //
-func (cl *PrivateWebSocket) TradeCancel(trade *tokenomy.Trade) (
+func (cl *WebSocketPrivate) TradeCancel(trade *tokenomy.Trade) (
 	*tokenomy.Trade, error,
 ) {
 	if trade.ID <= 0 {
@@ -188,7 +188,7 @@ func (cl *PrivateWebSocket) TradeCancel(trade *tokenomy.Trade) (
 //
 // TradeCancelAsk cancel the specific open sell by pair and ID.
 //
-func (cl *PrivateWebSocket) TradeCancelAsk(pairName string, id int64) (
+func (cl *WebSocketPrivate) TradeCancelAsk(pairName string, id int64) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
 	if id <= 0 {
@@ -204,7 +204,7 @@ func (cl *PrivateWebSocket) TradeCancelAsk(pairName string, id int64) (
 //
 // TradeCancelBid cancel the specific open buy by pair and ID.
 //
-func (cl *PrivateWebSocket) TradeCancelBid(pairName string, id int64) (
+func (cl *WebSocketPrivate) TradeCancelBid(pairName string, id int64) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
 	if id <= 0 {
@@ -220,7 +220,7 @@ func (cl *PrivateWebSocket) TradeCancelBid(pairName string, id int64) (
 //
 // UserInfo fetch the user information and balances.
 //
-func (cl *PrivateWebSocket) UserInfo() (user *tokenomy.User, err error) {
+func (cl *WebSocketPrivate) UserInfo() (user *tokenomy.User, err error) {
 	res, err := cl.send(http.MethodGet, apiUserInfo, nil)
 	if err != nil {
 		return nil, err
@@ -245,7 +245,7 @@ func (cl *PrivateWebSocket) UserInfo() (user *tokenomy.User, err error) {
 // UserTradeInfo fetch a single user's trade information based on pair's name
 // and trade ID.
 //
-func (cl *PrivateWebSocket) UserTradeInfo(pairName string, id int64) (
+func (cl *WebSocketPrivate) UserTradeInfo(pairName string, id int64) (
 	trade *tokenomy.Trade, err error,
 ) {
 	if len(pairName) == 0 {
@@ -279,7 +279,7 @@ func (cl *PrivateWebSocket) UserTradeInfo(pairName string, id int64) (
 //
 // UserTradesOpen fetch the user open trades based on pair's name.
 //
-func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
+func (cl *WebSocketPrivate) UserTradesOpen(pairName string) (
 	pairTradesOpen PairTradesOpen, err error,
 ) {
 	wsparams := &WebSocketParams{
@@ -306,7 +306,7 @@ func (cl *PrivateWebSocket) UserTradesOpen(pairName string) (
 	return pairTradesOpen, nil
 }
 
-func (cl *PrivateWebSocket) connect() error {
+func (cl *WebSocketPrivate) connect() error {
 	params := make(url.Values)
 
 	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
@@ -327,7 +327,7 @@ func (cl *PrivateWebSocket) connect() error {
 	return nil
 }
 
-func (cl *PrivateWebSocket) send(
+func (cl *WebSocketPrivate) send(
 	method, target string, wsparams *WebSocketParams,
 ) (
 	res *websocket.Response, err error,
@@ -370,7 +370,7 @@ func (cl *PrivateWebSocket) send(
 	return res, nil
 }
 
-func (cl *PrivateWebSocket) sendTradeRequest(
+func (cl *WebSocketPrivate) sendTradeRequest(
 	method, target string, wsparams *WebSocketParams,
 ) (
 	trade *tokenomy.TradeResponse, err error,
@@ -395,7 +395,7 @@ func (cl *PrivateWebSocket) sendTradeRequest(
 	return trade, nil
 }
 
-func (cl *PrivateWebSocket) handleText(
+func (cl *WebSocketPrivate) handleText(
 	wsclient *websocket.Client, frame *websocket.Frame,
 ) (
 	err error,
@@ -445,7 +445,7 @@ func (cl *PrivateWebSocket) handleText(
 	return nil
 }
 
-func (cl *PrivateWebSocket) handleUnexpectedQuit() {
+func (cl *WebSocketPrivate) handleUnexpectedQuit() {
 	log.Println("handleUnexpectedQuit: disconnected ...")
 	for {
 		err := cl.connect()
@@ -459,7 +459,7 @@ func (cl *PrivateWebSocket) handleUnexpectedQuit() {
 	log.Println("handleUnexpectedQuit: reconnected ...")
 }
 
-func (cl *PrivateWebSocket) requestPush(req *websocket.Request) (
+func (cl *WebSocketPrivate) requestPush(req *websocket.Request) (
 	chres chan *websocket.Response,
 ) {
 	chres = make(chan *websocket.Response, 1)
@@ -469,7 +469,7 @@ func (cl *PrivateWebSocket) requestPush(req *websocket.Request) (
 	return chres
 }
 
-func (cl *PrivateWebSocket) requestPop(id uint64) (
+func (cl *WebSocketPrivate) requestPop(id uint64) (
 	chres chan *websocket.Response,
 ) {
 	cl.requestsLocker.Lock()

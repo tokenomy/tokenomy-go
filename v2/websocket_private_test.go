@@ -11,7 +11,7 @@ import (
 	"github.com/tokenomy/tokenomy-go"
 )
 
-func TestPrivateWebSocket_UserInfo(t *testing.T) {
+func TestWebSocketPrivate_UserInfo(t *testing.T) {
 	if len(os.Getenv(envTestE2E)) == 0 {
 		t.Skipf("%s is not set, skipping ...", envTestE2E)
 	}
@@ -21,7 +21,7 @@ func TestPrivateWebSocket_UserInfo(t *testing.T) {
 		Secret:  os.Getenv(envSecret),
 	}
 
-	cl, err := NewPrivateWebSocket(env)
+	cl, err := NewWebSocketPrivate(env)
 	if err != nil {
 		t.Fatal(err)
 	}
