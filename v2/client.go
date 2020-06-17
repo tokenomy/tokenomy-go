@@ -201,14 +201,20 @@ func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
 }
 
 //
-// MarketTrades return list of all closed trades in the market, specific to
-// pair's name, grouped by ask and bid.
+// MarketTrades return list of all completed trades in the market, specific to
+// pair, grouped by ask and bid.
 //
-func (cl *Client) MarketTrades(pairName string) (
-	tradePrices *tokenomy.MarketTrades, err error,
+func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
+	marketTrades *tokenomy.MarketTrades, err error,
 ) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
+		tokenomy.ParamNameOffset: []string{
+			strconv.FormatInt(offset, 10),
+		},
+		tokenomy.ParamNameLimit: []string{
+			strconv.FormatInt(limit, 10),
+		},
 	}
 
 	_, resBody, err := cl.conn.Get(nil, apiMarketTrades, params)
@@ -216,9 +222,9 @@ func (cl *Client) MarketTrades(pairName string) (
 		return nil, fmt.Errorf("MarketTrades: %w", err)
 	}
 
-	tradePrices = &tokenomy.MarketTrades{}
+	marketTrades = &tokenomy.MarketTrades{}
 	res := &Response{
-		Data: tradePrices,
+		Data: marketTrades,
 	}
 
 	err = json.Unmarshal(resBody, res)
@@ -226,7 +232,7 @@ func (cl *Client) MarketTrades(pairName string) (
 		return nil, err
 	}
 
-	return tradePrices, nil
+	return marketTrades, nil
 }
 
 //
