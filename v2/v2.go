@@ -43,6 +43,8 @@ const (
 	apiTradeCancelBid = "/v2/trade/cancel/bid"
 
 	wsPrivateEndpoint = "/v2/user/ws"
+
+	wsPublicEndpoint = "/v2/ws"
 )
 
 func generateTradeParams(method, pairName string, amount, price *big.Rat) (
