@@ -1,16 +1,51 @@
 = CHANGELOG
 
-==  tokenomy-go v0.7.0 (2020.06.xx)
+==  tokenomy-go v0.7.0 (2020.06.18)
+
+This release add new asset name "lyfebep" and pairs "lyfebep_ikd", "idk_usdt".
 
 ===  Breaking changes
 
-*  all: replace TradePrice with Trade
+*  all: call log.Fatal if there is an error when generating signature.
+   The Sign() function is essential process that must be success.
+   Returning an empty string if there is an error from this function
+   may result in undetected error in client side.
 
+*  v2: rename PrivateWebSocket to WebSocketPrivate
+
+*  all: replace TradePrice with Trade.
    Basically, TradePrice type and its contents is Trade with less fields.
    We can use the Trade type and fill only the required fields and it will
    convert to JSON with the same output.
 
+===  New features
+
+*  v1: use the tokenomy.Sign function to generate signature
+
+*  v2: add parameter "offset" and "limit" to MarketTrades on REST Client
+
+*  v2: implement client for public WebSocket.
+   The public WebSocket contains three APIs that are similar with the
+   REST APIs,
+** MarketDepths: list of market's depths for specific pair
+** MarketTicker: list of ticker information on specific pair
+** MarketTrades: list of all completed trades in the market, specific to pair,
+   grouped by ask and bid
+
+*  v2: add API to withdraw user's asset
+
+===  Enhancements
+
+*  all: call log.Fatal if there is an error when generating signature
+
+*  v2: add parameter "offset" and "limit" to MarketTrades on REST Client
+
 ===  Bug fixes
+
+*  v2: fix wrong API path on MarketDepths
+
+*  Fixes some empty responses due to variables are not passed as pointer to
+   v2.Response.Data.
 
 *  v2: check for nil on amount and price
 
