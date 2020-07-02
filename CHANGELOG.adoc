@@ -1,5 +1,12 @@
 = CHANGELOG
 
+==  tokenomy-go v0.8.0 (2020.07.xx)
+
+===  Enhancements
+
+* trade: remove unused field Fee
+
+
 ==  tokenomy-go v0.7.0 (2020.06.18)
 
 This release add new asset name "lyfebep" and pairs "lyfebep_ikd", "idk_usdt".

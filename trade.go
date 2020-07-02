@@ -17,17 +17,16 @@ type Trade struct {
 	Method string   `json:"method,omitempty"` // Its either "limit" or "market".
 	Status string   `json:"status,omitempty"` // Status for closed trade, its either "cancelled" or "filled".
 	Price  *big.Rat `json:"price,omitempty"`
-	Fee    *big.Rat `json:"fee,omitempty"`
 
 	BaseAsset  string   `json:"base_asset,omitempty"`
 	BaseAmount *big.Rat `json:"base_amount,omitempty"`
-	BaseRemain *big.Rat `json:"base_remain,omitempty"`
 	BaseFilled *big.Rat `json:"base_filled,omitempty"`
+	BaseRemain *big.Rat `json:"base_remain,omitempty"`
 
 	CoinAsset  string   `json:"coin_asset,omitempty"`
 	CoinAmount *big.Rat `json:"coin_amount,omitempty"`
-	CoinRemain *big.Rat `json:"coin_remain,omitempty"`
 	CoinFilled *big.Rat `json:"coin_filled,omitempty"`
+	CoinRemain *big.Rat `json:"coin_remain,omitempty"`
 
 	SubmitTime int64 `json:"submit_time,omitempty"`
 	FinishTime int64 `json:"finish_time,omitempty"`
