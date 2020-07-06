@@ -1,5 +1,5 @@
-github.com/shuLhan/share v0.16.1-0.20200618041330-0667cf8422c3 h1:/n6bMJPkKc8LJBGVmIbaf4GGDTlEG0AWD7DExY9JXm8=
-github.com/shuLhan/share v0.16.1-0.20200618041330-0667cf8422c3/go.mod h1:FqPloTQlDTAmMXxaWft/V5tPmxEHBJeyJMAzVm4/1og=
+github.com/shuLhan/share v0.17.1-0.20200706072119-cb1b7dc8c8a1 h1:md1mb5GvxX29vs+yUCi4FRefVoTz6Lc8+pcRUG7q73E=
+github.com/shuLhan/share v0.17.1-0.20200706072119-cb1b7dc8c8a1/go.mod h1:FqPloTQlDTAmMXxaWft/V5tPmxEHBJeyJMAzVm4/1og=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20200602180216-279210d13fed/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=

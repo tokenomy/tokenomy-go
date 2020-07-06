@@ -22,18 +22,18 @@ import (
 	"github.com/tokenomy/tokenomy-go"
 )
 
-// TradesClosedHandler define a callback when receiving trades closed
+// OrdersClosedHandler define a callback when receiving order closed
 // broadcast from server.
-type TradesClosedHandler func(trade *tokenomy.Trade)
+type OrdersClosedHandler func(trade *tokenomy.Trade)
 
 //
 // WebSocketPrivate define the private WebSocket client for APIv2.
 //
 type WebSocketPrivate struct {
-	// HandleTradesClosed define the callback that will be called
-	// automatically by client when one of the user's trades closed in the
+	// HandleOrdersClosed define the callback that will be called
+	// automatically by client when one of the user's orders closed in the
 	// market.
-	HandleTradesClosed TradesClosedHandler
+	HandleOrdersClosed OrdersClosedHandler
 
 	env  *tokenomy.Environment
 	conn *websocket.Client
@@ -242,10 +242,10 @@ func (cl *WebSocketPrivate) UserInfo() (user *tokenomy.User, err error) {
 }
 
 //
-// UserTradeInfo fetch a single user's trade information based on pair's name
+// UserOrderInfo fetch a single user's trade information based on pair's name
 // and trade ID.
 //
-func (cl *WebSocketPrivate) UserTradeInfo(pairName string, id int64) (
+func (cl *WebSocketPrivate) UserOrderInfo(pairName string, id int64) (
 	trade *tokenomy.Trade, err error,
 ) {
 	if len(pairName) == 0 {
@@ -256,7 +256,7 @@ func (cl *WebSocketPrivate) UserTradeInfo(pairName string, id int64) (
 		TradeID: id,
 	}
 
-	res, err := cl.send(http.MethodGet, apiUserTrade, wsparams)
+	res, err := cl.send(http.MethodGet, apiUserOrderInfo, wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -277,16 +277,16 @@ func (cl *WebSocketPrivate) UserTradeInfo(pairName string, id int64) (
 }
 
 //
-// UserTradesOpen fetch the user open trades based on pair's name.
+// UserOrdersOpen fetch the user open orders based on pair's name.
 //
-func (cl *WebSocketPrivate) UserTradesOpen(pairName string) (
+func (cl *WebSocketPrivate) UserOrdersOpen(pairName string) (
 	pairTradesOpen PairTradesOpen, err error,
 ) {
 	wsparams := &WebSocketParams{
 		Pair: pairName,
 	}
 
-	res, err := cl.send(http.MethodGet, apiUserTradesOpen, wsparams)
+	res, err := cl.send(http.MethodGet, apiUserOrdersOpen, wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -420,15 +420,15 @@ func (cl *WebSocketPrivate) handleText(
 	}
 
 	// Handle broadcast from server.
-	if res.Message == apiUserTradesClosed {
-		if cl.HandleTradesClosed == nil {
+	if res.Message == apiUserOrdersClosed {
+		if cl.HandleOrdersClosed == nil {
 			return nil
 		}
 
 		resb, err := base64.StdEncoding.DecodeString(res.Body)
 		if err != nil {
 			log.Printf("handleText: %s %s",
-				apiUserTradesClosed, err.Error())
+				apiUserOrdersClosed, err.Error())
 			return nil
 		}
 
@@ -436,10 +436,10 @@ func (cl *WebSocketPrivate) handleText(
 		err = json.Unmarshal(resb, trade)
 		if err != nil {
 			log.Printf("handleText: %s %s",
-				apiUserTradesClosed, err.Error())
+				apiUserOrdersClosed, err.Error())
 			return nil
 		}
-		cl.HandleTradesClosed(trade)
+		cl.HandleOrdersClosed(trade)
 	}
 
 	return nil

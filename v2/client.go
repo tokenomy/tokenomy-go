@@ -351,13 +351,13 @@ func (cl *Client) UserTrades(
 }
 
 //
-// UserTradesClosed fetch the user closed trades based on pair's name.
+// UserOrdersClosed fetch the user closed orders based on pair's name.
 // The offset parameter define the beginning of record and limit parameter
 // define the maximum record in result set.
 //
 // This method require authentication.
 //
-func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
+func (cl *Client) UserOrdersClosed(pairName string, offset, limit int64) (
 	trades []tokenomy.Trade, err error,
 ) {
 	params := url.Values{
@@ -372,9 +372,9 @@ func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
 	}
 	params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTradesClosed, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserOrdersClosed, params)
 	if err != nil {
-		return nil, fmt.Errorf("UserTradesClosed: %w", err)
+		return nil, fmt.Errorf("UserOrdersClosed: %w", err)
 	}
 
 	res := &Response{
@@ -390,20 +390,20 @@ func (cl *Client) UserTradesClosed(pairName string, offset, limit int64) (
 }
 
 //
-// UserTradesOpen fetch the user open trades based on pair's name.
+// UserOrdersOpen fetch the user open trades based on pair's name.
 //
 // This method require authentication.
 //
-func (cl *Client) UserTradesOpen(pairName string) (
+func (cl *Client) UserOrdersOpen(pairName string) (
 	pairTradesOpen PairTradesOpen, err error,
 ) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTradesOpen, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserOrdersOpen, params)
 	if err != nil {
-		return nil, fmt.Errorf("UserTradesOpen: %w", err)
+		return nil, fmt.Errorf("UserOrdersOpen: %w", err)
 	}
 
 	pairTradesOpen = make(PairTradesOpen)
@@ -420,12 +420,12 @@ func (cl *Client) UserTradesOpen(pairName string) (
 }
 
 //
-// UserTradeInfo fetch a single user's trade information based on pair's name
+// UserOrderInfo fetch a single user's trade information based on pair's name
 // and trade ID.
 //
 // This method require authentication.
 //
-func (cl *Client) UserTradeInfo(pairName string, id int64) (
+func (cl *Client) UserOrderInfo(pairName string, id int64) (
 	trade *tokenomy.Trade, err error,
 ) {
 	params := url.Values{
@@ -433,9 +433,9 @@ func (cl *Client) UserTradeInfo(pairName string, id int64) (
 		tokenomy.ParamNameTradeID: []string{strconv.FormatInt(id, 10)},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTrade, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserOrderInfo, params)
 	if err != nil {
-		return nil, fmt.Errorf("UserTrade: %w", err)
+		return nil, fmt.Errorf("UserOrderInfo: %w", err)
 	}
 
 	trade = &tokenomy.Trade{}

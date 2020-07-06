@@ -31,9 +31,9 @@ const (
 
 	apiUserInfo         = "/v2/user/info"
 	apiUserTrades       = "/v2/user/trades"
-	apiUserTradesClosed = "/v2/user/trades/closed"
-	apiUserTradesOpen   = "/v2/user/trades/open"
-	apiUserTrade        = "/v2/user/trade"
+	apiUserOrdersClosed = "/v2/user/orders/closed"
+	apiUserOrdersOpen   = "/v2/user/orders/open"
+	apiUserOrderInfo    = "/v2/user/order"
 	apiUserTransactions = "/v2/user/transactions"
 	apiUserWithdraw     = "/v2/user/withdraw"
 
