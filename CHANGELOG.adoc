@@ -4,13 +4,17 @@
 
 ===  Breaking changes
 
-Change the API paths from `trades` into `orders`,
+* v2: refactoring trade response
 
-* `/v2/user/trades/closed` become `/v2/user/orders/closed`
-* `/v2/user/trade` become `/v2/user/order`
-* `/v2/user/trades/open` become `/v2/user/orders/open`
-* Return the coin, base, and price as string with eight digit precision
+The field "trade" become "order" and the field "deals" become "trades".
 
+* v2: change the API paths from `trades` into `orders`,
+
+** `/v2/user/trades/closed` become `/v2/user/orders/closed`
+** `/v2/user/trade` become `/v2/user/order`
+** `/v2/user/trades/open` become `/v2/user/orders/open`
+
+* v2: return the coin, base, and price as string with eight digit precision
 
 ===  Enhancements
 

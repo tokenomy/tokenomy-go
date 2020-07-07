@@ -107,7 +107,7 @@ func (cl *Client) TradeBid(method, pairName string, amount, price *big.Rat) (
 	}
 
 	tres = &tokenomy.TradeResponse{
-		Trade: &tokenomy.Trade{
+		Order: &tokenomy.Trade{
 			ID:    intRes.OrderID,
 			Pair:  pairName,
 			Price: price,
@@ -161,7 +161,7 @@ func (cl *Client) TradeCancelAsk(pairName string, orderID int64) (
 	}
 
 	tres = &tokenomy.TradeResponse{
-		Trade: &tokenomy.Trade{
+		Order: &tokenomy.Trade{
 			ID:     cancelRes.Return.OrderID,
 			Pair:   pairName,
 			Type:   cancelRes.Return.Type,
@@ -211,7 +211,7 @@ func (cl *Client) TradeCancelBid(pairName string, orderID int64) (
 	}
 
 	tres = &tokenomy.TradeResponse{
-		Trade: &tokenomy.Trade{
+		Order: &tokenomy.Trade{
 			ID:     cancelRes.Return.OrderID,
 			Pair:   pairName,
 			Type:   cancelRes.Return.Type,
@@ -607,7 +607,7 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 	}
 
 	tres = &tokenomy.TradeResponse{
-		Trade: &tokenomy.Trade{
+		Order: &tokenomy.Trade{
 			ID:    intRes.OrderID,
 			Pair:  pairName,
 			Price: price,

@@ -618,7 +618,7 @@ func (cl *Client) trade(
 		return nil, err
 	}
 
-	trade.Trade.Pair = pairName
+	trade.Order.Pair = pairName
 
 	return trade, nil
 }
@@ -644,7 +644,7 @@ func (cl *Client) TradeCancel(trade *tokenomy.Trade) (*tokenomy.Trade, error) {
 		return nil, err
 	}
 
-	return tradeResponse.Trade, nil
+	return tradeResponse.Order, nil
 }
 
 //

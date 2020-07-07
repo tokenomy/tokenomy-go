@@ -182,7 +182,7 @@ func (cl *WebSocketPrivate) TradeCancel(trade *tokenomy.Trade) (
 	if err != nil {
 		return nil, err
 	}
-	return tradeResponse.Trade, nil
+	return tradeResponse.Order, nil
 }
 
 //
