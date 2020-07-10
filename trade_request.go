@@ -28,10 +28,10 @@ type TradeRequest struct {
 	Amount *big.Rat `json:"amount"`
 	Price  *big.Rat `json:"price"`
 
-	// PostOnly parameter only applicable if Method is "limit".
+	// IsPostOnly parameter only applicable if Method is "limit".
 	// If its true, the order will be success if only if no matching
 	// trades happened, otherwise it will return an error.
-	PostOnly bool `json:"post_only"`
+	IsPostOnly bool `json:"post_only"`
 }
 
 //
@@ -71,7 +71,7 @@ func (treq *TradeRequest) Pack() (
 		params.Set(ParamNamePrice, treq.Price.String())
 	}
 
-	params.Set(ParamNamePostOnly, fmt.Sprintf("%t", treq.PostOnly))
+	params.Set(ParamNamePostOnly, fmt.Sprintf("%t", treq.IsPostOnly))
 
 	return params, wsparams, nil
 }
