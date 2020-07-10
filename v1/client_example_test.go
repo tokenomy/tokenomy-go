@@ -22,11 +22,14 @@ func ExampleClient_TradeBid() {
 		log.Fatal(err)
 	}
 
-	amount := big.NewRat(100)
-	price := big.NewRat(0.00005)
+	treq := &tokenomy.TradeRequest{
+		Method: tokenomy.TradeMethodLimit,
+		Pair:   tokenomy.PairTokenomyBitcoin,
+		Amount: big.NewRat(100),
+		Price:  big.NewRat(0.00005),
+	}
 
-	tres, err := cl.TradeBid(tokenomy.TradeMethodLimit,
-		tokenomy.PairTokenomyBitcoin, amount, price)
+	tres, err := cl.TradeBid(treq)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,11 +45,14 @@ func ExampleClient_TradeBid_by_market() {
 		log.Fatal(err)
 	}
 
-	amount := big.NewRat(0.0001)
-	price := big.NewRat(0)
+	treq := &tokenomy.TradeRequest{
+		Method: tokenomy.TradeMethodMarket,
+		Pair:   tokenomy.PairTokenomyBitcoin,
+		Amount: big.NewRat(0.0001),
+		Price:  big.NewRat(0),
+	}
 
-	tres, err := cl.TradeBid(tokenomy.TradeMethodMarket,
-		tokenomy.PairTokenomyBitcoin, amount, price)
+	tres, err := cl.TradeBid(treq)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -325,11 +331,14 @@ func ExampleClient_TradeAsk_by_market() {
 		log.Fatal(err)
 	}
 
-	amount := big.NewRat(20)
-	price := big.NewRat(0)
+	treq := &tokenomy.TradeRequest{
+		Method: tokenomy.TradeMethodMarket,
+		Pair:   tokenomy.PairTokenomyBitcoin,
+		Amount: big.NewRat(20),
+		Price:  big.NewRat(0),
+	}
 
-	tres, err := cl.TradeAsk(tokenomy.TradeMethodMarket,
-		tokenomy.PairTokenomyBitcoin, amount, price)
+	tres, err := cl.TradeAsk(treq)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -564,10 +564,13 @@ func (cl *Client) UserWithdraw(
 // The price parameter define the number of base that we want to sell the
 // amount of coin.
 //
-func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
-	trade *tokenomy.TradeResponse, err error,
+func (cl *Client) TradeAsk(treq *tokenomy.TradeRequest) (
+	tres *tokenomy.TradeResponse, err error,
 ) {
-	return cl.trade(apiTradeAsk, method, pairName, amount, price)
+	if treq == nil {
+		return nil, nil
+	}
+	return cl.trade(apiTradeAsk, treq)
 }
 
 //
@@ -576,7 +579,7 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 // The method parameter define the mode of buy, its either "market" or
 // "limit", default to "market" if its empty.
 // If the method is "market", it will only accept amount parameter, otherwise
-// if the methid is "limit", the amount and price must not be zero.
+// if the method is "limit", the amount and price must not be zero.
 //
 // The pairName parameter define the coin and base assets to be traded, in the
 // following format: "coin_base".
@@ -586,19 +589,19 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 // The price parameter define the number of base that we want to buy the
 // amount of coin.
 //
-func (cl *Client) TradeBid(method, pairName string, amount, price *big.Rat) (
-	trade *tokenomy.TradeResponse, err error,
+func (cl *Client) TradeBid(treq *tokenomy.TradeRequest) (
+	tres *tokenomy.TradeResponse, err error,
 ) {
-	return cl.trade(apiTradeBid, method, pairName, amount, price)
+	if treq == nil {
+		return nil, nil
+	}
+	return cl.trade(apiTradeBid, treq)
 }
 
-func (cl *Client) trade(
-	api, method, pairName string,
-	amount, price *big.Rat,
-) (
+func (cl *Client) trade(api string, treq *tokenomy.TradeRequest) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
-	params, _, err := generateTradeParams(method, pairName, amount, price)
+	params, _, err := treq.Pack()
 	if err != nil {
 		return nil, err
 	}
@@ -617,8 +620,6 @@ func (cl *Client) trade(
 	if err != nil {
 		return nil, err
 	}
-
-	trade.Order.Pair = pairName
 
 	return trade, nil
 }

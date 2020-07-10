@@ -92,8 +92,10 @@ func (cl *WebSocketPublic) MarketDepths(pair string) (
 		return nil, tokenomy.ErrInvalidPair
 	}
 
-	wsparams := &WebSocketParams{
-		Pair: pair,
+	wsparams := &tokenomy.WebSocketParams{
+		TradeRequest: tokenomy.TradeRequest{
+			Pair: pair,
+		},
 	}
 
 	res, err := cl.send(http.MethodGet, apiMarketDepths, wsparams)
@@ -124,8 +126,10 @@ func (cl *WebSocketPublic) MarketTicker(pair string) (tick *Tick, err error) {
 		return nil, tokenomy.ErrInvalidPair
 	}
 
-	wsparams := &WebSocketParams{
-		Pair: pair,
+	wsparams := &tokenomy.WebSocketParams{
+		TradeRequest: tokenomy.TradeRequest{
+			Pair: pair,
+		},
 	}
 
 	res, err := cl.send(http.MethodGet, apiMarketTicker, wsparams)
@@ -159,8 +163,10 @@ func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
 		return nil, tokenomy.ErrInvalidPair
 	}
 
-	wsparams := &WebSocketParams{
-		Pair:   pair,
+	wsparams := &tokenomy.WebSocketParams{
+		TradeRequest: tokenomy.TradeRequest{
+			Pair: pair,
+		},
 		Offset: offset,
 		Limit:  limit,
 	}
@@ -260,7 +266,7 @@ func (cl *WebSocketPublic) requestPop(id uint64) (
 }
 
 func (cl *WebSocketPublic) send(
-	method, target string, wsparams *WebSocketParams,
+	method, target string, wsparams *tokenomy.WebSocketParams,
 ) (
 	res *websocket.Response, err error,
 ) {

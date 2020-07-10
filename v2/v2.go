@@ -9,13 +9,8 @@
 package v2
 
 import (
-	"net/url"
 	"strconv"
-	"strings"
 	"time"
-
-	"github.com/shuLhan/share/lib/math/big"
-	"github.com/tokenomy/tokenomy-go"
 )
 
 const (
@@ -46,46 +41,6 @@ const (
 
 	wsPublicEndpoint = "/v2/ws"
 )
-
-func generateTradeParams(method, pairName string, amount, price *big.Rat) (
-	params url.Values, wsparams *WebSocketParams, err error,
-) {
-	params = url.Values{}
-	if len(method) == 0 {
-		method = tokenomy.TradeMethodLimit
-	} else {
-		method = strings.ToLower(method)
-		switch method {
-		case tokenomy.TradeMethodMarket, tokenomy.TradeMethodLimit:
-		default:
-			return nil, nil, tokenomy.ErrInvalidTradeMethod
-		}
-	}
-
-	if amount == nil || amount.IsLessOrEqual(0) {
-		return nil, nil, tokenomy.ErrInvalidAmount
-	}
-
-	params.Set(tokenomy.ParamNameTradeMethod, method)
-	params.Set(tokenomy.ParamNamePair, pairName)
-	params.Set(tokenomy.ParamNameAmount, amount.String())
-
-	wsparams = &WebSocketParams{
-		Method: method,
-		Pair:   pairName,
-		Amount: amount,
-	}
-
-	if method == tokenomy.TradeMethodLimit {
-		if price == nil || price.IsLessOrEqual(0) {
-			return nil, nil, tokenomy.ErrInvalidPrice
-		}
-		params.Set(tokenomy.ParamNamePrice, price.String())
-		wsparams.Price = price
-	}
-
-	return params, wsparams, nil
-}
 
 func timestamp() int64 {
 	return time.Now().Unix()

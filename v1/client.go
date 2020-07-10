@@ -83,10 +83,15 @@ func (cl *Client) Authenticate() (err error) {
 //
 // This method require authentication.
 //
-func (cl *Client) TradeBid(method, pairName string, amount, price *big.Rat) (
+func (cl *Client) TradeBid(treq *tokenomy.TradeRequest) (
 	tres *tokenomy.TradeResponse, err error,
 ) {
-	resBody, err := cl.trade(method, tokenomy.TradeTypeBid, pairName, amount, price)
+	if treq == nil {
+		return nil, nil
+	}
+	treq.Type = tokenomy.TradeTypeBid
+
+	resBody, err := cl.trade(treq)
 	if err != nil {
 		return nil, err
 	}
@@ -109,13 +114,13 @@ func (cl *Client) TradeBid(method, pairName string, amount, price *big.Rat) (
 	tres = &tokenomy.TradeResponse{
 		Order: &tokenomy.Trade{
 			ID:    intRes.OrderID,
-			Pair:  pairName,
-			Price: price,
+			Pair:  treq.Pair,
+			Price: treq.Price,
 
-			CoinAmount: amount,
+			CoinAmount: treq.Amount,
 			CoinFilled: big.NewRat(intRes.Receive),
 
-			BaseAmount: big.MulRat(amount, price),
+			BaseAmount: big.MulRat(treq.Amount, treq.Price),
 			BaseRemain: big.NewRat(intRes.Remain),
 			BaseFilled: big.NewRat(intRes.Filled),
 		},
@@ -583,10 +588,16 @@ func (cl *Client) MarketOrdersOpen(pairName string) (orderBook *OrderBook, err e
 //
 // This method require authentication.
 //
-func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
+func (cl *Client) TradeAsk(treq *tokenomy.TradeRequest) (
 	tres *tokenomy.TradeResponse, err error,
 ) {
-	resBody, err := cl.trade(method, tokenomy.TradeTypeAsk, pairName, amount, price)
+	if treq == nil {
+		return nil, nil
+	}
+
+	treq.Type = tokenomy.TradeTypeAsk
+
+	resBody, err := cl.trade(treq)
 	if err != nil {
 		return nil, err
 	}
@@ -609,10 +620,10 @@ func (cl *Client) TradeAsk(method, pairName string, amount, price *big.Rat) (
 	tres = &tokenomy.TradeResponse{
 		Order: &tokenomy.Trade{
 			ID:    intRes.OrderID,
-			Pair:  pairName,
-			Price: price,
+			Pair:  treq.Pair,
+			Price: treq.Price,
 
-			CoinAmount: amount,
+			CoinAmount: treq.Amount,
 			CoinRemain: big.NewRat(intRes.Remain),
 			CoinFilled: big.NewRat(intRes.Filled),
 
@@ -795,33 +806,33 @@ func (cl *Client) cancelOrder(tipe, pairName string, orderID int64) (
 	return body, nil
 }
 
-func (cl *Client) trade(method, tipe, pair string, amount, price *big.Rat) (
+func (cl *Client) trade(treq *tokenomy.TradeRequest) (
 	body []byte, err error,
 ) {
-	assets := strings.Split(pair, "_")
+	assets := strings.Split(treq.Pair, "_")
 	if len(assets) != 2 {
-		return nil, fmt.Errorf("trade: invalid pair name %q", pair)
+		return nil, fmt.Errorf("trade: invalid pair name %q", treq.Pair)
 	}
 
 	var assetName string
 
-	if tipe == tokenomy.TradeTypeAsk {
+	if treq.Type == tokenomy.TradeTypeAsk {
 		assetName = assets[0]
 	} else {
 		assetName = assets[1]
 	}
 
-	amountStr := amount.String()
-	priceStr := price.String()
+	amountStr := treq.Amount.String()
+	priceStr := treq.Price.String()
 
 	params := map[string][]string{
-		tokenomy.ParamNameOrderMethod: {method},
-		tokenomy.ParamNamePair:        {pair},
-		tokenomy.ParamNameType:        {tipe},
+		tokenomy.ParamNameOrderMethod: {treq.Method},
+		tokenomy.ParamNamePair:        {treq.Pair},
+		tokenomy.ParamNameType:        {treq.Type},
 		assetName:                     {amountStr},
 	}
 
-	if method == tokenomy.TradeMethodLimit {
+	if treq.Method == tokenomy.TradeMethodLimit {
 		params[tokenomy.ParamNamePrice] = []string{priceStr}
 	}
 

@@ -159,6 +159,7 @@ const (
 	ParamNameOrderMethod   = "order_method"
 	ParamNameOffset        = "offset"
 	ParamNamePair          = "pair"
+	ParamNamePostOnly      = "post_only"
 	ParamNamePrice         = "price"
 	ParamNameReceiveWindow = "recv_window"
 	ParamNameRequestID     = "request_id"
