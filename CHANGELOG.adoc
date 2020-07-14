@@ -1,8 +1,21 @@
 = CHANGELOG
 
-==  tokenomy-go v0.8.0 (2020.07.xx)
+==  tokenomy-go v0.8.0 (2020.07.14)
 
 ===  Breaking changes
+
+* all: refactoring trade method parameters
+
+Previously the method for trade ask/bid have four parameters:
+method, pair, amount, and price.
+
+Since we want to add another parameter to trade, its not good design
+to have more than three parameters in method or function, so we change
+the parameters into single struct: TradeRequest.
+
+This changes affected v1 and v2, especially v2 we need to move
+WebSocketParams to root package because its required by
+TradeRequest.Pack().
 
 * v2: refactoring trade response
 
