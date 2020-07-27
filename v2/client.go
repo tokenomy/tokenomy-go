@@ -649,6 +649,30 @@ func (cl *Client) TradeCancel(trade *tokenomy.Trade) (*tokenomy.Trade, error) {
 }
 
 //
+// TradeCancelAll cancel all user's open ask and bid orders.
+//
+func (cl *Client) TradeCancelAll() (canceled []tokenomy.Trade, err error) {
+	b, err := cl.doSecureRequest(
+		stdhttp.MethodDelete,
+		"/v2/trade/cancel/all",
+		nil)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &Response{
+		Data: &canceled,
+	}
+
+	err = json.Unmarshal(b, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return canceled, nil
+}
+
+//
 // TradeCancelAsk cancel the specific open sell by pair and ID.
 //
 func (cl *Client) TradeCancelAsk(pairName string, id int64) (
@@ -699,6 +723,10 @@ func (cl *Client) cancel(api, pairName string, id int64) (
 func (cl *Client) doSecureRequest(httpMethod, path string, params url.Values) (
 	resBody []byte, err error,
 ) {
+	if params == nil {
+		params = url.Values{}
+	}
+
 	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
 
 	payload := params.Encode()
