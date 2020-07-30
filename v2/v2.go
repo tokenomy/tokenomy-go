@@ -34,6 +34,7 @@ const (
 
 	apiTradeAsk       = "/v2/trade/ask"
 	apiTradeBid       = "/v2/trade/bid"
+	apiTradeCancelAll = "/v2/trade/cancel/all"
 	apiTradeCancelAsk = "/v2/trade/cancel/ask"
 	apiTradeCancelBid = "/v2/trade/cancel/bid"
 

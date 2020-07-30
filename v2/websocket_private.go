@@ -187,6 +187,30 @@ func (cl *WebSocketPrivate) TradeCancel(trade *tokenomy.Trade) (
 }
 
 //
+// TradeCancelAll cancel all user's open ask and bid orders.
+//
+func (cl *WebSocketPrivate) TradeCancelAll() (
+	trades []tokenomy.Trade, err error,
+) {
+	wsres, err := cl.send(http.MethodDelete, apiTradeCancelAll, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resbody, err := base64.StdEncoding.DecodeString(wsres.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(resbody, &trades)
+	if err != nil {
+		return nil, err
+	}
+
+	return trades, nil
+}
+
+//
 // TradeCancelAsk cancel the specific open sell by pair and ID.
 //
 func (cl *WebSocketPrivate) TradeCancelAsk(pairName string, id int64) (
