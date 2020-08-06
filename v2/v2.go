@@ -40,7 +40,8 @@ const (
 
 	wsPrivateEndpoint = "/v2/user/ws"
 
-	wsPublicEndpoint = "/v2/ws"
+	wsPublicEndpoint     = "/v2/ws"
+	wsPublicSubscription = "/v2/ws/subscription"
 )
 
 func timestamp() int64 {

@@ -13,6 +13,7 @@ import (
 //
 type WebSocketParams struct {
 	TradeRequest
+	PublicSubscription
 
 	Address    string `json:"address,omitempty"`
 	Asset      string `json:"asset,omitempty"`

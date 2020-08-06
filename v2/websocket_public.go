@@ -19,6 +19,10 @@ import (
 	"github.com/tokenomy/tokenomy-go"
 )
 
+const (
+	maxQueue int = 256
+)
+
 //
 // WebSocketPublic define a WebSocket client for public APIs.
 //
@@ -28,6 +32,8 @@ type WebSocketPublic struct {
 
 	requestsLocker sync.Mutex
 	requests       map[uint64]chan *websocket.Response
+	subs           *tokenomy.PublicSubscription
+	topicTrades    chan tokenomy.Trade
 }
 
 //
@@ -48,7 +54,9 @@ func NewWebSocketPublic(env *tokenomy.Environment) (
 		conn: &websocket.Client{
 			Headers: make(http.Header),
 		},
-		requests: make(map[uint64](chan *websocket.Response)),
+		requests:    make(map[uint64](chan *websocket.Response)),
+		subs:        &tokenomy.PublicSubscription{},
+		topicTrades: make(chan tokenomy.Trade, maxQueue),
 	}
 	if env.IsInsecure {
 		cl.conn.TLSConfig = &tls.Config{
@@ -98,19 +106,14 @@ func (cl *WebSocketPublic) MarketDepths(pair string) (
 		},
 	}
 
-	res, err := cl.send(http.MethodGet, apiMarketDepths, wsparams)
-	if err != nil {
-		return nil, err
-	}
-
-	resBody, err := base64.StdEncoding.DecodeString(res.Body)
+	_, resbody, err := cl.send(http.MethodGet, apiMarketDepths, wsparams)
 	if err != nil {
 		return nil, err
 	}
 
 	depths = &MarketDepths{}
 
-	err = json.Unmarshal(resBody, depths)
+	err = json.Unmarshal(resbody, depths)
 	if err != nil {
 		return nil, err
 	}
@@ -132,19 +135,14 @@ func (cl *WebSocketPublic) MarketTicker(pair string) (tick *Tick, err error) {
 		},
 	}
 
-	res, err := cl.send(http.MethodGet, apiMarketTicker, wsparams)
-	if err != nil {
-		return nil, err
-	}
-
-	resBody, err := base64.StdEncoding.DecodeString(res.Body)
+	_, resbody, err := cl.send(http.MethodGet, apiMarketTicker, wsparams)
 	if err != nil {
 		return nil, err
 	}
 
 	tick = &Tick{}
 
-	err = json.Unmarshal(resBody, tick)
+	err = json.Unmarshal(resbody, tick)
 	if err != nil {
 		return nil, err
 	}
@@ -171,24 +169,107 @@ func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
 		Limit:  limit,
 	}
 
-	res, err := cl.send(http.MethodGet, apiMarketTrades, wsparams)
-	if err != nil {
-		return nil, err
-	}
-
-	resBody, err := base64.StdEncoding.DecodeString(res.Body)
+	_, resbody, err := cl.send(http.MethodGet, apiMarketTrades, wsparams)
 	if err != nil {
 		return nil, err
 	}
 
 	marketTrades = &tokenomy.MarketTrades{}
 
-	err = json.Unmarshal(resBody, marketTrades)
+	err = json.Unmarshal(resbody, marketTrades)
 	if err != nil {
 		return nil, err
 	}
 
 	return marketTrades, nil
+}
+
+//
+// Subscription return the list and status of subscription.
+//
+func (cl *WebSocketPublic) Subscription() (*tokenomy.PublicSubscription, error) {
+	_, resbody, err := cl.send(http.MethodGet, wsPublicSubscription, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(resbody, cl.subs)
+	if err != nil {
+		return nil, err
+	}
+
+	return cl.subs, nil
+}
+
+//
+// SubscribeTrades subscribe to changes on public order books.
+//
+// Multiple calls on this method will not clear previously subscribed pairs.
+// For example, if the first call subscribed to pair "X" and the second call
+// subscribed to pair "Y", the client has two subscription: "X" and "Y", NOT
+// "Y".
+//
+// The returned channel will return new open order or closed/cancelled order
+// broadcasted by server.
+//
+func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
+	tradeq <-chan tokenomy.Trade, err error,
+) {
+	if len(pairNames) == 0 {
+		return cl.topicTrades, nil
+	}
+
+	wsparams := &tokenomy.WebSocketParams{
+		PublicSubscription: tokenomy.PublicSubscription{
+			Trades: pairNames,
+		},
+	}
+
+	_, resbody, err := cl.send(http.MethodPost, wsPublicSubscription, wsparams)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(resbody, cl.subs)
+	if err != nil {
+		return nil, err
+	}
+
+	return cl.topicTrades, nil
+}
+
+//
+// UnsubscribeTrades stop receiving broadcast notification on topic "trades"
+// on specific pairs.
+// If parameter is empty, it will unsubscribe all registered pairs.
+//
+// On success it will return the latest subscription.
+//
+func (cl *WebSocketPublic) UnsubscribeTrades(pairNames []string) (
+	*tokenomy.PublicSubscription, error,
+) {
+	if len(pairNames) == 0 {
+		pairNames = cl.subs.Trades
+	}
+
+	wsparams := &tokenomy.WebSocketParams{
+		PublicSubscription: tokenomy.PublicSubscription{
+			Trades: pairNames,
+		},
+	}
+
+	_, resbody, err := cl.send(http.MethodDelete, wsPublicSubscription,
+		wsparams)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(resbody, cl.subs)
+	if err != nil {
+		return nil, err
+	}
+
+	return cl.subs, nil
 }
 
 func (cl *WebSocketPublic) connect() (err error) {
@@ -218,7 +299,26 @@ func (cl *WebSocketPublic) handleText(
 		return nil
 	}
 
-	if res.ID != 0 {
+	if res.ID == 0 {
+		resbody, err := base64.StdEncoding.DecodeString(res.Body)
+		if err != nil {
+			log.Printf("handleText: broadcast %s: %s",
+				res.Message, err)
+			return nil
+		}
+
+		switch res.Message {
+		case apiMarketTrades, apiMarketTradesOpen:
+			trade := tokenomy.Trade{}
+			err = json.Unmarshal(resbody, &trade)
+			if err != nil {
+				log.Printf("handleText: broadcast %s: %s",
+					res.Message, err)
+				return nil
+			}
+			cl.topicTrades <- trade
+		}
+	} else {
 		chres := cl.requestPop(res.ID)
 		if chres != nil {
 			chres <- res
@@ -268,14 +368,14 @@ func (cl *WebSocketPublic) requestPop(id uint64) (
 func (cl *WebSocketPublic) send(
 	method, target string, wsparams *tokenomy.WebSocketParams,
 ) (
-	res *websocket.Response, err error,
+	res *websocket.Response, resbody []byte, err error,
 ) {
 	var body []byte
 
 	if wsparams != nil {
 		body, err = wsparams.Pack()
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 	}
 
@@ -288,7 +388,7 @@ func (cl *WebSocketPublic) send(
 
 	payload, err := json.Marshal(req)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	chres := cl.requestPush(req)
@@ -296,14 +396,19 @@ func (cl *WebSocketPublic) send(
 	err = cl.conn.SendText(payload)
 	if err != nil {
 		cl.requestPop(req.ID)
-		return nil, err
+		return nil, nil, err
 	}
 
 	res = <-chres
 
 	if res.Code != http.StatusOK {
-		return nil, errors.New(res.Message)
+		return nil, nil, errors.New(res.Message)
 	}
 
-	return res, nil
+	resbody, err = base64.StdEncoding.DecodeString(res.Body)
+	if err != nil {
+		return res, resbody, err
+	}
+
+	return res, resbody, nil
 }
