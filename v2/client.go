@@ -352,25 +352,25 @@ func (cl *Client) UserTrades(
 
 //
 // UserOrdersClosed fetch the user closed orders based on pair's name.
-// The offset parameter define the beginning of record and limit parameter
-// define the maximum record in result set.
+// The timeAfter and timeBefore parameters define a filter of records by range
+// of submit time.
+// If timeAfter is zero, its default to current timestamp.
+// If timeBefore is zero, its default to timeAfter - 1 hour.
 //
 // This method require authentication.
 //
-func (cl *Client) UserOrdersClosed(pairName string, offset, limit int64) (
+func (cl *Client) UserOrdersClosed(pairName string, timeAfter, timeBefore int64) (
 	trades []tokenomy.Trade, err error,
 ) {
 	params := url.Values{
 		tokenomy.ParamNamePair: []string{pairName},
+		tokenomy.ParamNameTimeAfter: []string{
+			strconv.FormatInt(timeAfter, 10),
+		},
+		tokenomy.ParamNameTimeBefore: []string{
+			strconv.FormatInt(timeBefore, 10),
+		},
 	}
-
-	if offset > 0 {
-		params.Set(tokenomy.ParamNameOffset, strconv.FormatInt(offset, 10))
-	}
-	if limit <= 0 || limit > tokenomy.DefaultLimit {
-		limit = tokenomy.DefaultLimit
-	}
-	params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
 
 	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserOrdersClosed, params)
 	if err != nil {
