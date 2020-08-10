@@ -41,10 +41,15 @@ const (
 	APITradeCancelAsk = "/v2/trade/cancel/ask"
 	APITradeCancelBid = "/v2/trade/cancel/bid"
 
-	WSPrivateEndpoint = "/v2/user/ws"
+	WSPrivate = "/v2/user/ws"
 
-	WSPublicEndpoint     = "/v2/ws"
+	WSPublic             = "/v2/ws"
 	WSPublicSubscription = "/v2/ws/subscription"
+)
+
+// List of WebSocket broadcast messages.
+const (
+	WSMessageUserOrdersTaken = "/v2/user/orders/taken"
 )
 
 func timestamp() int64 {

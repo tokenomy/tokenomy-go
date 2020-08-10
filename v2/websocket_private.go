@@ -347,7 +347,7 @@ func (cl *WebSocketPrivate) connect() error {
 	payload := params.Encode()
 	sign := tokenomy.Sign(payload, cl.env.Secret)
 
-	cl.conn.Endpoint = cl.env.Address + WSPrivateEndpoint + "?" + payload
+	cl.conn.Endpoint = cl.env.Address + WSPrivate + "?" + payload
 
 	cl.conn.Headers.Set(tokenomy.HeaderNameKey, cl.env.Token)
 	cl.conn.Headers.Set(tokenomy.HeaderNameSign, sign)

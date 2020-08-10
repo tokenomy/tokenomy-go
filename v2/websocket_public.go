@@ -282,7 +282,7 @@ func (cl *WebSocketPublic) UnsubscribeTrades(pairNames []string) (
 }
 
 func (cl *WebSocketPublic) connect() (err error) {
-	cl.conn.Endpoint = cl.env.Address + WSPublicEndpoint
+	cl.conn.Endpoint = cl.env.Address + WSPublic
 
 	err = cl.conn.Connect()
 	if err != nil {
