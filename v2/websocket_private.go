@@ -121,7 +121,7 @@ func (cl *WebSocketPrivate) TradeAsk(treq *tokenomy.TradeRequest) (
 		return nil, err
 	}
 
-	return cl.sendTradeRequest(http.MethodPost, apiTradeAsk, wsparams)
+	return cl.sendTradeRequest(http.MethodPost, APITradeAsk, wsparams)
 }
 
 //
@@ -151,7 +151,7 @@ func (cl *WebSocketPrivate) TradeBid(treq *tokenomy.TradeRequest) (
 		return nil, err
 	}
 
-	return cl.sendTradeRequest(http.MethodPost, apiTradeBid, wsparams)
+	return cl.sendTradeRequest(http.MethodPost, APITradeBid, wsparams)
 }
 
 //
@@ -192,7 +192,7 @@ func (cl *WebSocketPrivate) TradeCancel(trade *tokenomy.Trade) (
 func (cl *WebSocketPrivate) TradeCancelAll() (
 	trades []tokenomy.Trade, err error,
 ) {
-	wsres, err := cl.send(http.MethodDelete, apiTradeCancelAll, nil)
+	wsres, err := cl.send(http.MethodDelete, APITradeCancelAll, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +225,7 @@ func (cl *WebSocketPrivate) TradeCancelAsk(pairName string, id int64) (
 		},
 		TradeID: id,
 	}
-	return cl.sendTradeRequest(http.MethodDelete, apiTradeCancelAsk, wsparams)
+	return cl.sendTradeRequest(http.MethodDelete, APITradeCancelAsk, wsparams)
 }
 
 //
@@ -243,14 +243,14 @@ func (cl *WebSocketPrivate) TradeCancelBid(pairName string, id int64) (
 		},
 		TradeID: id,
 	}
-	return cl.sendTradeRequest(http.MethodDelete, apiTradeCancelBid, wsparams)
+	return cl.sendTradeRequest(http.MethodDelete, APITradeCancelBid, wsparams)
 }
 
 //
 // UserInfo fetch the user information and balances.
 //
 func (cl *WebSocketPrivate) UserInfo() (user *tokenomy.User, err error) {
-	res, err := cl.send(http.MethodGet, apiUserInfo, nil)
+	res, err := cl.send(http.MethodGet, APIUserInfo, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -287,7 +287,7 @@ func (cl *WebSocketPrivate) UserOrderInfo(pairName string, id int64) (
 		TradeID: id,
 	}
 
-	res, err := cl.send(http.MethodGet, apiUserOrderInfo, wsparams)
+	res, err := cl.send(http.MethodGet, APIUserOrderInfo, wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -319,7 +319,7 @@ func (cl *WebSocketPrivate) UserOrdersOpen(pairName string) (
 		},
 	}
 
-	res, err := cl.send(http.MethodGet, apiUserOrdersOpen, wsparams)
+	res, err := cl.send(http.MethodGet, APIUserOrdersOpen, wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -347,7 +347,7 @@ func (cl *WebSocketPrivate) connect() error {
 	payload := params.Encode()
 	sign := tokenomy.Sign(payload, cl.env.Secret)
 
-	cl.conn.Endpoint = cl.env.Address + wsPrivateEndpoint + "?" + payload
+	cl.conn.Endpoint = cl.env.Address + WSPrivateEndpoint + "?" + payload
 
 	cl.conn.Headers.Set(tokenomy.HeaderNameKey, cl.env.Token)
 	cl.conn.Headers.Set(tokenomy.HeaderNameSign, sign)
@@ -453,7 +453,7 @@ func (cl *WebSocketPrivate) handleText(
 	}
 
 	// Handle broadcast from server.
-	if res.Message == apiUserOrdersClosed {
+	if res.Message == APIUserOrdersClosed {
 		if cl.HandleOrdersClosed == nil {
 			return nil
 		}
@@ -461,7 +461,7 @@ func (cl *WebSocketPrivate) handleText(
 		resb, err := base64.StdEncoding.DecodeString(res.Body)
 		if err != nil {
 			log.Printf("handleText: %s %s",
-				apiUserOrdersClosed, err.Error())
+				APIUserOrdersClosed, err.Error())
 			return nil
 		}
 
@@ -469,7 +469,7 @@ func (cl *WebSocketPrivate) handleText(
 		err = json.Unmarshal(resb, trade)
 		if err != nil {
 			log.Printf("handleText: %s %s",
-				apiUserOrdersClosed, err.Error())
+				APIUserOrdersClosed, err.Error())
 			return nil
 		}
 		cl.HandleOrdersClosed(trade)

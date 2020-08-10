@@ -83,7 +83,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 		return nil, tokenomy.ErrInvalidPair
 	}
 
-	_, resBody, err := cl.conn.Get(nil, apiMarketDepths, params)
+	_, resBody, err := cl.conn.Get(nil, APIMarketDepths, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketDepths: %w", err)
 	}
@@ -105,7 +105,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 // MarketInfo return information about all the pair in the platform.
 //
 func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
-	_, resBody, err := cl.conn.Get(nil, apiMarketInfo, nil)
+	_, resBody, err := cl.conn.Get(nil, APIMarketInfo, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketInfo: %w", err)
 	}
@@ -132,7 +132,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	_, resBody, err := cl.conn.Get(nil, apiMarketTradesOpen, params)
+	_, resBody, err := cl.conn.Get(nil, APIMarketTradesOpen, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTradesOpen: %w", err)
 	}
@@ -156,7 +156,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 	params := url.Values{}
 
-	_, resBody, err := cl.conn.Get(nil, apiMarketPrices, params)
+	_, resBody, err := cl.conn.Get(nil, APIMarketPrices, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketPrices: %w", err)
 	}
@@ -182,7 +182,7 @@ func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	_, resBody, err := cl.conn.Get(nil, apiMarketTicker, params)
+	_, resBody, err := cl.conn.Get(nil, APIMarketTicker, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTicker: %w", err)
 	}
@@ -217,7 +217,7 @@ func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
 		},
 	}
 
-	_, resBody, err := cl.conn.Get(nil, apiMarketTrades, params)
+	_, resBody, err := cl.conn.Get(nil, APIMarketTrades, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTrades: %w", err)
 	}
@@ -239,7 +239,7 @@ func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
 // MarketSummaries return the summaries (ticker) of all pairs.
 //
 func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
-	_, resBody, err := cl.conn.Get(nil, apiMarketSummaries, nil)
+	_, resBody, err := cl.conn.Get(nil, APIMarketSummaries, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketSummaries: %w", err)
 	}
@@ -265,7 +265,7 @@ func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
 func (cl *Client) UserInfo() (user *tokenomy.User, err error) {
 	params := url.Values{}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserInfo, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserInfo, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserInfo: %w", err)
 	}
@@ -333,7 +333,7 @@ func (cl *Client) UserTrades(
 		params.Set(tokenomy.ParamNameTimeBefore, strconv.FormatInt(timeBefore, 10))
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTrades, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserTrades, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTrades: %w", err)
 	}
@@ -372,7 +372,7 @@ func (cl *Client) UserOrdersClosed(pairName string, timeAfter, timeBefore int64)
 		},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserOrdersClosed, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserOrdersClosed, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserOrdersClosed: %w", err)
 	}
@@ -401,7 +401,7 @@ func (cl *Client) UserOrdersOpen(pairName string) (
 		tokenomy.ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserOrdersOpen, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserOrdersOpen, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserOrdersOpen: %w", err)
 	}
@@ -433,7 +433,7 @@ func (cl *Client) UserOrderInfo(pairName string, id int64) (
 		tokenomy.ParamNameTradeID: []string{strconv.FormatInt(id, 10)},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserOrderInfo, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserOrderInfo, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserOrderInfo: %w", err)
 	}
@@ -470,7 +470,7 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 		params.Set(tokenomy.ParamNameLimit, strconv.FormatInt(limit, 10))
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, apiUserTransactions, params)
+	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserTransactions, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTransactions: %w", err)
 	}
@@ -529,7 +529,7 @@ func (cl *Client) UserWithdraw(
 		tokenomy.ParamNameAmount:    []string{amount.String()},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodPost, apiUserWithdraw,
+	b, err := cl.doSecureRequest(stdhttp.MethodPost, APIUserWithdraw,
 		params)
 	if err != nil {
 		return nil, err
@@ -570,7 +570,7 @@ func (cl *Client) TradeAsk(treq *tokenomy.TradeRequest) (
 	if treq == nil {
 		return nil, nil
 	}
-	return cl.trade(apiTradeAsk, treq)
+	return cl.trade(APITradeAsk, treq)
 }
 
 //
@@ -595,7 +595,7 @@ func (cl *Client) TradeBid(treq *tokenomy.TradeRequest) (
 	if treq == nil {
 		return nil, nil
 	}
-	return cl.trade(apiTradeBid, treq)
+	return cl.trade(APITradeBid, treq)
 }
 
 func (cl *Client) trade(api string, treq *tokenomy.TradeRequest) (
@@ -678,7 +678,7 @@ func (cl *Client) TradeCancelAll() (canceled []tokenomy.Trade, err error) {
 func (cl *Client) TradeCancelAsk(pairName string, id int64) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
-	return cl.cancel(apiTradeCancelAsk, pairName, id)
+	return cl.cancel(APITradeCancelAsk, pairName, id)
 }
 
 //
@@ -687,7 +687,7 @@ func (cl *Client) TradeCancelAsk(pairName string, id int64) (
 func (cl *Client) TradeCancelBid(pairName string, id int64) (
 	trade *tokenomy.TradeResponse, err error,
 ) {
-	return cl.cancel(apiTradeCancelBid, pairName, id)
+	return cl.cancel(APITradeCancelBid, pairName, id)
 }
 
 func (cl *Client) cancel(api, pairName string, id int64) (

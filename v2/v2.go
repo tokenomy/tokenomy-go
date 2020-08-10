@@ -15,33 +15,36 @@ import (
 
 const (
 	DefaultAddress = "https://api.tokenomy.com"
+)
 
-	apiMarketDepths     = "/v2/market/depths"
-	apiMarketInfo       = "/v2/market/info"
-	apiMarketTradesOpen = "/v2/market/trades/open"
-	apiMarketPrices     = "/v2/market/prices"
-	apiMarketTicker     = "/v2/market/ticker"
-	apiMarketTrades     = "/v2/market/trades"
-	apiMarketSummaries  = "/v2/market/summaries"
+// List of API endpoints.
+const (
+	APIMarketDepths     = "/v2/market/depths"
+	APIMarketInfo       = "/v2/market/info"
+	APIMarketTradesOpen = "/v2/market/trades/open"
+	APIMarketPrices     = "/v2/market/prices"
+	APIMarketTicker     = "/v2/market/ticker"
+	APIMarketTrades     = "/v2/market/trades"
+	APIMarketSummaries  = "/v2/market/summaries"
 
-	apiUserInfo         = "/v2/user/info"
-	apiUserTrades       = "/v2/user/trades"
-	apiUserOrdersClosed = "/v2/user/orders/closed"
-	apiUserOrdersOpen   = "/v2/user/orders/open"
-	apiUserOrderInfo    = "/v2/user/order"
-	apiUserTransactions = "/v2/user/transactions"
-	apiUserWithdraw     = "/v2/user/withdraw"
+	APIUserInfo         = "/v2/user/info"
+	APIUserTrades       = "/v2/user/trades"
+	APIUserOrdersClosed = "/v2/user/orders/closed"
+	APIUserOrdersOpen   = "/v2/user/orders/open"
+	APIUserOrderInfo    = "/v2/user/order"
+	APIUserTransactions = "/v2/user/transactions"
+	APIUserWithdraw     = "/v2/user/withdraw"
 
-	apiTradeAsk       = "/v2/trade/ask"
-	apiTradeBid       = "/v2/trade/bid"
-	apiTradeCancelAll = "/v2/trade/cancel/all"
-	apiTradeCancelAsk = "/v2/trade/cancel/ask"
-	apiTradeCancelBid = "/v2/trade/cancel/bid"
+	APITradeAsk       = "/v2/trade/ask"
+	APITradeBid       = "/v2/trade/bid"
+	APITradeCancelAll = "/v2/trade/cancel/all"
+	APITradeCancelAsk = "/v2/trade/cancel/ask"
+	APITradeCancelBid = "/v2/trade/cancel/bid"
 
-	wsPrivateEndpoint = "/v2/user/ws"
+	WSPrivateEndpoint = "/v2/user/ws"
 
-	wsPublicEndpoint     = "/v2/ws"
-	wsPublicSubscription = "/v2/ws/subscription"
+	WSPublicEndpoint     = "/v2/ws"
+	WSPublicSubscription = "/v2/ws/subscription"
 )
 
 func timestamp() int64 {

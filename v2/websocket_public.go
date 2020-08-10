@@ -114,7 +114,7 @@ func (cl *WebSocketPublic) MarketDepths(pair string) (
 		},
 	}
 
-	_, resbody, err := cl.send(http.MethodGet, apiMarketDepths, wsparams)
+	_, resbody, err := cl.send(http.MethodGet, APIMarketDepths, wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func (cl *WebSocketPublic) MarketTicker(pair string) (tick *Tick, err error) {
 		},
 	}
 
-	_, resbody, err := cl.send(http.MethodGet, apiMarketTicker, wsparams)
+	_, resbody, err := cl.send(http.MethodGet, APIMarketTicker, wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +177,7 @@ func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
 		Limit:  limit,
 	}
 
-	_, resbody, err := cl.send(http.MethodGet, apiMarketTrades, wsparams)
+	_, resbody, err := cl.send(http.MethodGet, APIMarketTrades, wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -196,7 +196,7 @@ func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
 // Subscription return the list and status of subscription.
 //
 func (cl *WebSocketPublic) Subscription() (*tokenomy.PublicSubscription, error) {
-	_, resbody, err := cl.send(http.MethodGet, wsPublicSubscription, nil)
+	_, resbody, err := cl.send(http.MethodGet, WSPublicSubscription, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +217,7 @@ func (cl *WebSocketPublic) Subscription() (*tokenomy.PublicSubscription, error) 
 // subscribed to pair "Y", the client has two subscription: "X" and "Y", NOT
 // "Y".
 //
-// The order books (open, closed, and/or cancelled) can be retrived from
+// The order books (open, closed, and/or cancelled) can be retrieved from
 // NotifTrades field.
 //
 func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
@@ -233,7 +233,8 @@ func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
 		},
 	}
 
-	_, resbody, err := cl.send(http.MethodPost, wsPublicSubscription, wsparams)
+	_, resbody, err := cl.send(http.MethodPost, WSPublicSubscription,
+		wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -266,7 +267,7 @@ func (cl *WebSocketPublic) UnsubscribeTrades(pairNames []string) (
 		},
 	}
 
-	_, resbody, err := cl.send(http.MethodDelete, wsPublicSubscription,
+	_, resbody, err := cl.send(http.MethodDelete, WSPublicSubscription,
 		wsparams)
 	if err != nil {
 		return nil, err
@@ -281,7 +282,7 @@ func (cl *WebSocketPublic) UnsubscribeTrades(pairNames []string) (
 }
 
 func (cl *WebSocketPublic) connect() (err error) {
-	cl.conn.Endpoint = cl.env.Address + wsPublicEndpoint
+	cl.conn.Endpoint = cl.env.Address + WSPublicEndpoint
 
 	err = cl.conn.Connect()
 	if err != nil {
@@ -316,7 +317,7 @@ func (cl *WebSocketPublic) handleText(
 		}
 
 		switch res.Message {
-		case apiMarketTrades, apiMarketTradesOpen:
+		case APIMarketTrades, APIMarketTradesOpen:
 			trade := tokenomy.Trade{}
 			err = json.Unmarshal(resbody, &trade)
 			if err != nil {
