@@ -34,6 +34,11 @@ type WebSocketPublic struct {
 	requests       map[uint64]chan *websocket.Response
 	subs           *tokenomy.PublicSubscription
 	topicTrades    chan tokenomy.Trade
+
+	// NotifTrades is a channel that will receive public order books
+	// (open, closed, cancelled order) after calling SubscribeTrades
+	// method.
+	NotifTrades <-chan tokenomy.Trade
 }
 
 //
@@ -58,6 +63,9 @@ func NewWebSocketPublic(env *tokenomy.Environment) (
 		subs:        &tokenomy.PublicSubscription{},
 		topicTrades: make(chan tokenomy.Trade, maxQueue),
 	}
+
+	cl.NotifTrades = cl.topicTrades
+
 	if env.IsInsecure {
 		cl.conn.TLSConfig = &tls.Config{
 			InsecureSkipVerify: env.IsInsecure,
@@ -209,14 +217,14 @@ func (cl *WebSocketPublic) Subscription() (*tokenomy.PublicSubscription, error) 
 // subscribed to pair "Y", the client has two subscription: "X" and "Y", NOT
 // "Y".
 //
-// The returned channel will return new open order or closed/cancelled order
-// broadcasted by server.
+// The order books (open, closed, and/or cancelled) can be retrived from
+// NotifTrades field.
 //
 func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
-	tradeq <-chan tokenomy.Trade, err error,
+	*tokenomy.PublicSubscription, error,
 ) {
 	if len(pairNames) == 0 {
-		return cl.topicTrades, nil
+		return cl.subs, nil
 	}
 
 	wsparams := &tokenomy.WebSocketParams{
@@ -235,7 +243,7 @@ func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
 		return nil, err
 	}
 
-	return cl.topicTrades, nil
+	return cl.subs, nil
 }
 
 //
