@@ -654,7 +654,7 @@ func (cl *Client) TradeCancel(trade *tokenomy.Trade) (*tokenomy.Trade, error) {
 func (cl *Client) TradeCancelAll() (canceled []tokenomy.Trade, err error) {
 	b, err := cl.doSecureRequest(
 		stdhttp.MethodDelete,
-		"/v2/trade/cancel/all",
+		APITradeCancelAll,
 		nil)
 	if err != nil {
 		return nil, err
