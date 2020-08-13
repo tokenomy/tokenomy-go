@@ -1,5 +1,18 @@
 = CHANGELOG
 
+==  tokenomy-go v0.9.0 (2020.08.13)
+
+===  Breaking changes
+
+* v2/client: change UserOrdersClosed parameter to time range
+
+===  New features
+
+* v2: add methods to manage subscription on public WebSocket
+
+* v2: add method to cancel all open orders using REST and WebSocket
+
+
 ==  tokenomy-go v0.8.0 (2020.07.14)
 
 ===  Breaking changes
