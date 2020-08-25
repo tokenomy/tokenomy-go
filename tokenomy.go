@@ -18,13 +18,13 @@ import (
 // List of known asset names.
 // The list is updated rarely, it may contains asset that has been delisted
 // or did not contains new asset in the Tokenomy server.
-// Last update on 2020-06-11.
 //
 const (
 	AssetNameAchain          = "achain"
 	AssetNameBinancechain    = "bnb"
 	AssetNameBitcoin         = "btc"
 	AssetNameBitcoinabc      = "bchabc"
+	AssetNameCompound        = "comp"
 	AssetNameCybermiles      = "cmt"
 	AssetNameDai             = "dai"
 	AssetNameEos             = "eos"
@@ -37,7 +37,6 @@ const (
 	AssetNameLitecoin        = "ltc"
 	AssetNameLoopring        = "lrc"
 	AssetNameLoopringNeo     = "lrn"
-	AssetNameLyfe            = "lyfe"
 	AssetNameLyfebep         = "lyfebep"
 	AssetNameMaker           = "mkr"
 	AssetNameMonero          = "xmr"
@@ -49,6 +48,7 @@ const (
 	AssetNameStellar         = "xlm"
 	AssetNameSwipe           = "swipe"
 	AssetNameTether          = "usdt"
+	AssetNameTezos           = "xtz"
 	AssetNameTokenomy        = "ten"
 	AssetNameTron            = "trx"
 	AssetNameVexanium        = "vex"
@@ -60,7 +60,6 @@ const (
 // List of valid pairs.
 // The list is updated rarely, so it may contains pairs that has been delisted
 // or did not contains new pairs in the Tokenomy server.
-// Last update on 2020-06-11.
 //
 const (
 	PairBitcoinabcBitcoin      = AssetNameBitcoinabc + "_" + AssetNameBitcoin
@@ -82,6 +81,7 @@ const (
 	PairZcashBitcoin           = AssetNameZcash + "_" + AssetNameBitcoin
 
 	PairBitcoinIdk  = AssetNameBitcoin + "_" + AssetNameIdk
+	PairCompoundIdk = AssetNameCompound + "_" + AssetNameIdk
 	PairDaiIdk      = AssetNameDai + "_" + AssetNameIdk
 	PairHaraIdk     = AssetNameHara + "_" + AssetNameIdk
 	PairHonestIdk   = AssetNameHonest + "_" + AssetNameIdk
@@ -92,6 +92,7 @@ const (
 	PairSiacashIdk  = AssetNameSiacash + "_" + AssetNameIdk
 	PairSwipeIdk    = AssetNameSwipe + "_" + AssetNameIdk
 	PairTetherIdk   = AssetNameTether + "_" + AssetNameIdk
+	PairTezosIdk    = AssetNameTezos + "_" + AssetNameIdk
 	PairTokenomyIdk = AssetNameTokenomy + "_" + AssetNameIdk
 
 	PairBitcoinTether  = AssetNameBitcoin + "_" + AssetNameTether
