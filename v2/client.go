@@ -747,6 +747,9 @@ func (cl *Client) doSecureRequest(httpMethod, path string, params url.Values) (
 	case stdhttp.MethodPost:
 		httpres, resBody, err = cl.conn.PostForm(headers, path, params)
 	}
+	if err != nil {
+		return nil, err
+	}
 
 	if httpres.StatusCode >= 400 {
 		res := &Response{}
