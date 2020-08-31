@@ -1,5 +1,18 @@
 = CHANGELOG
 
+==  tokenomy-go v0.9.1 (2020.08.31)
+
+===  Enhancements
+
+* all: update list of available assets and pairs
+
+Add pair Compound/IDK (comp_idk) and Tezos/IDK (xtz_idk), and remove
+the asset Lyfe(erc20).
+
+* v2/response: add methods to pack and unpack to/from gob format
+* v2/client: check for error on doSecureRequest
+
+
 ==  tokenomy-go v0.9.0 (2020.08.13)
 
 ===  Breaking changes
