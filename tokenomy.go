@@ -143,6 +143,7 @@ const (
 	EnvNameDebug   = "TOKENOMY_DEBUG"
 	EnvNameToken   = "TOKENOMY_TOKEN"
 	EnvNameSecret  = "TOKENOMY_SECRET"
+	EnvNameTestE2E = "TOKENOMY_TEST_E2E"
 )
 
 //

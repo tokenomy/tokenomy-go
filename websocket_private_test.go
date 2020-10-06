@@ -10,13 +10,13 @@ import (
 )
 
 func TestWebSocketPrivate_UserInfo(t *testing.T) {
-	if len(os.Getenv(envTestE2E)) == 0 {
-		t.Skipf("%s is not set, skipping ...", envTestE2E)
+	if len(os.Getenv(EnvNameTestE2E)) == 0 {
+		t.Skipf("%s is not set, skipping ...", EnvNameTestE2E)
 	}
 	env := &Environment{
-		Address: os.Getenv(envAddress),
-		Token:   os.Getenv(envToken),
-		Secret:  os.Getenv(envSecret),
+		Address: os.Getenv(EnvNameAddress),
+		Token:   os.Getenv(EnvNameToken),
+		Secret:  os.Getenv(EnvNameSecret),
 	}
 
 	cl, err := NewWebSocketPrivate(env)
