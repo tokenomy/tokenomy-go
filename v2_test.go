@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-package v2
+package tokenomy
 
 const (
 	envAddress = "TOKENOMY_ADDRESS"

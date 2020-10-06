@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-package v2
+package tokenomy
 
 import (
 	"crypto/tls"
@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"github.com/shuLhan/share/lib/websocket"
-	"github.com/tokenomy/tokenomy-go"
 )
 
 const (
@@ -27,28 +26,28 @@ const (
 // WebSocketPublic define a WebSocket client for public APIs.
 //
 type WebSocketPublic struct {
-	env  *tokenomy.Environment
+	env  *Environment
 	conn *websocket.Client
 
 	requestsLocker sync.Mutex
 	requests       map[uint64]chan *websocket.Response
-	subs           *tokenomy.PublicSubscription
-	topicTrades    chan tokenomy.Trade
+	subs           *PublicSubscription
+	topicTrades    chan Trade
 
 	// NotifTrades is a channel that will receive public order books
 	// (open, closed, cancelled order) after calling SubscribeTrades
 	// method.
-	NotifTrades <-chan tokenomy.Trade
+	NotifTrades <-chan Trade
 }
 
 //
 // NewWebSocketPublic create new WebSocket connection to public APIs.
 //
-func NewWebSocketPublic(env *tokenomy.Environment) (
+func NewWebSocketPublic(env *Environment) (
 	cl *WebSocketPublic, err error,
 ) {
 	if env == nil {
-		env = tokenomy.NewEnvironment("", "")
+		env = NewEnvironment("", "")
 	}
 	if len(env.Address) == 0 {
 		env.Address = DefaultAddress
@@ -60,8 +59,8 @@ func NewWebSocketPublic(env *tokenomy.Environment) (
 			Headers: make(http.Header),
 		},
 		requests:    make(map[uint64](chan *websocket.Response)),
-		subs:        &tokenomy.PublicSubscription{},
-		topicTrades: make(chan tokenomy.Trade, maxQueue),
+		subs:        &PublicSubscription{},
+		topicTrades: make(chan Trade, maxQueue),
 	}
 
 	cl.NotifTrades = cl.topicTrades
@@ -105,11 +104,11 @@ func (cl *WebSocketPublic) MarketDepths(pair string) (
 	depths *MarketDepths, err error,
 ) {
 	if len(pair) == 0 {
-		return nil, tokenomy.ErrInvalidPair
+		return nil, ErrInvalidPair
 	}
 
-	wsparams := &tokenomy.WebSocketParams{
-		TradeRequest: tokenomy.TradeRequest{
+	wsparams := &WebSocketParams{
+		TradeRequest: TradeRequest{
 			Pair: pair,
 		},
 	}
@@ -134,11 +133,11 @@ func (cl *WebSocketPublic) MarketDepths(pair string) (
 //
 func (cl *WebSocketPublic) MarketTicker(pair string) (tick *Tick, err error) {
 	if len(pair) == 0 {
-		return nil, tokenomy.ErrInvalidPair
+		return nil, ErrInvalidPair
 	}
 
-	wsparams := &tokenomy.WebSocketParams{
-		TradeRequest: tokenomy.TradeRequest{
+	wsparams := &WebSocketParams{
+		TradeRequest: TradeRequest{
 			Pair: pair,
 		},
 	}
@@ -163,14 +162,14 @@ func (cl *WebSocketPublic) MarketTicker(pair string) (tick *Tick, err error) {
 // pair, grouped by ask and bid.
 //
 func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
-	marketTrades *tokenomy.MarketTrades, err error,
+	marketTrades *MarketTrades, err error,
 ) {
 	if len(pair) == 0 {
-		return nil, tokenomy.ErrInvalidPair
+		return nil, ErrInvalidPair
 	}
 
-	wsparams := &tokenomy.WebSocketParams{
-		TradeRequest: tokenomy.TradeRequest{
+	wsparams := &WebSocketParams{
+		TradeRequest: TradeRequest{
 			Pair: pair,
 		},
 		Offset: offset,
@@ -182,7 +181,7 @@ func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
 		return nil, err
 	}
 
-	marketTrades = &tokenomy.MarketTrades{}
+	marketTrades = &MarketTrades{}
 
 	err = json.Unmarshal(resbody, marketTrades)
 	if err != nil {
@@ -195,7 +194,7 @@ func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
 //
 // Subscription return the list and status of subscription.
 //
-func (cl *WebSocketPublic) Subscription() (*tokenomy.PublicSubscription, error) {
+func (cl *WebSocketPublic) Subscription() (*PublicSubscription, error) {
 	_, resbody, err := cl.send(http.MethodGet, WSPublicSubscription, nil)
 	if err != nil {
 		return nil, err
@@ -221,14 +220,14 @@ func (cl *WebSocketPublic) Subscription() (*tokenomy.PublicSubscription, error) 
 // NotifTrades field.
 //
 func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
-	*tokenomy.PublicSubscription, error,
+	*PublicSubscription, error,
 ) {
 	if len(pairNames) == 0 {
 		return cl.subs, nil
 	}
 
-	wsparams := &tokenomy.WebSocketParams{
-		PublicSubscription: tokenomy.PublicSubscription{
+	wsparams := &WebSocketParams{
+		PublicSubscription: PublicSubscription{
 			Trades: pairNames,
 		},
 	}
@@ -255,14 +254,14 @@ func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
 // On success it will return the latest subscription.
 //
 func (cl *WebSocketPublic) UnsubscribeTrades(pairNames []string) (
-	*tokenomy.PublicSubscription, error,
+	*PublicSubscription, error,
 ) {
 	if len(pairNames) == 0 {
 		pairNames = cl.subs.Trades
 	}
 
-	wsparams := &tokenomy.WebSocketParams{
-		PublicSubscription: tokenomy.PublicSubscription{
+	wsparams := &WebSocketParams{
+		PublicSubscription: PublicSubscription{
 			Trades: pairNames,
 		},
 	}
@@ -318,7 +317,7 @@ func (cl *WebSocketPublic) handleText(
 
 		switch res.Message {
 		case APIMarketTrades, APIMarketTradesOpen:
-			trade := tokenomy.Trade{}
+			trade := Trade{}
 			err = json.Unmarshal(resbody, &trade)
 			if err != nil {
 				log.Printf("handleText: broadcast %s: %s",
@@ -375,7 +374,7 @@ func (cl *WebSocketPublic) requestPop(id uint64) (
 }
 
 func (cl *WebSocketPublic) send(
-	method, target string, wsparams *tokenomy.WebSocketParams,
+	method, target string, wsparams *WebSocketParams,
 ) (
 	res *websocket.Response, resbody []byte, err error,
 ) {

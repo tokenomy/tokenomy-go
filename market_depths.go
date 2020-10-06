@@ -2,14 +2,12 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-package v1
+package tokenomy
 
-type getOrderResponse struct {
-	Success int
-	Error   string
-	Return  *singleOrder
-}
-
-type singleOrder struct {
-	Order *OrderHistory
+//
+// MarketDepths contains list of depth on open asks and bids.
+//
+type MarketDepths struct {
+	Asks []Depth `json:"asks"`
+	Bids []Depth `json:"bids"`
 }

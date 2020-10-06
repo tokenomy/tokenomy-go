@@ -2,20 +2,18 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-package v2
+package tokenomy
 
 import (
 	"os"
 	"testing"
-
-	"github.com/tokenomy/tokenomy-go"
 )
 
 func TestWebSocketPrivate_UserInfo(t *testing.T) {
 	if len(os.Getenv(envTestE2E)) == 0 {
 		t.Skipf("%s is not set, skipping ...", envTestE2E)
 	}
-	env := &tokenomy.Environment{
+	env := &Environment{
 		Address: os.Getenv(envAddress),
 		Token:   os.Getenv(envToken),
 		Secret:  os.Getenv(envSecret),

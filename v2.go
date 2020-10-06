@@ -2,11 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-//
-// Package v2 is the official Go library for Tokenomy API v2.
-// This package provide client for REST and Websocket API.
-//
-package v2
+package tokenomy
 
 import (
 	"strconv"

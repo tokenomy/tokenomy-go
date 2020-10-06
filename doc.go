@@ -3,17 +3,11 @@
 // found in the LICENSE file.
 
 //
-// Package tokenomy is the official Go module for client of Tokenomy API v1
-// and v2.
-//
-// Documentation for API v1 is available at
-// https://exchange.tokenomy.com/help/api and the
-// Go doc page at
-// https://pkg.go.dev/github.com/tokenomy/tokenomy-go/v1?tab=doc.
+// Package tokenomy is the official Go module for client of Tokenomy API v2.
 //
 // Documentation for API v2 is available at
-// https://exchange.tokenomy.com/help/api/v2 and the
-// https://pkg.go.dev/github.com/tokenomy/tokenomy-go/v2?tab=doc.
+// https://exchange.tokenomy.com/help/api/v2/ and the
+// https://pkg.go.dev/github.com/tokenomy/tokenomy-go?tab=doc.
 //
 // Note that, this module is in development state, still in v0, and may
 // subject to changes in the future release until v1 is reached.

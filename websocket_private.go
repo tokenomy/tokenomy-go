@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-package v2
+package tokenomy
 
 import (
 	"crypto/tls"
@@ -17,13 +17,11 @@ import (
 	"time"
 
 	"github.com/shuLhan/share/lib/websocket"
-
-	"github.com/tokenomy/tokenomy-go"
 )
 
 // OrdersClosedHandler define a callback when receiving order closed
 // broadcast from server.
-type OrdersClosedHandler func(trade *tokenomy.Trade)
+type OrdersClosedHandler func(trade *Trade)
 
 //
 // WebSocketPrivate define the private WebSocket client for APIv2.
@@ -34,7 +32,7 @@ type WebSocketPrivate struct {
 	// market.
 	HandleOrdersClosed OrdersClosedHandler
 
-	env  *tokenomy.Environment
+	env  *Environment
 	conn *websocket.Client
 
 	requestsLocker sync.Mutex
@@ -45,11 +43,11 @@ type WebSocketPrivate struct {
 // NewWebSocketPrivate create and initialize new WebSocket connection to
 // private endpoint.
 //
-func NewWebSocketPrivate(env *tokenomy.Environment) (
+func NewWebSocketPrivate(env *Environment) (
 	cl *WebSocketPrivate, err error,
 ) {
 	if env == nil {
-		env = tokenomy.NewEnvironment("", "")
+		env = NewEnvironment("", "")
 	}
 	if len(env.Address) == 0 {
 		env.Address = DefaultAddress
@@ -110,8 +108,8 @@ func (cl *WebSocketPrivate) Close() error {
 // The price parameter define the number of base that we want to sell the
 // amount of coin.
 //
-func (cl *WebSocketPrivate) TradeAsk(treq *tokenomy.TradeRequest) (
-	trade *tokenomy.TradeResponse, err error,
+func (cl *WebSocketPrivate) TradeAsk(treq *TradeRequest) (
+	trade *TradeResponse, err error,
 ) {
 	if treq == nil {
 		return nil, nil
@@ -140,8 +138,8 @@ func (cl *WebSocketPrivate) TradeAsk(treq *tokenomy.TradeRequest) (
 // The price parameter define the number of base that we want to buy the
 // amount of coin.
 //
-func (cl *WebSocketPrivate) TradeBid(treq *tokenomy.TradeRequest) (
-	trade *tokenomy.TradeResponse, err error,
+func (cl *WebSocketPrivate) TradeBid(treq *TradeRequest) (
+	trade *TradeResponse, err error,
 ) {
 	if treq == nil {
 		return nil, nil
@@ -157,28 +155,28 @@ func (cl *WebSocketPrivate) TradeBid(treq *tokenomy.TradeRequest) (
 //
 // TradeCancel cancel the open trade using ID and pair information in Trade.
 //
-func (cl *WebSocketPrivate) TradeCancel(trade *tokenomy.Trade) (
-	*tokenomy.Trade, error,
+func (cl *WebSocketPrivate) TradeCancel(trade *Trade) (
+	*Trade, error,
 ) {
 	if trade.ID <= 0 {
-		return nil, tokenomy.ErrInvalidTradeID
+		return nil, ErrInvalidTradeID
 	}
 	if len(trade.Pair) == 0 {
-		return nil, tokenomy.ErrInvalidPair
+		return nil, ErrInvalidPair
 	}
 
 	var (
-		tradeResponse *tokenomy.TradeResponse
+		tradeResponse *TradeResponse
 		err           error
 	)
 
 	switch trade.Type {
-	case tokenomy.TradeTypeAsk:
+	case TradeTypeAsk:
 		tradeResponse, err = cl.TradeCancelAsk(trade.Pair, trade.ID)
-	case tokenomy.TradeTypeBid:
+	case TradeTypeBid:
 		tradeResponse, err = cl.TradeCancelBid(trade.Pair, trade.ID)
 	default:
-		return nil, tokenomy.ErrInvalidTradeType
+		return nil, ErrInvalidTradeType
 	}
 	if err != nil {
 		return nil, err
@@ -190,7 +188,7 @@ func (cl *WebSocketPrivate) TradeCancel(trade *tokenomy.Trade) (
 // TradeCancelAll cancel all user's open ask and bid orders.
 //
 func (cl *WebSocketPrivate) TradeCancelAll() (
-	trades []tokenomy.Trade, err error,
+	trades []Trade, err error,
 ) {
 	wsres, err := cl.send(http.MethodDelete, APITradeCancelAll, nil)
 	if err != nil {
@@ -214,13 +212,13 @@ func (cl *WebSocketPrivate) TradeCancelAll() (
 // TradeCancelAsk cancel the specific open sell by pair and ID.
 //
 func (cl *WebSocketPrivate) TradeCancelAsk(pairName string, id int64) (
-	trade *tokenomy.TradeResponse, err error,
+	trade *TradeResponse, err error,
 ) {
 	if id <= 0 {
-		return nil, tokenomy.ErrInvalidTradeID
+		return nil, ErrInvalidTradeID
 	}
-	wsparams := &tokenomy.WebSocketParams{
-		TradeRequest: tokenomy.TradeRequest{
+	wsparams := &WebSocketParams{
+		TradeRequest: TradeRequest{
 			Pair: pairName,
 		},
 		TradeID: id,
@@ -232,13 +230,13 @@ func (cl *WebSocketPrivate) TradeCancelAsk(pairName string, id int64) (
 // TradeCancelBid cancel the specific open buy by pair and ID.
 //
 func (cl *WebSocketPrivate) TradeCancelBid(pairName string, id int64) (
-	trade *tokenomy.TradeResponse, err error,
+	trade *TradeResponse, err error,
 ) {
 	if id <= 0 {
-		return nil, tokenomy.ErrInvalidTradeID
+		return nil, ErrInvalidTradeID
 	}
-	wsparams := &tokenomy.WebSocketParams{
-		TradeRequest: tokenomy.TradeRequest{
+	wsparams := &WebSocketParams{
+		TradeRequest: TradeRequest{
 			Pair: pairName,
 		},
 		TradeID: id,
@@ -249,7 +247,7 @@ func (cl *WebSocketPrivate) TradeCancelBid(pairName string, id int64) (
 //
 // UserInfo fetch the user information and balances.
 //
-func (cl *WebSocketPrivate) UserInfo() (user *tokenomy.User, err error) {
+func (cl *WebSocketPrivate) UserInfo() (user *User, err error) {
 	res, err := cl.send(http.MethodGet, APIUserInfo, nil)
 	if err != nil {
 		return nil, err
@@ -260,7 +258,7 @@ func (cl *WebSocketPrivate) UserInfo() (user *tokenomy.User, err error) {
 		return nil, err
 	}
 
-	user = &tokenomy.User{}
+	user = &User{}
 
 	err = json.Unmarshal(resb, user)
 	if err != nil {
@@ -275,13 +273,13 @@ func (cl *WebSocketPrivate) UserInfo() (user *tokenomy.User, err error) {
 // and trade ID.
 //
 func (cl *WebSocketPrivate) UserOrderInfo(pairName string, id int64) (
-	trade *tokenomy.Trade, err error,
+	trade *Trade, err error,
 ) {
 	if len(pairName) == 0 {
-		return nil, tokenomy.ErrInvalidPair
+		return nil, ErrInvalidPair
 	}
-	wsparams := &tokenomy.WebSocketParams{
-		TradeRequest: tokenomy.TradeRequest{
+	wsparams := &WebSocketParams{
+		TradeRequest: TradeRequest{
 			Pair: pairName,
 		},
 		TradeID: id,
@@ -297,7 +295,7 @@ func (cl *WebSocketPrivate) UserOrderInfo(pairName string, id int64) (
 		return nil, err
 	}
 
-	trade = &tokenomy.Trade{}
+	trade = &Trade{}
 
 	err = json.Unmarshal(resb, trade)
 	if err != nil {
@@ -313,8 +311,8 @@ func (cl *WebSocketPrivate) UserOrderInfo(pairName string, id int64) (
 func (cl *WebSocketPrivate) UserOrdersOpen(pairName string) (
 	pairTradesOpen PairTradesOpen, err error,
 ) {
-	wsparams := &tokenomy.WebSocketParams{
-		TradeRequest: tokenomy.TradeRequest{
+	wsparams := &WebSocketParams{
+		TradeRequest: TradeRequest{
 			Pair: pairName,
 		},
 	}
@@ -342,15 +340,15 @@ func (cl *WebSocketPrivate) UserOrdersOpen(pairName string) (
 func (cl *WebSocketPrivate) connect() error {
 	params := make(url.Values)
 
-	params.Set(tokenomy.ParamNameTimestamp, timestampAsString())
+	params.Set(ParamNameTimestamp, timestampAsString())
 
 	payload := params.Encode()
-	sign := tokenomy.Sign(payload, cl.env.Secret)
+	sign := Sign(payload, cl.env.Secret)
 
 	cl.conn.Endpoint = cl.env.Address + WSPrivate + "?" + payload
 
-	cl.conn.Headers.Set(tokenomy.HeaderNameKey, cl.env.Token)
-	cl.conn.Headers.Set(tokenomy.HeaderNameSign, sign)
+	cl.conn.Headers.Set(HeaderNameKey, cl.env.Token)
+	cl.conn.Headers.Set(HeaderNameSign, sign)
 
 	err := cl.conn.Connect()
 	if err != nil {
@@ -361,7 +359,7 @@ func (cl *WebSocketPrivate) connect() error {
 }
 
 func (cl *WebSocketPrivate) send(
-	method, target string, wsparams *tokenomy.WebSocketParams,
+	method, target string, wsparams *WebSocketParams,
 ) (
 	res *websocket.Response, err error,
 ) {
@@ -404,9 +402,9 @@ func (cl *WebSocketPrivate) send(
 }
 
 func (cl *WebSocketPrivate) sendTradeRequest(
-	method, target string, wsparams *tokenomy.WebSocketParams,
+	method, target string, wsparams *WebSocketParams,
 ) (
-	trade *tokenomy.TradeResponse, err error,
+	trade *TradeResponse, err error,
 ) {
 	res, err := cl.send(method, target, wsparams)
 	if err != nil {
@@ -418,7 +416,7 @@ func (cl *WebSocketPrivate) sendTradeRequest(
 		return nil, err
 	}
 
-	trade = &tokenomy.TradeResponse{}
+	trade = &TradeResponse{}
 
 	err = json.Unmarshal(resb, trade)
 	if err != nil {
@@ -465,7 +463,7 @@ func (cl *WebSocketPrivate) handleText(
 			return nil
 		}
 
-		trade := &tokenomy.Trade{}
+		trade := &Trade{}
 		err = json.Unmarshal(resb, trade)
 		if err != nil {
 			log.Printf("handleText: %s %s",

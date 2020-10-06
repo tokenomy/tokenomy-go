@@ -2,12 +2,12 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-package v2
+package tokenomy
 
 //
-// MarketDepths contains list of depth on open asks and bids.
+// TradesOpen contains the open asks and bids in the market place.
 //
-type MarketDepths struct {
-	Asks []Depth `json:"asks"`
-	Bids []Depth `json:"bids"`
+type TradesOpen struct {
+	Asks []Trade `json:"asks"`
+	Bids []Trade `json:"bids"`
 }
