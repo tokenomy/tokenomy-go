@@ -6,6 +6,10 @@ This release remove deprecated API v1 package and focus only on API v2.
 The API v2 package has been moved to root directory to prevent conflict with
 "v2" versioning on Go modules.
 
+===  Enhancements
+
+* all: update list of assets and pairs
+
 
 ==  tokenomy-go v0.9.1 (2020.08.31)
 

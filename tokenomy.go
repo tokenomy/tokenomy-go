@@ -21,11 +21,12 @@ import (
 //
 const (
 	AssetNameAchain          = "achain"
+	AssetNameBalancer        = "bal"
 	AssetNameBinancechain    = "bnb"
 	AssetNameBitcoin         = "btc"
 	AssetNameBitcoinabc      = "bchabc"
+	AssetNameChainlink       = "link"
 	AssetNameCompound        = "comp"
-	AssetNameCybermiles      = "cmt"
 	AssetNameDai             = "dai"
 	AssetNameEos             = "eos"
 	AssetNameEthereum        = "eth"
@@ -34,9 +35,10 @@ const (
 	AssetNameHonest          = "hnst"
 	AssetNameIdk             = "idk"
 	AssetNameInmax           = "inx"
+	AssetNameKybernetwork    = "knc"
 	AssetNameLitecoin        = "ltc"
 	AssetNameLoopring        = "lrc"
-	AssetNameLoopringNeo     = "lrn"
+	AssetNameLyfe            = "lyfe"
 	AssetNameLyfebep         = "lyfebep"
 	AssetNameMaker           = "mkr"
 	AssetNameMonero          = "xmr"
@@ -46,7 +48,9 @@ const (
 	AssetNameSiacash         = "scc"
 	AssetNameSix             = "six"
 	AssetNameStellar         = "xlm"
+	AssetNameSushiSwap       = "sushi"
 	AssetNameSwipe           = "swipe"
+	AssetNameSynthetix       = "snx"
 	AssetNameTether          = "usdt"
 	AssetNameTezos           = "xtz"
 	AssetNameTokenomy        = "ten"
@@ -62,43 +66,49 @@ const (
 // or did not contains new pairs in the Tokenomy server.
 //
 const (
-	PairBitcoinabcBitcoin      = AssetNameBitcoinabc + "_" + AssetNameBitcoin
-	PairEosBitcoin             = AssetNameEos + "_" + AssetNameBitcoin
-	PairEthereumBitcoin        = AssetNameEthereum + "_" + AssetNameBitcoin
-	PairEthereumclassicBitcoin = AssetNameEthereumclassic + "_" + AssetNameBitcoin
-	PairHonestBitcoin          = AssetNameHonest + "_" + AssetNameBitcoin
-	PairLitecoinBitcoin        = AssetNameLitecoin + "_" + AssetNameBitcoin
-	PairLoopringBitcoin        = AssetNameLoopring + "_" + AssetNameBitcoin
-	PairMoneroBitcoin          = AssetNameMonero + "_" + AssetNameBitcoin
-	PairOntologyBitcoin        = AssetNameOntology + "_" + AssetNameBitcoin
-	PairSixBitcoin             = AssetNameSix + "_" + AssetNameBitcoin
-	PairStellarBitcoin         = AssetNameStellar + "_" + AssetNameBitcoin
-	PairSwipeBitcoin           = AssetNameSwipe + "_" + AssetNameBitcoin
-	PairTokenomyBitcoin        = AssetNameTokenomy + "_" + AssetNameBitcoin
-	PairTronBitcoin            = AssetNameTron + "_" + AssetNameBitcoin
-	PairVexaniumBitcoin        = AssetNameVexanium + "_" + AssetNameBitcoin
-	PairXanpoolBitcoin         = AssetNameXanpool + "_" + AssetNameBitcoin
-	PairZcashBitcoin           = AssetNameZcash + "_" + AssetNameBitcoin
+	PairBitcoinabcBitcoin      = AssetNameBitcoinabc + "_" + AssetNameBitcoin      // bchabc_btc
+	PairEosBitcoin             = AssetNameEos + "_" + AssetNameBitcoin             // eos_btc
+	PairEthereumBitcoin        = AssetNameEthereum + "_" + AssetNameBitcoin        // eth_btc
+	PairEthereumclassicBitcoin = AssetNameEthereumclassic + "_" + AssetNameBitcoin // etc_btc
+	PairHonestBitcoin          = AssetNameHonest + "_" + AssetNameBitcoin          // hnst_btc
+	PairLitecoinBitcoin        = AssetNameLitecoin + "_" + AssetNameBitcoin        // ltc_btc
+	PairLoopringBitcoin        = AssetNameLoopring + "_" + AssetNameBitcoin        // lrc_btc
+	PairMoneroBitcoin          = AssetNameMonero + "_" + AssetNameBitcoin          // xmr_btc
+	PairOntologyBitcoin        = AssetNameOntology + "_" + AssetNameBitcoin        // ont_btc
+	PairSixBitcoin             = AssetNameSix + "_" + AssetNameBitcoin             // six_btc
+	PairStellarBitcoin         = AssetNameStellar + "_" + AssetNameBitcoin         // xlm_btc
+	PairSwipeBitcoin           = AssetNameSwipe + "_" + AssetNameBitcoin           // swipe_btc
+	PairTokenomyBitcoin        = AssetNameTokenomy + "_" + AssetNameBitcoin        // ten_btc
+	PairTronBitcoin            = AssetNameTron + "_" + AssetNameBitcoin            // trx_btc
+	PairVexaniumBitcoin        = AssetNameVexanium + "_" + AssetNameBitcoin        // vex_btc
+	PairXanpoolBitcoin         = AssetNameXanpool + "_" + AssetNameBitcoin         // xlp_btc
+	PairZcashBitcoin           = AssetNameZcash + "_" + AssetNameBitcoin           // zec_btc
 
-	PairBitcoinIdk  = AssetNameBitcoin + "_" + AssetNameIdk
-	PairCompoundIdk = AssetNameCompound + "_" + AssetNameIdk
-	PairDaiIdk      = AssetNameDai + "_" + AssetNameIdk
-	PairHaraIdk     = AssetNameHara + "_" + AssetNameIdk
-	PairHonestIdk   = AssetNameHonest + "_" + AssetNameIdk
-	PairInmaxIdk    = AssetNameInmax + "_" + AssetNameIdk
-	PairLyfebepIdk  = AssetNameLyfebep + "_" + AssetNameIdk
-	PairMakerIdk    = AssetNameMaker + "_" + AssetNameIdk
-	PairPlaygameIdk = AssetNamePlaygame + "_" + AssetNameIdk
-	PairSiacashIdk  = AssetNameSiacash + "_" + AssetNameIdk
-	PairSwipeIdk    = AssetNameSwipe + "_" + AssetNameIdk
-	PairTetherIdk   = AssetNameTether + "_" + AssetNameIdk
-	PairTezosIdk    = AssetNameTezos + "_" + AssetNameIdk
-	PairTokenomyIdk = AssetNameTokenomy + "_" + AssetNameIdk
+	PairBalancerIdk     = AssetNameBalancer + "_" + AssetNameIdk     // bal_idk
+	PairBitcoinIdk      = AssetNameBitcoin + "_" + AssetNameIdk      // btc_idk
+	PairChainlinkIdk    = AssetNameChainlink + "_" + AssetNameIdk    // link_idk
+	PairCompoundIdk     = AssetNameCompound + "_" + AssetNameIdk     // comp_idk
+	PairDaiIdk          = AssetNameDai + "_" + AssetNameIdk          // dai_idk
+	PairEthereumIdk     = AssetNameEthereum + "_" + AssetNameIdk     // eth_idk
+	PairHaraIdk         = AssetNameHara + "_" + AssetNameIdk         // hart_idk
+	PairHonestIdk       = AssetNameHonest + "_" + AssetNameIdk       // hnst_idk
+	PairInmaxIdk        = AssetNameInmax + "_" + AssetNameIdk        // inx_idk
+	PairKybernetworkIdk = AssetNameKybernetwork + "_" + AssetNameIdk // knc_idk
+	PairLyfebepIdk      = AssetNameLyfebep + "_" + AssetNameIdk      // lyfebep_idk
+	PairMakerIdk        = AssetNameMaker + "_" + AssetNameIdk        // mkr_idk
+	PairPlaygameIdk     = AssetNamePlaygame + "_" + AssetNameIdk     // pxg_idk
+	PairSiacashIdk      = AssetNameSiacash + "_" + AssetNameIdk      // scc_idk
+	PairSushiIdk        = AssetNameSushiSwap + "_" + AssetNameIdk    // sushi_idk
+	PairSwipeIdk        = AssetNameSwipe + "_" + AssetNameIdk        // swipe_idk
+	PairSynthetixIdk    = AssetNameSynthetix + "_" + AssetNameIdk    // snx_idk
+	PairTetherIdk       = AssetNameTether + "_" + AssetNameIdk       // usdt_idk
+	PairTezosIdk        = AssetNameTezos + "_" + AssetNameIdk        // xtz_idk
+	PairTokenomyIdk     = AssetNameTokenomy + "_" + AssetNameIdk     // ten_idk
 
-	PairBitcoinTether  = AssetNameBitcoin + "_" + AssetNameTether
-	PairEthereumTether = AssetNameEthereum + "_" + AssetNameTether
-	PairIdkTether      = AssetNameIdk + "_" + AssetNameTether
-	PairTokenomyTether = AssetNameTokenomy + "_" + AssetNameTether
+	PairBitcoinTether  = AssetNameBitcoin + "_" + AssetNameTether  // btc_usdt
+	PairEthereumTether = AssetNameEthereum + "_" + AssetNameTether // eth_usdt
+	PairIdkTether      = AssetNameIdk + "_" + AssetNameTether      // idk_usdt
+	PairTokenomyTether = AssetNameTokenomy + "_" + AssetNameTether // ten_usdt
 )
 
 //
