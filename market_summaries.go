@@ -7,11 +7,13 @@ package tokenomy
 import "github.com/shuLhan/share/lib/math/big"
 
 //
-// MarketSummaries containsall pair's latest tick value and prices in the last
-// 24 hours and 7 days.
+// MarketSummaries contains all pair's latest tick value, last price, price
+// changes, price past 24 hours ago, and price past 7 days ago.
 //
 type MarketSummaries struct {
-	Tickers   map[string]Tick     `json:"tickers"`
-	Prices24h map[string]*big.Rat `json:"prices_24h"`
-	Prices7d  map[string]*big.Rat `json:"prices_7d"`
+	Prices        map[string]*big.Rat `json:"prices"`
+	Prices24h     map[string]*big.Rat `json:"prices_24h"`
+	Prices7d      map[string]*big.Rat `json:"prices_7d"`
+	PricesChanges map[string]*big.Rat `json:"prices_changes"`
+	Tickers       map[string]Tick     `json:"tickers"`
 }
