@@ -4,10 +4,36 @@
 
 package tokenomy
 
+import "github.com/shuLhan/share/lib/math/big"
+
 //
 // MarketDepths contains list of depth on open asks and bids.
 //
 type MarketDepths struct {
-	Asks []Depth `json:"asks"`
-	Bids []Depth `json:"bids"`
+	Asks []*Depth `json:"asks"`
+	Bids []*Depth `json:"bids"`
+}
+
+//
+// GetAskByPrice get the depth record from list of Asks by its price.
+//
+func (depths *MarketDepths) GetAskByPrice(price *big.Rat) (depth *Depth) {
+	for _, depth = range depths.Asks {
+		if depth.Price.IsEqual(price) {
+			return depth
+		}
+	}
+	return nil
+}
+
+//
+// GetBidByPrice get the depth record from list of Bids by its price.
+//
+func (depths *MarketDepths) GetBidByPrice(price *big.Rat) (depth *Depth) {
+	for _, depth = range depths.Bids {
+		if depth.Price.IsEqual(price) {
+			return depth
+		}
+	}
+	return nil
 }
