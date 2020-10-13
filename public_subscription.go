@@ -9,7 +9,8 @@ package tokenomy
 // each topic: "depths", "ticker", and "trades".
 //
 type PublicSubscription struct {
-	Depths []string `json:"depths"`
-	Ticker []string `json:"ticker"`
-	Trades []string `json:"trades"`
+	Depths    []string `json:"depths"`
+	Summaries bool     `json:"summaries"`
+	Ticker    []string `json:"ticker"`
+	Trades    []string `json:"trades"`
 }
