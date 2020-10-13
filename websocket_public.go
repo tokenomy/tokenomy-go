@@ -33,11 +33,13 @@ type WebSocketPublic struct {
 	requests       map[uint64]chan *websocket.Response
 	subs           *PublicSubscription
 	topicTrades    chan Trade
+	topicDepths    chan MarketDepths
 
 	// NotifTrades is a channel that will receive public order books
 	// (open, closed, cancelled order) after calling SubscribeTrades
 	// method.
 	NotifTrades <-chan Trade
+	NotifDepths <-chan MarketDepths
 }
 
 //
@@ -61,9 +63,11 @@ func NewWebSocketPublic(env *Environment) (
 		requests:    make(map[uint64](chan *websocket.Response)),
 		subs:        &PublicSubscription{},
 		topicTrades: make(chan Trade, maxQueue),
+		topicDepths: make(chan MarketDepths, maxQueue),
 	}
 
 	cl.NotifTrades = cl.topicTrades
+	cl.NotifDepths = cl.topicDepths
 
 	if env.IsInsecure {
 		cl.conn.TLSConfig = &tls.Config{
@@ -209,6 +213,41 @@ func (cl *WebSocketPublic) Subscription() (*PublicSubscription, error) {
 }
 
 //
+// SubscribeDepths subscribe to changes on market depths based on list
+// of pair names.
+//
+// Multiple calls on this method will not clear previously subscribed pairs.
+// For example, if the first call subscribed to pair "X" and the second call
+// subscribed to pair "Y", the client has two subscription: "X" and "Y", NOT
+// "Y".
+//
+func (cl *WebSocketPublic) SubscribeDepths(pairNames []string) (
+	*PublicSubscription, error,
+) {
+	if len(pairNames) == 0 {
+		return cl.subs, nil
+	}
+
+	wsparams := &WebSocketParams{
+		PublicSubscription: PublicSubscription{
+			Depths: pairNames,
+		},
+	}
+
+	_, resbody, err := cl.send(http.MethodPost, WSPublicSubscription, wsparams)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(resbody, cl.subs)
+	if err != nil {
+		return nil, err
+	}
+
+	return cl.subs, nil
+}
+
+//
 // SubscribeTrades subscribe to changes on public order books.
 //
 // Multiple calls on this method will not clear previously subscribed pairs.
@@ -234,6 +273,40 @@ func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
 
 	_, resbody, err := cl.send(http.MethodPost, WSPublicSubscription,
 		wsparams)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(resbody, cl.subs)
+	if err != nil {
+		return nil, err
+	}
+
+	return cl.subs, nil
+}
+
+//
+// UnsubscribeDepths stop receiving broadcast notification on topic
+// "depths" on specific pairs.
+//
+// If parameter is empty, it will unsubscribe all registered pairs.
+//
+// On success it will return the latest subscription.
+//
+func (cl *WebSocketPublic) UnsubscribeDepths(pairNames []string) (
+	*PublicSubscription, error,
+) {
+	if len(pairNames) == 0 {
+		pairNames = cl.subs.Trades
+	}
+
+	wsparams := &WebSocketParams{
+		PublicSubscription: PublicSubscription{
+			Trades: pairNames,
+		},
+	}
+
+	_, resbody, err := cl.send(http.MethodDelete, WSPublicSubscription, wsparams)
 	if err != nil {
 		return nil, err
 	}
@@ -325,6 +398,15 @@ func (cl *WebSocketPublic) handleText(
 				return nil
 			}
 			cl.topicTrades <- trade
+		case APIMarketDepths:
+			depths := MarketDepths{}
+			err = json.Unmarshal(resbody, &depths)
+			if err != nil {
+				log.Printf("handleText: broadcast %s: %s",
+					res.Message, err)
+				return nil
+			}
+			cl.topicDepths <- depths
 		}
 	} else {
 		chres := cl.requestPop(res.ID)
