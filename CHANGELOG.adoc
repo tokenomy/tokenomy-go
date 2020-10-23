@@ -1,14 +1,36 @@
 = CHANGELOG
 
-==  tokenomy-go v0.10.0 (2020.10.xx)
+==  tokenomy-go v0.10.0 (2020.10.23)
 
 This release remove deprecated API v1 package and focus only on API v2.
 The API v2 package has been moved to root directory to prevent conflict with
 "v2" versioning on Go modules.
 
+===  New features
+
+*  wspublic: add methods to subscribe and unsubscribe to topic "depths"
+   The topic "depths" contains latest information about pair's depths on
+   the market.
+
+*  market_summaries: add field "Prices" and "PriceChanges"
+   The field "Prices" will contains the pair last price and the field
+   PriceChanges will contains the percentage between last price and
+   last price before 24 hours ago.
+
+*  depth: add field TotalBase and TotalCoin
+
 ===  Enhancements
 
-* all: update list of assets and pairs
+*  response: remove the PackGob and UnpackGob methods
+
+*  all: update list of assets and pairs
+
+===  Chores
+
+*  public_subscription: add field Summaries
+   This field will be used to subscribe changes on market summaries.
+
+*  market_depths: change the slice of Depth to slice of pointer to Depth
 
 
 ==  tokenomy-go v0.9.1 (2020.08.31)
