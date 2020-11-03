@@ -133,6 +133,25 @@ func (cl *WebSocketPublic) MarketDepths(pair string) (
 }
 
 //
+// MarketPrices fetch the latest pair price from the market.
+//
+func (cl *WebSocketPublic) MarketPrices() (mprices MarketPrices, err error) {
+	_, resbody, err := cl.send(http.MethodGet, APIMarketPrices, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	mprices = MarketPrices{}
+
+	err = json.Unmarshal(resbody, &mprices)
+	if err != nil {
+		return nil, err
+	}
+
+	return mprices, nil
+}
+
+//
 // MarketTicker return the ticker information on specific pair.
 //
 func (cl *WebSocketPublic) MarketTicker(pair string) (tick *Tick, err error) {
