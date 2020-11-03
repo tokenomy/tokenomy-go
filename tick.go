@@ -18,32 +18,22 @@ type Tick struct {
 	// Ask contains the lowest sell price in open sell.
 	Ask *big.Rat `json:"ask"`
 
-	// High contains the highest price in closed trades from last 24
+	// High contains the highest price in closed trades since the last 24
 	// hours.
 	High *big.Rat `json:"high"`
 
-	// Low contains the lowest price in closed trades from last 24 hours.
+	// Low contains the lowest price in closed trades since the last 24
+	// hours.
 	Low *big.Rat `json:"low"`
 
 	// LastPrice contains the last traded price.
 	LastPrice *big.Rat `json:"last_price"`
 
-	// VolumeBase contains the traded base asset.
+	// VolumeBase contains the total base asset has been traded since the
+	// last 24 hours.
 	VolumeBase *big.Rat `json:"volume_base"`
 
-	// VolumeCoin contains the traded coin asset.
+	// VolumeCoin contains the total coin asset has been traded since the
+	// last 24 hours.
 	VolumeCoin *big.Rat `json:"volume_coin"`
-}
-
-//
-// IsZero will return true if all fields' value is zero.
-//
-func (tick *Tick) IsZero() bool {
-	if tick.Ask.IsZero() && tick.Bid.IsZero() &&
-		tick.High.IsZero() && tick.Low.IsZero() &&
-		tick.LastPrice.IsZero() &&
-		tick.VolumeBase.IsZero() && tick.VolumeCoin.IsZero() {
-		return true
-	}
-	return false
 }
