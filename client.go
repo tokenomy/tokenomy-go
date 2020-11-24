@@ -175,7 +175,7 @@ func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 //
 // MarketTicker return the ticker information on specific pair.
 //
-func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
+func (cl *Client) MarketTicker(pairName string) (tick *MarketTicker, err error) {
 	params := url.Values{
 		ParamNamePair: []string{pairName},
 	}
@@ -185,7 +185,7 @@ func (cl *Client) MarketTicker(pairName string) (tick *Tick, err error) {
 		return nil, fmt.Errorf("MarketTicker: %w", err)
 	}
 
-	tick = &Tick{}
+	tick = &MarketTicker{}
 	res := &Response{
 		Data: tick,
 	}

@@ -154,7 +154,7 @@ func (cl *WebSocketPublic) MarketPrices() (mprices MarketPrices, err error) {
 //
 // MarketTicker return the ticker information on specific pair.
 //
-func (cl *WebSocketPublic) MarketTicker(pair string) (tick *Tick, err error) {
+func (cl *WebSocketPublic) MarketTicker(pair string) (tick *MarketTicker, err error) {
 	if len(pair) == 0 {
 		return nil, ErrInvalidPair
 	}
@@ -170,7 +170,7 @@ func (cl *WebSocketPublic) MarketTicker(pair string) (tick *Tick, err error) {
 		return nil, err
 	}
 
-	tick = &Tick{}
+	tick = &MarketTicker{}
 
 	err = json.Unmarshal(resbody, tick)
 	if err != nil {
