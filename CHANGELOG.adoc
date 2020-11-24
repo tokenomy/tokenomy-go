@@ -1,5 +1,21 @@
 = CHANGELOG
 
+==  tokenomy-go v0.11.0 (2020.11.24)
+
+===  Breaking changes
+
+*  all: rename Tick to MarketTicker
+   Also, rename the MarketTicker fields to give more meaningful names,
+   for example instead of Ask rename it to LowestAskPrice, so we can
+   understand its meaning directly.
+
+*  tick: remove unused IsZero method
+
+===  New features
+
+*  websocket_public: add method to get market prices
+
+
 ==  tokenomy-go v0.10.0 (2020.10.23)
 
 This release remove deprecated API v1 package and focus only on API v2.
