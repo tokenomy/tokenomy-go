@@ -15,3 +15,10 @@ type Response struct {
 	liberrors.E
 	Data interface{} `json:"data,omitempty"`
 }
+
+//
+// Unwrap return the internal liberrors.E.
+//
+func (res *Response) Unwrap() error {
+	return &res.E
+}
