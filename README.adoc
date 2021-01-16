@@ -1,11 +1,9 @@
 =  tokenomy-go
-:author: Shulhan
-:email: m.shulhan@gmail.com
 :url-gocard: https://goreportcard.com/report/github.com/tokenomy/tokenomy-go
-:url-godoc: https://godoc.org/github.com/tokenomy/tokenomy-go
+:url-goref: https://pkg.go.dev/github.com/tokenomy/tokenomy-go
 
-image:https://godoc.org/github.com/tokenomy/tokenomy-go?status.svg[GoDoc, link={url-godoc}]
-image:https://goreportcard.com/badge/github.com/shuLhan/share[Go Report Card, link={url-gocard}]
+image:https://pkg.go.dev/badge/github.com/tokenomy/tokenomy-go.svg[Go Reference, link={url-goref}]
+image:https://goreportcard.com/badge/github.com/tokenomy/tokenomy-go.svg[Go Report Card, link={url-gocard}]
 
 This is the official Go module for client of Tokenomy API v1 and v2.
 
