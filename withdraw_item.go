@@ -14,6 +14,7 @@ type WithdrawItem struct {
 	RequestID   string   `json:"request_id,omitempty"`
 	RequesterIP string   `json:"requester_ip,omitempty"`
 	Asset       string   `json:"asset,omitempty"`
+	Network     string   `json:"network,omitempty"`
 	Status      string   `json:"status,omitempty"`
 	Address     string   `json:"address,omitempty"`
 	Memo        string   `json:"memo,omitempty"`
