@@ -221,6 +221,7 @@ const (
 	ParamNameTradeID       = "trade_id"
 	ParamNameTradeMethod   = "trade_method"
 	ParamNameType          = "type"
+	ParamNameNetwork       = "network"
 )
 
 // DefaultLimit define maximum number of record fetched per request.
