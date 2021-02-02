@@ -503,7 +503,7 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 // our system, otherwise the request will be fail.
 //
 func (cl *Client) UserWithdraw(
-	requestID, asset, address, memo string,
+	requestID, asset, network, address, memo string,
 	amount *big.Rat,
 ) (withdraw *WithdrawItem, err error) {
 	if len(requestID) == 0 {
@@ -522,6 +522,7 @@ func (cl *Client) UserWithdraw(
 	params := url.Values{
 		ParamNameRequestID: []string{requestID},
 		ParamNameAsset:     []string{asset},
+		ParamNameNetwork:   []string{network},
 		ParamNameAddress:   []string{address},
 		ParamNameMemo:      []string{memo},
 		ParamNameAmount:    []string{amount.String()},
