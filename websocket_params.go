@@ -17,6 +17,7 @@ type WebSocketParams struct {
 
 	Address    string `json:"address,omitempty"`
 	Asset      string `json:"asset,omitempty"`
+	Network    string `json:"network,omitempty"`
 	IDAfter    int64  `json:"id_after,omitempty"`
 	IDBefore   int64  `json:"id_before,omitempty"`
 	IDSortBy   string `json:"id_sort_by,omitempty"`
