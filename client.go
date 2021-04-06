@@ -81,7 +81,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 		return nil, ErrInvalidPair
 	}
 
-	_, resBody, err := cl.conn.Get(nil, APIMarketDepths, params)
+	_, resBody, err := cl.conn.Get(APIMarketDepths, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketDepths: %w", err)
 	}
@@ -103,7 +103,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 // MarketInfo return information about all the pair in the platform.
 //
 func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
-	_, resBody, err := cl.conn.Get(nil, APIMarketInfo, nil)
+	_, resBody, err := cl.conn.Get(APIMarketInfo, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketInfo: %w", err)
 	}
@@ -130,7 +130,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 		ParamNamePair: []string{pairName},
 	}
 
-	_, resBody, err := cl.conn.Get(nil, APIMarketTradesOpen, params)
+	_, resBody, err := cl.conn.Get(APIMarketTradesOpen, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTradesOpen: %w", err)
 	}
@@ -154,7 +154,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 	params := url.Values{}
 
-	_, resBody, err := cl.conn.Get(nil, APIMarketPrices, params)
+	_, resBody, err := cl.conn.Get(APIMarketPrices, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketPrices: %w", err)
 	}
@@ -180,7 +180,7 @@ func (cl *Client) MarketTicker(pairName string) (tick *MarketTicker, err error) 
 		ParamNamePair: []string{pairName},
 	}
 
-	_, resBody, err := cl.conn.Get(nil, APIMarketTicker, params)
+	_, resBody, err := cl.conn.Get(APIMarketTicker, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTicker: %w", err)
 	}
@@ -215,7 +215,7 @@ func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
 		},
 	}
 
-	_, resBody, err := cl.conn.Get(nil, APIMarketTrades, params)
+	_, resBody, err := cl.conn.Get(APIMarketTrades, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTrades: %w", err)
 	}
@@ -237,7 +237,7 @@ func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
 // MarketSummaries return the summaries (ticker) of all pairs.
 //
 func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
-	_, resBody, err := cl.conn.Get(nil, APIMarketSummaries, nil)
+	_, resBody, err := cl.conn.Get(APIMarketSummaries, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketSummaries: %w", err)
 	}
@@ -740,11 +740,11 @@ func (cl *Client) doSecureRequest(httpMethod, path string, params url.Values) (
 
 	switch httpMethod {
 	case stdhttp.MethodGet:
-		httpres, resBody, err = cl.conn.Get(headers, path, params)
+		httpres, resBody, err = cl.conn.Get(path, headers, params)
 	case stdhttp.MethodDelete:
-		httpres, resBody, err = cl.conn.Delete(headers, path, params)
+		httpres, resBody, err = cl.conn.Delete(path, headers, params)
 	case stdhttp.MethodPost:
-		httpres, resBody, err = cl.conn.PostForm(headers, path, params)
+		httpres, resBody, err = cl.conn.PostForm(path, headers, params)
 	}
 	if err != nil {
 		return nil, err

@@ -28,6 +28,6 @@ func TestSign(t *testing.T) {
 	for _, c := range cases {
 		got := Sign(c.payload, c.secret)
 
-		test.Assert(t, "Sign", c.exp, got, true)
+		test.Assert(t, "Sign", c.exp, got)
 	}
 }
