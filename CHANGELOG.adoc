@@ -1,5 +1,15 @@
 = CHANGELOG
 
+==  tokenomy-go v0.12.0 (2021.04.06)
+
+=== New features
+
+* Add parameter network to User withdraw
+
+  The network parameter is optional, it define the network name of the asset.
+  For example, for withdrawing asset TEN the network value would be "erc20".
+
+
 ==  tokenomy-go v0.11.1 (2021.01.17)
 
 This release set the minimum Go version to 1.14.
