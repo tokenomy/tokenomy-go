@@ -22,6 +22,20 @@ type TradeRequest struct {
 	// Method of trading, its either "limit" or "market".
 	Method string `json:"method"`
 
+	// TimeInForce parameter only applicable if Method is "limit".
+	// This option may change the behaviour of order "limit" processed by
+	// broker.
+	// Currently, the valid values are empty "" (default) or "FOK"
+	// (fill-or-kill).
+	//
+	// If its empty, the order request processed normally as "limit"
+	// request.
+	//
+	// If its "FOK", the order will be success only if only all of
+	// requested amount is fulfilled, otherwise it will return as an error
+	// ErrTradeFillOrKill.
+	TimeInForce string `json:"time_in_force"`
+
 	// Pair name using "<coin>_<base>" format.
 	Pair string `json:"pair"`
 

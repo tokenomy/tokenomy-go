@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/shuLhan/share/lib/errors"
+	liberrors "github.com/shuLhan/share/lib/errors"
 )
 
 // DefaultAddress contains the official API domain.
@@ -167,6 +168,11 @@ const (
 	TradeTypeBid = "buy"
 )
 
+// List of valid values for TradeRequest.TimeInForce.
+const (
+	TimeInForceFOK = "FOK" // Fill-or-Kill.
+)
+
 //
 // List of valid trade's status.
 //
@@ -206,10 +212,11 @@ const (
 	ParamNameLimit         = "limit"
 	ParamNameMemo          = "memo"
 	ParamNameMethod        = "method"
+	ParamNameNetwork       = "network"
 	ParamNameNonce         = "nonce"
+	ParamNameOffset        = "offset"
 	ParamNameOrderID       = "order_id"
 	ParamNameOrderMethod   = "order_method"
-	ParamNameOffset        = "offset"
 	ParamNamePair          = "pair"
 	ParamNamePostOnly      = "post_only"
 	ParamNamePrice         = "price"
@@ -217,11 +224,11 @@ const (
 	ParamNameRequestID     = "request_id"
 	ParamNameTimeAfter     = "time_after"
 	ParamNameTimeBefore    = "time_before"
+	ParamNameTimeInForce   = "time_in_force"
 	ParamNameTimestamp     = "timestamp"
 	ParamNameTradeID       = "trade_id"
 	ParamNameTradeMethod   = "trade_method"
 	ParamNameType          = "type"
-	ParamNameNetwork       = "network"
 )
 
 // DefaultLimit define maximum number of record fetched per request.
@@ -295,6 +302,12 @@ var (
 		Code:    http.StatusForbidden,
 		Message: `the traded asset require user account to accept terms of sale`,
 		Name:    "ERR_ASSET_TERMS_REQUIRED",
+	}
+
+	ErrTradeFillOrKill = &liberrors.E{
+		Code:    http.StatusUnprocessableEntity,
+		Message: "not enough amount in the market to process fill-or-kill order",
+		Name:    "ERR_TRADE_FILL_OR_KILL",
 	}
 
 	ErrWalletAddress = &errors.E{

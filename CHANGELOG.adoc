@@ -1,5 +1,21 @@
 = CHANGELOG
 
+==  tokenomy-go v0.13.0 (2021.xx.xx)
+
+* all: add parameter TimeInForce on trade request
+
+  TimeInForce parameter only applicable if Method is "limit".
+  This option may change the behaviour of order "limit" processed by broker.
+  Currently, the valid values are empty "" (default) or "FOK"
+  (fill-or-kill).
+
+  If its empty, the order request processed normally as "limit" request.
+
+  If its "FOK", the order will be success only if only all of requested
+  amount is fulfilled, otherwise it will return as an error
+  ErrTradeFillOrKill.
+
+
 ==  tokenomy-go v0.12.0 (2021.04.06)
 
 === New features

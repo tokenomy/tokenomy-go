@@ -5,8 +5,8 @@
 //
 // Package tokenomy is the official Go module for client of Tokenomy API v2.
 //
-// Documentation for API v2 is available at
-// https://exchange.tokenomy.com/help/api/v2/ and the
+// The documentation for API v2 is available at
+// https://api.tokenomy.com/ and for the Go module at
 // https://pkg.go.dev/github.com/tokenomy/tokenomy-go?tab=doc.
 //
 // Note that, this module is in development state, still in v0, and may
@@ -18,7 +18,7 @@
 // credential).
 //
 // An API credential can be retrieved manually by logging in into your
-// Tokenomy Exchange account (https://exchange.tokenomy.com) and open the
+// Tokenomy account (https://exchange.tokenomy.com) through the
 // "Trade API" menu section (https://exchange.tokenomy.com/trade_api).
 // Please keep these credentials safe and do not reveal it to any external
 // party.
