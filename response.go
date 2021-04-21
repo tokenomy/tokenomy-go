@@ -4,21 +4,9 @@
 
 package tokenomy
 
-import (
-	liberrors "github.com/shuLhan/share/lib/errors"
-)
+import "github.com/shuLhan/share/lib/http"
 
 //
 // Response contains the HTTP response from server.
 //
-type Response struct {
-	liberrors.E
-	Data interface{} `json:"data,omitempty"`
-}
-
-//
-// Unwrap return the internal liberrors.E.
-//
-func (res *Response) Unwrap() error {
-	return &res.E
-}
+type Response http.EndpointResponse
