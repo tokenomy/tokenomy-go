@@ -1,6 +1,10 @@
 = CHANGELOG
 
-==  tokenomy-go v0.13.0 (2021.xx.xx)
+==  tokenomy-go v0.13.0 (2021.05.20)
+
+This release set the minimum Go version in go.mod to 1.16.
+
+=== New features
 
 * all: add parameter TimeInForce on trade request
 
@@ -9,10 +13,11 @@
   Currently, the valid values are empty "" (default) or "FOK"
   (fill-or-kill).
 
-  If its empty, the order request processed normally as "limit" request.
+  If the value is empty, the order request processed normally as "limit"
+  request.
 
-  If its "FOK", the order will be success only if only all of requested
-  amount is fulfilled, otherwise it will return as an error
+  If the value is "FOK", the order will be success only if only all of
+  requested amount is fulfilled, otherwise it will return as an error
   ErrTradeFillOrKill.
 
 
