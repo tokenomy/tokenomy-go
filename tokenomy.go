@@ -58,7 +58,7 @@ const (
 //
 // List of known asset names.
 // The list is updated rarely, it may contains asset that has been delisted
-// or did not contains new asset in the Tokenomy server.
+// or did not contains new asset in the Tokenomy platform.
 //
 const (
 	AssetNameAchain          = "achain"
@@ -86,6 +86,7 @@ const (
 	AssetNameNeo             = "neo"
 	AssetNameOntology        = "ont"
 	AssetNamePlaygame        = "pxg"
+	AssetNamePolkadot        = "dot"
 	AssetNameSiacash         = "scc"
 	AssetNameSix             = "six"
 	AssetNameStellar         = "xlm"
@@ -104,7 +105,7 @@ const (
 //
 // List of valid pairs.
 // The list is updated rarely, so it may contains pairs that has been delisted
-// or did not contains new pairs in the Tokenomy server.
+// or did not contains new pairs in the Tokenomy platform.
 //
 const (
 	PairBitcoinabcBitcoin      = AssetNameBitcoinabc + "_" + AssetNameBitcoin      // bchabc_btc
@@ -116,6 +117,7 @@ const (
 	PairLoopringBitcoin        = AssetNameLoopring + "_" + AssetNameBitcoin        // lrc_btc
 	PairMoneroBitcoin          = AssetNameMonero + "_" + AssetNameBitcoin          // xmr_btc
 	PairOntologyBitcoin        = AssetNameOntology + "_" + AssetNameBitcoin        // ont_btc
+	PairPolkadotBitcoin        = AssetNamePolkadot + "_" + AssetNameBitcoin        // dot_btc
 	PairSixBitcoin             = AssetNameSix + "_" + AssetNameBitcoin             // six_btc
 	PairStellarBitcoin         = AssetNameStellar + "_" + AssetNameBitcoin         // xlm_btc
 	PairSwipeBitcoin           = AssetNameSwipe + "_" + AssetNameBitcoin           // swipe_btc
@@ -137,6 +139,7 @@ const (
 	PairKybernetworkIdk = AssetNameKybernetwork + "_" + AssetNameIdk // knc_idk
 	PairLyfebepIdk      = AssetNameLyfebep + "_" + AssetNameIdk      // lyfebep_idk
 	PairMakerIdk        = AssetNameMaker + "_" + AssetNameIdk        // mkr_idk
+	PairPolkadotIdk     = AssetNamePolkadot + "_" + AssetNameIdk     // dot_idk
 	PairPlaygameIdk     = AssetNamePlaygame + "_" + AssetNameIdk     // pxg_idk
 	PairSiacashIdk      = AssetNameSiacash + "_" + AssetNameIdk      // scc_idk
 	PairSushiIdk        = AssetNameSushiSwap + "_" + AssetNameIdk    // sushi_idk
