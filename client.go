@@ -49,10 +49,6 @@ func NewClient(env *Environment) (cl *Client, err error) {
 		env:  env,
 	}
 
-	if len(cl.env.Token) > 0 {
-		err = cl.Authenticate()
-	}
-
 	return cl, err
 }
 
