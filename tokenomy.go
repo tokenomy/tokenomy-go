@@ -97,6 +97,7 @@ const (
 	AssetNameTezos           = "xtz"
 	AssetNameTokenomy        = "ten"
 	AssetNameTron            = "trx"
+	AssetNameUsdCoin         = "usdc"
 	AssetNameVexanium        = "vex"
 	AssetNameXanpool         = "xlp"
 	AssetNameZcash           = "zec"
