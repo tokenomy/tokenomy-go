@@ -20,7 +20,8 @@ type TradeRequest struct {
 	Type string `json:"type"`
 
 	// Method of trading, its either "limit" or "market".
-	Method string `json:"method"`
+	// Default to "limit" if its empty.
+	Method string `json:"method,omitempty"`
 
 	// TimeInForce parameter only applicable if Method is "limit".
 	// This option may change the behaviour of order "limit" processed by
@@ -34,7 +35,7 @@ type TradeRequest struct {
 	// If its "FOK", the order will be success only if only all of
 	// requested amount is fulfilled, otherwise it will return as an error
 	// ErrTradeFillOrKill.
-	TimeInForce string `json:"time_in_force"`
+	TimeInForce string `json:"time_in_force,omitempty"`
 
 	// Pair name using "<coin>_<base>" format.
 	Pair string `json:"pair"`
@@ -45,7 +46,7 @@ type TradeRequest struct {
 	// IsPostOnly parameter only applicable if Method is "limit".
 	// If its true, the order will be success if only if no matching
 	// trades happened, otherwise it will return an error.
-	IsPostOnly bool `json:"post_only"`
+	IsPostOnly bool `json:"post_only,omitempty"`
 }
 
 //
