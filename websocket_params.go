@@ -12,22 +12,26 @@ import (
 // WebSocketParams contains the request parameters for WebSocket client.
 //
 type WebSocketParams struct {
+	Address   string `json:"address,omitempty"`
+	Asset     string `json:"asset,omitempty"`
+	IDSortBy  string `json:"id_sort_by,omitempty"`
+	Memo      string `json:"memo,omitempty"`
+	Network   string `json:"network,omitempty"`
+	RequestID string `json:"request_id,omitempty"`
+
 	TradeRequest
 	PublicSubscription
 
-	Address    string `json:"address,omitempty"`
-	Asset      string `json:"asset,omitempty"`
-	Network    string `json:"network,omitempty"`
-	IDAfter    int64  `json:"id_after,omitempty"`
-	IDBefore   int64  `json:"id_before,omitempty"`
-	IDSortBy   string `json:"id_sort_by,omitempty"`
-	Limit      int64  `json:"limit,omitempty"`
-	Memo       string `json:"memo,omitempty"`
-	Offset     int64  `json:"offset,omitempty"`
-	RequestID  string `json:"request_id,omitempty"`
-	TimeAfter  int64  `json:"time_after,omitempty"`
-	TimeBefore int64  `json:"time_before,omitempty"`
-	TradeID    int64  `json:"trade_id,omitempty"`
+	IDAfter  int64 `json:"id_after,omitempty"`
+	IDBefore int64 `json:"id_before,omitempty"`
+
+	TimeAfter  int64 `json:"time_after,omitempty"`
+	TimeBefore int64 `json:"time_before,omitempty"`
+
+	TradeID int64 `json:"trade_id,omitempty"`
+
+	Limit  int64 `json:"limit,omitempty"`
+	Offset int64 `json:"offset,omitempty"`
 }
 
 //

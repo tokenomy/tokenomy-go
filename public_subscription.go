@@ -10,7 +10,7 @@ package tokenomy
 //
 type PublicSubscription struct {
 	Depths    []string `json:"depths"`
-	Summaries bool     `json:"summaries"`
 	Ticker    []string `json:"ticker"`
 	Trades    []string `json:"trades"`
+	Summaries bool     `json:"summaries"`
 }

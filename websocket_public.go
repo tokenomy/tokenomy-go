@@ -28,18 +28,19 @@ const (
 type WebSocketPublic struct {
 	env  *Environment
 	conn *websocket.Client
+	subs *PublicSubscription
 
-	requestsLocker sync.Mutex
-	requests       map[uint64]chan *websocket.Response
-	subs           *PublicSubscription
-	topicTrades    chan Trade
-	topicDepths    chan MarketDepths
+	requests    map[uint64]chan *websocket.Response
+	topicTrades chan Trade
+	topicDepths chan MarketDepths
 
 	// NotifTrades is a channel that will receive public order books
 	// (open, closed, cancelled order) after calling SubscribeTrades
 	// method.
 	NotifTrades <-chan Trade
 	NotifDepths <-chan MarketDepths
+
+	requestsLocker sync.Mutex
 }
 
 //

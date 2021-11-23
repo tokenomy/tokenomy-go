@@ -15,14 +15,6 @@ import (
 // resources, for example system environment variables.
 //
 type Environment struct {
-	//
-	// Debug define level of logging in our library.
-	// debug value is set from environment variable "TOKENOMY_DEBUG".
-	// TOKENOMY_DEBUG=1 is for logging in configuration.
-	// TOKENOMY_DEBUG=2 is for logging input and output.
-	//
-	Debug int
-
 	// Address of API server, optional. It will default to DefaultAddress
 	// constant on each package.
 	Address string
@@ -32,6 +24,14 @@ type Environment struct {
 
 	// Secret, required, is the private part of API key.
 	Secret string
+
+	//
+	// Debug define level of logging in our library.
+	// debug value is set from environment variable "TOKENOMY_DEBUG".
+	// TOKENOMY_DEBUG=1 is for logging in configuration.
+	// TOKENOMY_DEBUG=2 is for logging input and output.
+	//
+	Debug int
 
 	// IsInsecure, optional, allow self-signed certificate, should be use
 	// for testing only.

@@ -10,8 +10,6 @@ import "github.com/shuLhan/share/lib/math/big"
 // MarketTicker contains the pair tick information in the market.
 //
 type MarketTicker struct {
-	PairName string `json:"pair"`
-
 	// LowestAskPrice contains the lowest sell price in open orders.
 	LowestAskPrice *big.Rat `json:"ask"`
 
@@ -36,4 +34,6 @@ type MarketTicker struct {
 	// VolumeCoin24H contains the total coin asset has been traded since
 	// the last 24 hours.
 	VolumeCoin24H *big.Rat `json:"volume_coin"`
+
+	PairName string `json:"pair"`
 }

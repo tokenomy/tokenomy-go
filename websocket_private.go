@@ -27,16 +27,17 @@ type OrdersClosedHandler func(trade *Trade)
 // WebSocketPrivate define the private WebSocket client for APIv2.
 //
 type WebSocketPrivate struct {
+	env  *Environment
+	conn *websocket.Client
+
+	requests map[uint64]chan *websocket.Response
+
 	// HandleOrdersClosed define the callback that will be called
 	// automatically by client when one of the user's orders closed in the
 	// market.
 	HandleOrdersClosed OrdersClosedHandler
 
-	env  *Environment
-	conn *websocket.Client
-
 	requestsLocker sync.Mutex
-	requests       map[uint64]chan *websocket.Response
 }
 
 //

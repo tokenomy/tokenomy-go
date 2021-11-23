@@ -16,12 +16,18 @@ import (
 // TradeRequest contains parameters for trading.
 //
 type TradeRequest struct {
+	Price  *big.Rat `json:"price"`
+	Amount *big.Rat `json:"amount"`
+
 	// Type of trade, its either "buy" or "sell".
 	Type string `json:"type"`
 
 	// Method of trading, its either "limit" or "market".
 	// Default to "limit" if its empty.
 	Method string `json:"method,omitempty"`
+
+	// Pair name using "<coin>_<base>" format.
+	Pair string `json:"pair"`
 
 	// TimeInForce parameter only applicable if Method is "limit".
 	// This option may change the behaviour of order "limit" processed by
@@ -36,12 +42,6 @@ type TradeRequest struct {
 	// requested amount is fulfilled, otherwise it will return as an error
 	// ErrTradeFillOrKill.
 	TimeInForce string `json:"time_in_force,omitempty"`
-
-	// Pair name using "<coin>_<base>" format.
-	Pair string `json:"pair"`
-
-	Amount *big.Rat `json:"amount"`
-	Price  *big.Rat `json:"price"`
 
 	// IsPostOnly parameter only applicable if Method is "limit".
 	// If its true, the order will be success if only if no matching

@@ -11,23 +11,25 @@ import "github.com/shuLhan/share/lib/math/big"
 // closed.
 //
 type Trade struct {
-	ID     int64    `json:"id,omitempty"`
-	Pair   string   `json:"pair,omitempty"`
-	Type   string   `json:"type,omitempty"`   // Its either "sell" or "buy".
-	Method string   `json:"method,omitempty"` // Its either "limit" or "market".
-	Status string   `json:"status,omitempty"` // Status for closed trade, its either "cancelled" or "filled".
-	Price  *big.Rat `json:"price,omitempty"`
+	Price *big.Rat `json:"price,omitempty"`
 
-	BaseAsset  string   `json:"base_asset,omitempty"`
 	BaseAmount *big.Rat `json:"base_amount,omitempty"`
 	BaseFilled *big.Rat `json:"base_filled,omitempty"`
 	BaseRemain *big.Rat `json:"base_remain,omitempty"`
 
-	CoinAsset  string   `json:"coin_asset,omitempty"`
 	CoinAmount *big.Rat `json:"coin_amount,omitempty"`
 	CoinFilled *big.Rat `json:"coin_filled,omitempty"`
 	CoinRemain *big.Rat `json:"coin_remain,omitempty"`
 
+	Pair   string `json:"pair,omitempty"`
+	Type   string `json:"type,omitempty"`   // Its either "sell" or "buy".
+	Method string `json:"method,omitempty"` // Its either "limit" or "market".
+	Status string `json:"status,omitempty"` // Status for closed trade, its either "cancelled" or "filled".
+
+	BaseAsset string `json:"base_asset,omitempty"`
+	CoinAsset string `json:"coin_asset,omitempty"`
+
+	ID         int64 `json:"id,omitempty"`
 	SubmitTime int64 `json:"submit_time,omitempty"`
 	FinishTime int64 `json:"finish_time,omitempty"`
 }
