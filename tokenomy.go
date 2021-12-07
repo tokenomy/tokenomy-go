@@ -66,6 +66,7 @@ const (
 	AssetNameBinancechain    = "bnb"
 	AssetNameBitcoin         = "btc"
 	AssetNameBitcoinCash     = "bch"
+	AssetNameCardano         = "ada"
 	AssetNameChainlink       = "link"
 	AssetNameCyberMiles      = "cmt"
 	AssetNameCompound        = "comp"
@@ -115,6 +116,7 @@ const (
 
 	PairBalancerIdk     = AssetNameBalancer + "_" + AssetNameIdk     // bal_idk
 	PairBitcoinIdk      = AssetNameBitcoin + "_" + AssetNameIdk      // btc_idk
+	PairCardanoIdk      = AssetNameCardano + "_" + AssetNameIdk      // ada_idk
 	PairChainlinkIdk    = AssetNameChainlink + "_" + AssetNameIdk    // link_idk
 	PairCompoundIdk     = AssetNameCompound + "_" + AssetNameIdk     // comp_idk
 	PairDaiIdk          = AssetNameDai + "_" + AssetNameIdk          // dai_idk
