@@ -10,6 +10,7 @@ import (
 	stdhttp "net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/shuLhan/share/lib/http"
 	"github.com/shuLhan/share/lib/math/big"
@@ -293,6 +294,18 @@ func (cl *Client) UserTrades(tp TradeParams) (trades []Trade, err error) {
 	if tp.Limit <= 0 && tp.Limit > DefaultLimit {
 		tp.Limit = DefaultLimit
 	}
+
+	if len(tp.Sort) == 0 {
+		tp.Sort = SortDescending
+	} else {
+		tp.Sort = strings.ToLower(tp.Sort)
+	}
+	switch tp.Sort {
+	case SortAscending, SortDescending:
+	default:
+		return nil, fmt.Errorf("UserTrades: unknown sort order: %q", tp.Sort)
+	}
+
 	params.Set(ParamNameLimit, strconv.FormatInt(tp.Limit, 10))
 	if tp.IDAfter > 0 {
 		params.Set(ParamNameIDAfter, strconv.FormatInt(tp.IDAfter, 10))

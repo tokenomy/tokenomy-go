@@ -11,6 +11,10 @@ package tokenomy
 type TradeParams struct {
 	Pair string
 
+	// The Sort field define how the record ordered. Valid values is "asc"
+	// for ascending or "desc" for descending.
+	Sort string
+
 	// The Offset field define the number of rows to be skipped.
 	Offset int64
 

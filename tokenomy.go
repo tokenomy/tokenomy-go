@@ -205,6 +205,7 @@ const (
 	ParamNamePrice         = "price"
 	ParamNameReceiveWindow = "recv_window"
 	ParamNameRequestID     = "request_id"
+	ParamNameSort          = "sort"
 	ParamNameTimeAfter     = "time_after"
 	ParamNameTimeBefore    = "time_before"
 	ParamNameTimeInForce   = "time_in_force"
