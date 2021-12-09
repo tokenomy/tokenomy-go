@@ -281,50 +281,30 @@ func (cl *Client) UserInfo() (user *User, err error) {
 // UserTrades list the user's trade history, ordered from latest to oldest
 // one.
 //
-// The offset parameter define the number of record to be skipped.
-//
-// The limit parameter define the maximum number of record fetched, if its not
-// set default to DefaultLimit.
-//
-// The idAfter and idBefore filter the records based on ID.  The idAfter will
-// only fetch  record after the value of ID, and idBefore will only fetch
-// record before the value of ID.
-//
-// the timeAfter and timeBefore filter the records based on time when the
-// trades completed.  The value of time is Unix timestamp in seconds.
-//
-// the sortIDBy define the order of result set, default is sorted by ID in
-// "desc" (descending) order.
-// Valid values are "asc" for ascending and "desc" for descending order.
-//
 // This method require authentication.
 //
-func (cl *Client) UserTrades(
-	pairName string,
-	offset, limit, idAfter, idBefore, timeAfter, timeBefore int64,
-) (
-	trades []Trade, err error,
-) {
+func (cl *Client) UserTrades(tp TradeParams) (trades []Trade, err error) {
 	params := url.Values{
-		ParamNamePair: []string{pairName},
+		ParamNamePair: []string{tp.Pair},
 	}
-	if offset > 0 {
-		params.Set(ParamNameOffset, strconv.FormatInt(offset, 10))
+	if tp.Offset > 0 {
+		params.Set(ParamNameOffset, strconv.FormatInt(tp.Offset, 10))
 	}
-	if limit > 0 && limit <= DefaultLimit {
-		params.Set(ParamNameLimit, strconv.FormatInt(limit, 10))
+	if tp.Limit <= 0 && tp.Limit > DefaultLimit {
+		tp.Limit = DefaultLimit
 	}
-	if idAfter > 0 {
-		params.Set(ParamNameIDAfter, strconv.FormatInt(idAfter, 10))
+	params.Set(ParamNameLimit, strconv.FormatInt(tp.Limit, 10))
+	if tp.IDAfter > 0 {
+		params.Set(ParamNameIDAfter, strconv.FormatInt(tp.IDAfter, 10))
 	}
-	if idBefore > 0 {
-		params.Set(ParamNameIDBefore, strconv.FormatInt(idBefore, 10))
+	if tp.IDBefore > 0 {
+		params.Set(ParamNameIDBefore, strconv.FormatInt(tp.IDBefore, 10))
 	}
-	if timeAfter > 0 {
-		params.Set(ParamNameTimeAfter, strconv.FormatInt(timeAfter, 10))
+	if tp.TimeAfter > 0 {
+		params.Set(ParamNameTimeAfter, strconv.FormatInt(tp.TimeAfter, 10))
 	}
-	if timeBefore > 0 {
-		params.Set(ParamNameTimeBefore, strconv.FormatInt(timeBefore, 10))
+	if tp.TimeBefore > 0 {
+		params.Set(ParamNameTimeBefore, strconv.FormatInt(tp.TimeBefore, 10))
 	}
 
 	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserTrades, params)
