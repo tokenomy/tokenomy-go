@@ -14,7 +14,8 @@ type MarketInfo struct {
 	AmountMinimum *big.Rat `json:"amount_minimum"`
 
 	ID        string `json:"id"`
-	Symbol    string `json:"symbol"`
+	Symbol    string `json:"symbol"` // Deprecated, use Pair field.
+	Pair      string `json:"pair"`
 	CoinAsset string `json:"coin_asset"`
 	BaseAsset string `json:"base_asset"`
 
