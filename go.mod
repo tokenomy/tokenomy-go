@@ -2,6 +2,6 @@ module github.com/tokenomy/tokenomy-go
 
 go 1.16
 
-require github.com/shuLhan/share v0.26.0
+require github.com/shuLhan/share v0.32.1-0.20211220053556-5748b1b96617
 
 //replace github.com/shuLhan/share => ../share
