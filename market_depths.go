@@ -10,6 +10,7 @@ import "github.com/shuLhan/share/lib/math/big"
 // MarketDepths contains list of depth on open asks and bids.
 //
 type MarketDepths struct {
+	Pair string   `json:"pair"`
 	Asks []*Depth `json:"asks"`
 	Bids []*Depth `json:"bids"`
 }
