@@ -5,10 +5,10 @@
 package tokenomy
 
 //
-// TradeParams represent all list of parameters for querying user's
-// trades.
+// ListTradeParams represent parameters for querying user's trades, closed,
+// and open orders.
 //
-type TradeParams struct {
+type ListTradeParams struct {
 	Pair string
 
 	// The Sort field define how the record ordered. Valid values is "asc"

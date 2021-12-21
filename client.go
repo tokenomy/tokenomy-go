@@ -284,7 +284,7 @@ func (cl *Client) UserInfo() (user *User, err error) {
 //
 // This method require authentication.
 //
-func (cl *Client) UserTrades(tp TradeParams) (trades []Trade, err error) {
+func (cl *Client) UserTrades(tp ListTradeParams) (trades []Trade, err error) {
 	params := url.Values{
 		ParamNamePair: []string{tp.Pair},
 	}
