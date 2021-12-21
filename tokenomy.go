@@ -216,7 +216,7 @@ const (
 )
 
 // DefaultLimit define maximum number of record fetched per request.
-const DefaultLimit = 1000
+const DefaultLimit = 100
 
 // List of valid sort values.
 const (
