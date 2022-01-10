@@ -182,6 +182,25 @@ func (cl *WebSocketPublic) MarketTicker(pair string) (tick *MarketTicker, err er
 }
 
 //
+// MarketSummaries get the market summaries.
+//
+func (cl *WebSocketPublic) MarketSummaries() (summaries *MarketSummaries, err error) {
+	_, resbody, err := cl.send(http.MethodGet, APIMarketSummaries, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	summaries = &MarketSummaries{}
+
+	err = json.Unmarshal(resbody, summaries)
+	if err != nil {
+		return nil, err
+	}
+
+	return summaries, nil
+}
+
+//
 // MarketTrades return list of all completed trades in the market, specific to
 // pair, grouped by ask and bid.
 //
