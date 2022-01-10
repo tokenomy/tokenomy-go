@@ -45,8 +45,12 @@ func NewClient(env *Environment) (cl *Client, err error) {
 		env.Address = DefaultAddress
 	}
 
+	clOpts := &http.ClientOptions{
+		ServerUrl:     env.Address,
+		AllowInsecure: env.IsInsecure,
+	}
 	cl = &Client{
-		conn: http.NewClient(env.Address, nil, env.IsInsecure),
+		conn: http.NewClient(clOpts),
 		env:  env,
 	}
 
