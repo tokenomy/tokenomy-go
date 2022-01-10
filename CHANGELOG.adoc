@@ -1,5 +1,96 @@
 = CHANGELOG
 
+==  tokenomy-go v0.14.0 (2022.01.10)
+
+===  New features
+
+*  all: add method to get market summaries on WebSocket public
+
+   The MarketSummaries method return the market summaries, its equal to
+   HTTP public API /v2/market/summaries.
+
+===  Breaking changes
+
+*  all: rename TradeParams to ListTradeParams
+
+   The name TradeParams indicate that the struct is for trading parameters,
+   but the actual use is to fetch list of user's trades.
+
+   In order to minimize confusion we rename the struct to ListTradeParams.
+
+*  all: refactoring UserTrades parameter to use struct TradeParams
+
+   Previously the UserTrades method accept seven parameters.
+   If we need to add new parameter, it will changes the signature of method.
+
+   To prevent this in the future, we changes the signature to accept
+   single struct.
+
+===  Enhancements
+
+*  all: change default limit from 1000 to 100
+
+   This is to make it consistent with the platform and to minimize number
+   of records fetched from server.
+
+*  all: add field Pair to MarketDepths
+
+   The field Pair indicated which pair that the market depths data that
+   client received.  This is required to distinguished broadcasted data
+   on WebSocket public for market depths subscription.
+
+*  all: add field Pair to MarketInfo
+
+   The Pair field deprecating the Symbol field.  The idea is to make the
+   field name consistent across all APIs.
+
+*  all: add field Sort to TradeParams
+
+   The Sort field define the order of records from UserTrades.
+   Valid values is "asc" for ascending or "desc" for descending.
+
+*  all: support ADA/IDK
+
+*  all: realign all structs
+
+   Size changes after alignments,
+
+   * DepositItem changes from 56 to 40 bytes (-16 bytes)
+   * Environment changes from 48 to 40 bytes (-8 bytes)
+   * MarketInfo changes from 104 to 72 bytes (-32 bytes)
+   * MarketTicker changes from 72 to 64 bytes (-8 bytes)
+   * PublicSubscription changes from 64 to 56 (-8 bytes)
+   * Trade changes from 160 to 144 bytes (-16 bytes)
+   * TradeRequest changes from 80 to 72 bytes (-8 bytes)
+   * User changes from 64 to 48 bytes (-16 bytes)
+   * WebSocketParams changes from 288 to 248 (-40 bytes)
+   * WebSocketPrivate changes from 40 to 32 (-8 bytes)
+   * WebSocketPublic changes from 72 to 64 (-8 bytes)
+   * WithdrawItem changes from 144 to 128 (-16 bytes)
+
+*  all: add JSON tag omitempty for optional fields in TradeRequest
+
+   The Method, TimeInForce, and IsPostOnly fields is optional for trade
+   request, so it can be empty.
+
+*  all: update currencies and pairs
+
+   For currencies we add Bitcoin Cash, CyberMiles, and USDC;
+   and remove Bitcoin ABC, Honest, Loopring, Lyfe, Lyfe BEP, Ontology,
+   Playgame, Siacash, Six, Sushi Swap, Swipe.
+
+   The following pair is added: bch_btc.
+
+   The following pairs are removed: bchabc_btc, hnst_btc, lrc_btc, ont_btc,
+   six_btc, swipe_btc, xlp_btc, hart_idk, hnst_idk, inx_idk, lyfebep_idk,
+   pxg_idk, scc_idk, sushi_idk, swipe_idk.
+
+
+*  tokenomy-go: add usdc to list of known assets
+*  user_notifications: add earn related product notification type
+*  all: add asset Polkadot (DOT) and pairs for dot_btc and dot_idk
+
+
 ==  tokenomy-go v0.13.0 (2021.05.20)
 
 This release set the minimum Go version in go.mod to 1.16.
