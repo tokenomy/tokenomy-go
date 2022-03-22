@@ -83,6 +83,7 @@ const (
 	AssetNameMonero          = "xmr"
 	AssetNameNeo             = "neo"
 	AssetNamePolkadot        = "dot"
+	AssetNameSolana          = "sol"
 	AssetNameStellar         = "xlm"
 	AssetNameSynthetix       = "snx"
 	AssetNameTether          = "usdt"
@@ -107,6 +108,7 @@ const (
 	PairLitecoinBitcoin    = AssetNameLitecoin + "_" + AssetNameBitcoin    // ltc_btc
 	PairMoneroBitcoin      = AssetNameMonero + "_" + AssetNameBitcoin      // xmr_btc
 	PairPolkadotBitcoin    = AssetNamePolkadot + "_" + AssetNameBitcoin    // dot_btc
+	PairSolanaBitcoin      = AssetNameSolana + "_" + AssetNameBitcoin      // sol_btc
 	PairStellarBitcoin     = AssetNameStellar + "_" + AssetNameBitcoin     // xlm_btc
 	PairTokenomyBitcoin    = AssetNameTokenomy + "_" + AssetNameBitcoin    // ten_btc
 	PairTronBitcoin        = AssetNameTron + "_" + AssetNameBitcoin        // trx_btc
@@ -124,6 +126,7 @@ const (
 	PairKybernetworkIdk = AssetNameKybernetwork + "_" + AssetNameIdk // knc_idk
 	PairMakerIdk        = AssetNameMaker + "_" + AssetNameIdk        // mkr_idk
 	PairPolkadotIdk     = AssetNamePolkadot + "_" + AssetNameIdk     // dot_idk
+	PairSolanaIdk       = AssetNameSolana + "_" + AssetNameIdk       // sol_idk
 	PairSynthetixIdk    = AssetNameSynthetix + "_" + AssetNameIdk    // snx_idk
 	PairTetherIdk       = AssetNameTether + "_" + AssetNameIdk       // usdt_idk
 	PairTezosIdk        = AssetNameTezos + "_" + AssetNameIdk        // xtz_idk
@@ -132,6 +135,7 @@ const (
 	PairBitcoinTether  = AssetNameBitcoin + "_" + AssetNameTether  // btc_usdt
 	PairEthereumTether = AssetNameEthereum + "_" + AssetNameTether // eth_usdt
 	PairIdkTether      = AssetNameIdk + "_" + AssetNameTether      // idk_usdt
+	PairSolanaTether   = AssetNameSolana + "_" + AssetNameTether   // sol_usdt
 	PairTokenomyTether = AssetNameTokenomy + "_" + AssetNameTether // ten_usdt
 )
 
