@@ -590,6 +590,57 @@ func (cl *Client) TradeBid(treq *TradeRequest) (
 	return cl.trade(APITradeBid, treq)
 }
 
+//
+// TradeBulk request trade with multiple orders and/or cancellation.
+//
+func (cl *Client) TradeBulk(tbReq *TradeBulk) (tbRes *TradeBulk, err error) {
+	var (
+		logp    = "TradeBulk"
+		headers = stdhttp.Header{}
+
+		httpres *stdhttp.Response
+		res     *Response
+		sign    string
+		payload []byte
+		resBody []byte
+	)
+
+	if tbReq == nil {
+		return nil, nil
+	}
+
+	tbReq.Timestamp = timestamp()
+
+	payload, err = json.Marshal(tbReq)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", logp, err)
+	}
+
+	sign = Sign(string(payload), cl.env.Secret)
+	headers.Set(HeaderNameKey, cl.env.Token)
+	headers.Set(HeaderNameSign, sign)
+
+	httpres, resBody, err = cl.conn.PostJSON(APITradeBulk, headers, tbReq)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", logp, err)
+	}
+
+	tbRes = &TradeBulk{}
+	res = &Response{
+		Data: tbRes,
+	}
+	err = json.Unmarshal(resBody, res)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", logp, err)
+	}
+
+	if httpres.StatusCode >= 400 {
+		return nil, fmt.Errorf("%s: %w", logp, res)
+	}
+
+	return tbRes, nil
+}
+
 func (cl *Client) trade(api string, treq *TradeRequest) (
 	trade *TradeResponse, err error,
 ) {
