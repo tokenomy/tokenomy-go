@@ -7,19 +7,20 @@ package tokenomy
 import (
 	"encoding/json"
 	"fmt"
-	stdhttp "net/http"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 
-	"github.com/shuLhan/share/lib/http"
+	libhttp "github.com/shuLhan/share/lib/http"
 	"github.com/shuLhan/share/lib/math/big"
 )
 
 // Client for Tokenomy REST API v2.
 type Client struct {
+	*libhttp.Client
+
 	User *User
-	conn *http.Client
 	env  *Environment
 }
 
@@ -41,13 +42,13 @@ func NewClient(env *Environment) (cl *Client, err error) {
 		env.Address = DefaultAddress
 	}
 
-	clOpts := &http.ClientOptions{
+	clOpts := &libhttp.ClientOptions{
 		ServerUrl:     env.Address,
 		AllowInsecure: env.IsInsecure,
 	}
 	cl = &Client{
-		conn: http.NewClient(clOpts),
-		env:  env,
+		Client: libhttp.NewClient(clOpts),
+		env:    env,
 	}
 
 	return cl, err
@@ -74,7 +75,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 		return nil, ErrInvalidPair
 	}
 
-	_, resBody, err := cl.conn.Get(APIMarketDepths, nil, params)
+	_, resBody, err := cl.Get(APIMarketDepths, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketDepths: %w", err)
 	}
@@ -94,7 +95,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 
 // MarketInfo return information about all the pair in the platform.
 func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
-	_, resBody, err := cl.conn.Get(APIMarketInfo, nil, nil)
+	_, resBody, err := cl.Get(APIMarketInfo, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketInfo: %w", err)
 	}
@@ -119,7 +120,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 		ParamNamePair: []string{pairName},
 	}
 
-	_, resBody, err := cl.conn.Get(APIMarketTradesOpen, nil, params)
+	_, resBody, err := cl.Get(APIMarketTradesOpen, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTradesOpen: %w", err)
 	}
@@ -141,7 +142,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 	params := url.Values{}
 
-	_, resBody, err := cl.conn.Get(APIMarketPrices, nil, params)
+	_, resBody, err := cl.Get(APIMarketPrices, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketPrices: %w", err)
 	}
@@ -165,7 +166,7 @@ func (cl *Client) MarketTicker(pairName string) (tick *MarketTicker, err error) 
 		ParamNamePair: []string{pairName},
 	}
 
-	_, resBody, err := cl.conn.Get(APIMarketTicker, nil, params)
+	_, resBody, err := cl.Get(APIMarketTicker, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTicker: %w", err)
 	}
@@ -198,7 +199,7 @@ func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
 		},
 	}
 
-	_, resBody, err := cl.conn.Get(APIMarketTrades, nil, params)
+	_, resBody, err := cl.Get(APIMarketTrades, nil, params)
 	if err != nil {
 		return nil, fmt.Errorf("MarketTrades: %w", err)
 	}
@@ -218,7 +219,7 @@ func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
 
 // MarketSummaries return the summaries (ticker) of all pairs.
 func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
-	_, resBody, err := cl.conn.Get(APIMarketSummaries, nil, nil)
+	_, resBody, err := cl.Get(APIMarketSummaries, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("MarketSummaries: %w", err)
 	}
@@ -242,7 +243,7 @@ func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
 func (cl *Client) UserInfo() (user *User, err error) {
 	params := url.Values{}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserInfo, params)
+	b, err := cl.doSecureRequest(http.MethodGet, APIUserInfo, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserInfo: %w", err)
 	}
@@ -300,7 +301,7 @@ func (cl *Client) UserTrades(tp ListTradeParams) (trades []Trade, err error) {
 		params.Set(ParamNameTimeBefore, strconv.FormatInt(tp.TimeBefore, 10))
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserTrades, params)
+	b, err := cl.doSecureRequest(http.MethodGet, APIUserTrades, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTrades: %w", err)
 	}
@@ -337,7 +338,7 @@ func (cl *Client) UserOrdersClosed(pairName string, timeAfter, timeBefore int64)
 		},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserOrdersClosed, params)
+	b, err := cl.doSecureRequest(http.MethodGet, APIUserOrdersClosed, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserOrdersClosed: %w", err)
 	}
@@ -364,7 +365,7 @@ func (cl *Client) UserOrdersOpen(pairName string) (
 		ParamNamePair: []string{pairName},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserOrdersOpen, params)
+	b, err := cl.doSecureRequest(http.MethodGet, APIUserOrdersOpen, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserOrdersOpen: %w", err)
 	}
@@ -394,7 +395,7 @@ func (cl *Client) UserOrderInfo(pairName string, id int64) (
 		ParamNameTradeID: []string{strconv.FormatInt(id, 10)},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserOrderInfo, params)
+	b, err := cl.doSecureRequest(http.MethodGet, APIUserOrderInfo, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserOrderInfo: %w", err)
 	}
@@ -429,7 +430,7 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 		params.Set(ParamNameLimit, strconv.FormatInt(limit, 10))
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodGet, APIUserTransactions, params)
+	b, err := cl.doSecureRequest(http.MethodGet, APIUserTransactions, params)
 	if err != nil {
 		return nil, fmt.Errorf("UserTransactions: %w", err)
 	}
@@ -487,7 +488,7 @@ func (cl *Client) UserWithdraw(
 		ParamNameAmount:    []string{amount.String()},
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodPost, APIUserWithdraw,
+	b, err := cl.doSecureRequest(http.MethodPost, APIUserWithdraw,
 		params)
 	if err != nil {
 		return nil, err
@@ -556,9 +557,9 @@ func (cl *Client) TradeBid(treq *TradeRequest) (
 func (cl *Client) TradeBulk(tbReq *TradeBulk) (tbRes *TradeBulk, err error) {
 	var (
 		logp    = "TradeBulk"
-		headers = stdhttp.Header{}
+		headers = http.Header{}
 
-		httpres *stdhttp.Response
+		httpres *http.Response
 		res     *Response
 		sign    string
 		payload []byte
@@ -580,7 +581,7 @@ func (cl *Client) TradeBulk(tbReq *TradeBulk) (tbRes *TradeBulk, err error) {
 	headers.Set(HeaderNameKey, cl.env.Token)
 	headers.Set(HeaderNameSign, sign)
 
-	httpres, resBody, err = cl.conn.PostJSON(APITradeBulk, headers, tbReq)
+	httpres, resBody, err = cl.PostJSON(APITradeBulk, headers, tbReq)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", logp, err)
 	}
@@ -609,7 +610,7 @@ func (cl *Client) trade(api string, treq *TradeRequest) (
 		return nil, err
 	}
 
-	b, err := cl.doSecureRequest(stdhttp.MethodPost, api, params)
+	b, err := cl.doSecureRequest(http.MethodPost, api, params)
 	if err != nil {
 		return nil, err
 	}
@@ -651,10 +652,7 @@ func (cl *Client) TradeCancel(trade *Trade) (*Trade, error) {
 
 // TradeCancelAll cancel all user's open ask and bid orders.
 func (cl *Client) TradeCancelAll() (canceled []Trade, err error) {
-	b, err := cl.doSecureRequest(
-		stdhttp.MethodDelete,
-		APITradeCancelAll,
-		nil)
+	b, err := cl.doSecureRequest(http.MethodDelete, APITradeCancelAll, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -697,7 +695,7 @@ func (cl *Client) cancel(api, pairName string, id int64) (
 	}
 	params.Set(ParamNameTradeID, strconv.FormatInt(id, 10))
 
-	b, err := cl.doSecureRequest(stdhttp.MethodDelete, api, params)
+	b, err := cl.doSecureRequest(http.MethodDelete, api, params)
 	if err != nil {
 		return nil, err
 	}
@@ -727,20 +725,20 @@ func (cl *Client) doSecureRequest(httpMethod, path string, params url.Values) (
 	payload := params.Encode()
 	sign := Sign(payload, cl.env.Secret)
 
-	headers := stdhttp.Header{
+	headers := http.Header{
 		HeaderNameKey:  []string{cl.env.Token},
 		HeaderNameSign: []string{sign},
 	}
 
-	var httpres *stdhttp.Response
+	var httpres *http.Response
 
 	switch httpMethod {
-	case stdhttp.MethodGet:
-		httpres, resBody, err = cl.conn.Get(path, headers, params)
-	case stdhttp.MethodDelete:
-		httpres, resBody, err = cl.conn.Delete(path, headers, params)
-	case stdhttp.MethodPost:
-		httpres, resBody, err = cl.conn.PostForm(path, headers, params)
+	case http.MethodGet:
+		httpres, resBody, err = cl.Get(path, headers, params)
+	case http.MethodDelete:
+		httpres, resBody, err = cl.Delete(path, headers, params)
+	case http.MethodPost:
+		httpres, resBody, err = cl.PostForm(path, headers, params)
 	}
 	if err != nil {
 		return nil, err
