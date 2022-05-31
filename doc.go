@@ -2,7 +2,6 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-//
 // Package tokenomy is the official Go module for client of Tokenomy API v2.
 //
 // The documentation for API v2 is available at
@@ -22,5 +21,4 @@
 // "Trade API" menu section (https://exchange.tokenomy.com/trade_api).
 // Please keep these credentials safe and do not reveal it to any external
 // party.
-//
 package tokenomy

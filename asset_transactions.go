@@ -4,9 +4,7 @@
 
 package tokenomy
 
-//
 // AssetTransactions contains list of deposit and withdraw transaction.
-//
 type AssetTransactions struct {
 	Deposit  map[string][]DepositItem  `json:"deposit"`
 	Withdraw map[string][]WithdrawItem `json:"withdraw"`

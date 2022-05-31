@@ -4,7 +4,5 @@
 
 package tokenomy
 
-//
 // PairTradesOpen contains mapping of pair and their open trades information.
-//
 type PairTradesOpen map[string]TradesOpen

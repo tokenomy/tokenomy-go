@@ -6,9 +6,7 @@ package tokenomy
 
 import "github.com/shuLhan/share/lib/math/big"
 
-//
 // DepositItem contains the information of deposit.
-//
 type DepositItem struct {
 	Amount      *big.Rat `json:"amount"`
 	FinalAmount *big.Rat `json:"final_amount"`

@@ -6,9 +6,7 @@ package tokenomy
 
 import "github.com/shuLhan/share/lib/math/big"
 
-//
 // MarketInfo contains the pair information to be consumed by public.
-//
 type MarketInfo struct {
 	PriceMinimum  *big.Rat `json:"price_minimum"`
 	AmountMinimum *big.Rat `json:"amount_minimum"`

@@ -10,10 +10,8 @@ import (
 	"strconv"
 )
 
-//
 // Environment contains default and dynamic values that gathered from external
 // resources, for example system environment variables.
-//
 type Environment struct {
 	// Address of API server, optional. It will default to DefaultAddress
 	// constant on each package.
@@ -38,12 +36,10 @@ type Environment struct {
 	IsInsecure bool
 }
 
-//
 // NewEnvironment create and initialize environment.
 //
 // If token and/or secret is empty it will set from environment variables
 // TOKENOMY_TOKEN and TOKENOMY_SECRET.
-//
 func NewEnvironment(token, secret string) (env *Environment) {
 	env = &Environment{
 		Address: os.Getenv(EnvNameAddress),

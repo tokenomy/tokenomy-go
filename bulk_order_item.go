@@ -6,9 +6,7 @@ package tokenomy
 
 import liberrors "github.com/shuLhan/share/lib/errors"
 
-//
 // BulkOrderItem represent single order in bulk trading.
-//
 type BulkOrderItem struct {
 	liberrors.E
 	TradeRequest

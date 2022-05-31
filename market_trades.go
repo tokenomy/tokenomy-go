@@ -4,9 +4,7 @@
 
 package tokenomy
 
-//
 // MarketTrades contains list of closed trade grouped by asks and bids.
-//
 type MarketTrades struct {
 	Asks []Trade `json:"asks"`
 	Bids []Trade `json:"bids"`

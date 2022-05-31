@@ -4,10 +4,8 @@
 
 package tokenomy
 
-//
 // User contains user information including profile, balances, and
 // frozen balances.
-//
 type User struct {
 	*UserAssets
 

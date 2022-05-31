@@ -12,9 +12,7 @@ import (
 	"github.com/shuLhan/share/lib/math/big"
 )
 
-//
 // TradeRequest contains parameters for trading.
-//
 type TradeRequest struct {
 	Price  *big.Rat `json:"price"`
 	Amount *big.Rat `json:"amount"`
@@ -49,9 +47,7 @@ type TradeRequest struct {
 	IsPostOnly bool `json:"post_only,omitempty"`
 }
 
-//
 // Pack the TradeRequest object to be send by REST and/or WebSocket client.
-//
 func (treq *TradeRequest) Pack() (
 	params url.Values, wsparams *WebSocketParams, err error,
 ) {

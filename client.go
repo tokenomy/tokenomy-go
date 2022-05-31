@@ -16,16 +16,13 @@ import (
 	"github.com/shuLhan/share/lib/math/big"
 )
 
-//
 // Client for Tokenomy REST API v2.
-//
 type Client struct {
 	User *User
 	conn *http.Client
 	env  *Environment
 }
 
-//
 // NewClient create and initialize new client for REST API v2.
 //
 // The Environment Address parameter define the REST API v2 address, if its
@@ -39,7 +36,6 @@ type Client struct {
 // default value, if its set.
 // If both environment variables and the parameters are empty, the client can
 // only access the public API.
-//
 func NewClient(env *Environment) (cl *Client, err error) {
 	if len(env.Address) == 0 {
 		env.Address = DefaultAddress
@@ -57,9 +53,7 @@ func NewClient(env *Environment) (cl *Client, err error) {
 	return cl, err
 }
 
-//
 // Authenticate the current client's connection using token and secret keys.
-//
 func (cl *Client) Authenticate() (err error) {
 	// Test the token and secret keys by requesting user information.
 	cl.User, err = cl.UserInfo()
@@ -70,9 +64,7 @@ func (cl *Client) Authenticate() (err error) {
 	return nil
 }
 
-//
 // MarketDepths fetch list of market's depth for specific pair.
-//
 func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error) {
 	params := url.Values{
 		ParamNamePair: []string{pairName},
@@ -100,9 +92,7 @@ func (cl *Client) MarketDepths(pairName string) (depths *MarketDepths, err error
 	return depths, nil
 }
 
-//
 // MarketInfo return information about all the pair in the platform.
-//
 func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
 	_, resBody, err := cl.conn.Get(APIMarketInfo, nil, nil)
 	if err != nil {
@@ -122,10 +112,8 @@ func (cl *Client) MarketInfo() (marketInfos []MarketInfo, err error) {
 	return marketInfos, nil
 }
 
-//
 // MarketTradesOpen return list of all open trades in the market, specific to
 // pair's name, grouped by ask and bid.
-//
 func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err error) {
 	params := url.Values{
 		ParamNamePair: []string{pairName},
@@ -149,9 +137,7 @@ func (cl *Client) MarketTradesOpen(pairName string) (openTrades *TradesOpen, err
 	return openTrades, nil
 }
 
-//
 // MarketPrices return list of all latest pair's prices.
-//
 func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 	params := url.Values{}
 
@@ -173,9 +159,7 @@ func (cl *Client) MarketPrices() (marketPrices MarketPrices, err error) {
 	return marketPrices, nil
 }
 
-//
 // MarketTicker return the ticker information on specific pair.
-//
 func (cl *Client) MarketTicker(pairName string) (tick *MarketTicker, err error) {
 	params := url.Values{
 		ParamNamePair: []string{pairName},
@@ -199,10 +183,8 @@ func (cl *Client) MarketTicker(pairName string) (tick *MarketTicker, err error) 
 	return tick, nil
 }
 
-//
 // MarketTrades return list of all completed trades in the market, specific to
 // pair, grouped by ask and bid.
-//
 func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
 	marketTrades *MarketTrades, err error,
 ) {
@@ -234,9 +216,7 @@ func (cl *Client) MarketTrades(pairName string, offset, limit int64) (
 	return marketTrades, nil
 }
 
-//
 // MarketSummaries return the summaries (ticker) of all pairs.
-//
 func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
 	_, resBody, err := cl.conn.Get(APIMarketSummaries, nil, nil)
 	if err != nil {
@@ -256,11 +236,9 @@ func (cl *Client) MarketSummaries() (summaries *MarketSummaries, err error) {
 	return summaries, nil
 }
 
-//
 // UserInfo fetch the user information and balances.
 //
 // This method require authentication.
-//
 func (cl *Client) UserInfo() (user *User, err error) {
 	params := url.Values{}
 
@@ -282,12 +260,10 @@ func (cl *Client) UserInfo() (user *User, err error) {
 	return user, nil
 }
 
-//
 // UserTrades list the user's trade history, ordered from latest to oldest
 // one.
 //
 // This method require authentication.
-//
 func (cl *Client) UserTrades(tp ListTradeParams) (trades []Trade, err error) {
 	params := url.Values{
 		ParamNamePair: []string{tp.Pair},
@@ -341,7 +317,6 @@ func (cl *Client) UserTrades(tp ListTradeParams) (trades []Trade, err error) {
 	return trades, nil
 }
 
-//
 // UserOrdersClosed fetch the user closed orders based on pair's name.
 // The timeAfter and timeBefore parameters define a filter of records by range
 // of submit time.
@@ -349,7 +324,6 @@ func (cl *Client) UserTrades(tp ListTradeParams) (trades []Trade, err error) {
 // If timeBefore is zero, its default to timeAfter - 1 hour.
 //
 // This method require authentication.
-//
 func (cl *Client) UserOrdersClosed(pairName string, timeAfter, timeBefore int64) (
 	trades []Trade, err error,
 ) {
@@ -380,11 +354,9 @@ func (cl *Client) UserOrdersClosed(pairName string, timeAfter, timeBefore int64)
 	return trades, nil
 }
 
-//
 // UserOrdersOpen fetch the user open trades based on pair's name.
 //
 // This method require authentication.
-//
 func (cl *Client) UserOrdersOpen(pairName string) (
 	pairTradesOpen PairTradesOpen, err error,
 ) {
@@ -410,12 +382,10 @@ func (cl *Client) UserOrdersOpen(pairName string) (
 	return pairTradesOpen, nil
 }
 
-//
 // UserOrderInfo fetch a single user's trade information based on pair's name
 // and trade ID.
 //
 // This method require authentication.
-//
 func (cl *Client) UserOrderInfo(pairName string, id int64) (
 	trade *Trade, err error,
 ) {
@@ -442,7 +412,6 @@ func (cl *Client) UserOrderInfo(pairName string, id int64) (
 	return trade, nil
 }
 
-//
 // UserTransactions fetch all user deposit and withdraw transaction history.
 // If the asset name is not empty, it will fetch only the deposit and withdraw
 // based on the asset name.
@@ -450,7 +419,6 @@ func (cl *Client) UserOrderInfo(pairName string, id int64) (
 // The limit parameter define the maximum record in result set.
 //
 // This method require authentication.
-//
 func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTransactions, err error) {
 	params := url.Values{}
 
@@ -479,7 +447,6 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 	return trans, nil
 }
 
-//
 // UserWithdraw withdraw your assets into another address.
 // This method accept withdrawing all coins except TEN.
 //
@@ -494,7 +461,6 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 // If all the data is correct, the callback URL should return HTTP response
 // 200 with string “ok” (without quotes), and we will process the withdrawn in
 // our system, otherwise the request will be fail.
-//
 func (cl *Client) UserWithdraw(
 	requestID, asset, network, address, memo string,
 	amount *big.Rat,
@@ -540,7 +506,6 @@ func (cl *Client) UserWithdraw(
 	return withdraw, nil
 }
 
-//
 // TradeAsk request to sell the coin on market with specific method, amount,
 // and price.
 // The method parameter define the mode of sell, its either "market" (default)
@@ -555,7 +520,6 @@ func (cl *Client) UserWithdraw(
 //
 // The price parameter define the number of base that we want to sell the
 // amount of coin.
-//
 func (cl *Client) TradeAsk(treq *TradeRequest) (
 	tres *TradeResponse, err error,
 ) {
@@ -565,7 +529,6 @@ func (cl *Client) TradeAsk(treq *TradeRequest) (
 	return cl.trade(APITradeAsk, treq)
 }
 
-//
 // TradeBid request to buy the coin on market with specific method, amount,
 // and price.
 // The method parameter define the mode of buy, its either "market" or
@@ -580,7 +543,6 @@ func (cl *Client) TradeAsk(treq *TradeRequest) (
 //
 // The price parameter define the number of base that we want to buy the
 // amount of coin.
-//
 func (cl *Client) TradeBid(treq *TradeRequest) (
 	tres *TradeResponse, err error,
 ) {
@@ -590,9 +552,7 @@ func (cl *Client) TradeBid(treq *TradeRequest) (
 	return cl.trade(APITradeBid, treq)
 }
 
-//
 // TradeBulk request trade with multiple orders and/or cancellation.
-//
 func (cl *Client) TradeBulk(tbReq *TradeBulk) (tbRes *TradeBulk, err error) {
 	var (
 		logp    = "TradeBulk"
@@ -667,9 +627,7 @@ func (cl *Client) trade(api string, treq *TradeRequest) (
 	return trade, nil
 }
 
-//
 // TradeCancel cancel the open trade using ID and pair information in Trade.
-//
 func (cl *Client) TradeCancel(trade *Trade) (*Trade, error) {
 	var (
 		tradeResponse *TradeResponse
@@ -691,9 +649,7 @@ func (cl *Client) TradeCancel(trade *Trade) (*Trade, error) {
 	return tradeResponse.Order, nil
 }
 
-//
 // TradeCancelAll cancel all user's open ask and bid orders.
-//
 func (cl *Client) TradeCancelAll() (canceled []Trade, err error) {
 	b, err := cl.doSecureRequest(
 		stdhttp.MethodDelete,
@@ -715,18 +671,14 @@ func (cl *Client) TradeCancelAll() (canceled []Trade, err error) {
 	return canceled, nil
 }
 
-//
 // TradeCancelAsk cancel the specific open sell by pair and ID.
-//
 func (cl *Client) TradeCancelAsk(pairName string, id int64) (
 	trade *TradeResponse, err error,
 ) {
 	return cl.cancel(APITradeCancelAsk, pairName, id)
 }
 
-//
 // TradeCancelBid cancel the specific open buy by pair and ID.
-//
 func (cl *Client) TradeCancelBid(pairName string, id int64) (
 	trade *TradeResponse, err error,
 ) {

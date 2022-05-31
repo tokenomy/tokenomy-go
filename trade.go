@@ -6,10 +6,8 @@ package tokenomy
 
 import "github.com/shuLhan/share/lib/math/big"
 
-//
 // Trade contains information about trade bid or ask, either open or
 // closed.
-//
 type Trade struct {
 	Price *big.Rat `json:"price,omitempty"`
 

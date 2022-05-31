@@ -6,7 +6,5 @@ package tokenomy
 
 import "github.com/shuLhan/share/lib/http"
 
-//
 // Response contains the HTTP response from server.
-//
 type Response http.EndpointResponse

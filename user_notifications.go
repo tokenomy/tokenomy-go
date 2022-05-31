@@ -4,11 +4,9 @@
 
 package tokenomy
 
-//
 // UserNotifications contains user's status of notification in the system.
 // If its true, user will receive notification (mostly by email), otherwise no
 // notification will be send to user.
-//
 type UserNotifications struct {
 	UserID                 int64 `json:"-"`
 	Deposit                bool  `json:"deposit"`

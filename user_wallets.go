@@ -4,7 +4,5 @@
 
 package tokenomy
 
-//
 // UserWallets represent mapping between asset name and its wallet address.
-//
 type UserWallets map[string]string

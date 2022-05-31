@@ -6,8 +6,6 @@ package tokenomy
 
 import "github.com/shuLhan/share/lib/math/big"
 
-//
 // MarketPrices contains mapping between pair and its latest price in the
 // market.
-//
 type MarketPrices map[string]*big.Rat

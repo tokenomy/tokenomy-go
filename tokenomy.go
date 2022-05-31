@@ -56,11 +56,9 @@ const (
 	WSMessageUserOrdersTaken = "/v2/user/orders/taken"
 )
 
-//
 // List of known asset names.
 // The list is updated rarely, it may contains asset that has been delisted
 // or did not contains new asset in the Tokenomy platform.
-//
 const (
 	AssetNameAchain          = "achain"
 	AssetNameBalancer        = "bal"
@@ -97,11 +95,9 @@ const (
 	AssetNameZcash           = "zec"
 )
 
-//
 // List of valid pairs.
 // The list is updated rarely, so it may contains pairs that has been delisted
 // or did not contains new pairs in the Tokenomy platform.
-//
 const (
 	PairBitcoinCashBitcoin = AssetNameBitcoinCash + "_" + AssetNameBitcoin // bch_btc
 	PairEosBitcoin         = AssetNameEos + "_" + AssetNameBitcoin         // eos_btc
@@ -140,17 +136,13 @@ const (
 	PairTokenomyTether = AssetNameTokenomy + "_" + AssetNameTether // ten_usdt
 )
 
-//
 // List of trade's method.
-//
 const (
 	TradeMethodLimit  = "limit"
 	TradeMethodMarket = "market"
 )
 
-//
 // List of trade's type.
-//
 const (
 	TradeTypeAsk = "sell"
 	TradeTypeBid = "buy"
@@ -161,17 +153,13 @@ const (
 	TimeInForceFOK = "FOK" // Fill-or-Kill.
 )
 
-//
 // List of valid trade's status.
-//
 const (
 	TradeStatusCancelled = "cancelled"
 	TradeStatusFilled    = "filled"
 )
 
-//
 // List of knowns environment variables.
-//
 const (
 	EnvNameAddress = "TOKENOMY_ADDRESS"
 	EnvNameDebug   = "TOKENOMY_DEBUG"
@@ -180,17 +168,13 @@ const (
 	EnvNameTestE2E = "TOKENOMY_TEST_E2E"
 )
 
-//
 // List of knowns HTTP headers.
-//
 const (
 	HeaderNameSign = "Sign"
 	HeaderNameKey  = "Key"
 )
 
-//
 // List of knowns parameter names.
-//
 const (
 	ParamNameAddress       = "address"
 	ParamNameAmount        = "amount"
@@ -306,10 +290,8 @@ var (
 	}
 )
 
-//
 // Sign the payload using secret and return it as encoded hexadecimal
 // characters.
-//
 func Sign(payload, secret string) string {
 	hasher := hmac.New(sha512.New, []byte(secret))
 

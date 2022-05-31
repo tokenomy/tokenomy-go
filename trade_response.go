@@ -4,11 +4,9 @@
 
 package tokenomy
 
-//
 // TradeResponse contains the recorded order information in the market and
 // part of full amount of order that have been completed (matched) as a list
 // of trades.
-//
 type TradeResponse struct {
 	Order *Trade `json:"order"`
 	User  User   `json:"user"`

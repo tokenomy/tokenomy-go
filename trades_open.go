@@ -4,9 +4,7 @@
 
 package tokenomy
 
-//
 // TradesOpen contains the open asks and bids in the market place.
-//
 type TradesOpen struct {
 	Asks []Trade `json:"asks"`
 	Bids []Trade `json:"bids"`

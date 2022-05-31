@@ -4,9 +4,7 @@
 
 package tokenomy
 
-//
 // TradeBulk contains the request for bulk trading.
-//
 type TradeBulk struct {
 	Pair      string           `json:"pair"`
 	Orders    []*BulkOrderItem `json:"orders"`

@@ -6,9 +6,7 @@ package tokenomy
 
 import "github.com/shuLhan/share/lib/math/big"
 
-//
 // WithdrawItem contains the information of single withdraw transaction.
-//
 type WithdrawItem struct {
 	Amount      *big.Rat `json:"amount,omitempty"`
 	Fee         *big.Rat `json:"fee,omitempty"`

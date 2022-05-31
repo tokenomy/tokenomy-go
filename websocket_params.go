@@ -8,9 +8,7 @@ import (
 	"encoding/json"
 )
 
-//
 // WebSocketParams contains the request parameters for WebSocket client.
-//
 type WebSocketParams struct {
 	Address   string `json:"address,omitempty"`
 	Asset     string `json:"asset,omitempty"`
@@ -34,16 +32,12 @@ type WebSocketParams struct {
 	Offset int64 `json:"offset,omitempty"`
 }
 
-//
 // Pack the WebSocket parameters as JSON.
-//
 func (wsparams *WebSocketParams) Pack() (b []byte, err error) {
 	return json.Marshal(wsparams)
 }
 
-//
 // Unpack the parameters from JSON bytes.
-//
 func (wsparams *WebSocketParams) Unpack(b []byte) (err error) {
 	return json.Unmarshal(b, wsparams)
 }

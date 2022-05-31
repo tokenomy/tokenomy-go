@@ -22,9 +22,7 @@ const (
 	maxQueue int = 256
 )
 
-//
 // WebSocketPublic define a WebSocket client for public APIs.
-//
 type WebSocketPublic struct {
 	env  *Environment
 	conn *websocket.Client
@@ -43,9 +41,7 @@ type WebSocketPublic struct {
 	requestsLocker sync.Mutex
 }
 
-//
 // NewWebSocketPublic create new WebSocket connection to public APIs.
-//
 func NewWebSocketPublic(env *Environment) (
 	cl *WebSocketPublic, err error,
 ) {
@@ -87,9 +83,7 @@ func NewWebSocketPublic(env *Environment) (
 	return cl, nil
 }
 
-//
 // Close the connection and release all the resource.
-//
 func (cl *WebSocketPublic) Close() error {
 	cl.requestsLocker.Lock()
 	for id, ch := range cl.requests {
@@ -102,9 +96,7 @@ func (cl *WebSocketPublic) Close() error {
 	return cl.conn.Close()
 }
 
-//
 // MarketDepths fetch list of market's depth for specific pair.
-//
 func (cl *WebSocketPublic) MarketDepths(pair string) (
 	depths *MarketDepths, err error,
 ) {
@@ -133,9 +125,7 @@ func (cl *WebSocketPublic) MarketDepths(pair string) (
 	return depths, nil
 }
 
-//
 // MarketPrices fetch the latest pair price from the market.
-//
 func (cl *WebSocketPublic) MarketPrices() (mprices MarketPrices, err error) {
 	_, resbody, err := cl.send(http.MethodGet, APIMarketPrices, nil)
 	if err != nil {
@@ -152,9 +142,7 @@ func (cl *WebSocketPublic) MarketPrices() (mprices MarketPrices, err error) {
 	return mprices, nil
 }
 
-//
 // MarketTicker return the ticker information on specific pair.
-//
 func (cl *WebSocketPublic) MarketTicker(pair string) (tick *MarketTicker, err error) {
 	if len(pair) == 0 {
 		return nil, ErrInvalidPair
@@ -181,9 +169,7 @@ func (cl *WebSocketPublic) MarketTicker(pair string) (tick *MarketTicker, err er
 	return tick, nil
 }
 
-//
 // MarketSummaries get the market summaries.
-//
 func (cl *WebSocketPublic) MarketSummaries() (summaries *MarketSummaries, err error) {
 	_, resbody, err := cl.send(http.MethodGet, APIMarketSummaries, nil)
 	if err != nil {
@@ -200,10 +186,8 @@ func (cl *WebSocketPublic) MarketSummaries() (summaries *MarketSummaries, err er
 	return summaries, nil
 }
 
-//
 // MarketTrades return list of all completed trades in the market, specific to
 // pair, grouped by ask and bid.
-//
 func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
 	marketTrades *MarketTrades, err error,
 ) {
@@ -234,9 +218,7 @@ func (cl *WebSocketPublic) MarketTrades(pair string, offset, limit int64) (
 	return marketTrades, nil
 }
 
-//
 // Subscription return the list and status of subscription.
-//
 func (cl *WebSocketPublic) Subscription() (*PublicSubscription, error) {
 	_, resbody, err := cl.send(http.MethodGet, WSPublicSubscription, nil)
 	if err != nil {
@@ -251,7 +233,6 @@ func (cl *WebSocketPublic) Subscription() (*PublicSubscription, error) {
 	return cl.subs, nil
 }
 
-//
 // SubscribeDepths subscribe to changes on market depths based on list
 // of pair names.
 //
@@ -259,7 +240,6 @@ func (cl *WebSocketPublic) Subscription() (*PublicSubscription, error) {
 // For example, if the first call subscribed to pair "X" and the second call
 // subscribed to pair "Y", the client has two subscription: "X" and "Y", NOT
 // "Y".
-//
 func (cl *WebSocketPublic) SubscribeDepths(pairNames []string) (
 	*PublicSubscription, error,
 ) {
@@ -286,7 +266,6 @@ func (cl *WebSocketPublic) SubscribeDepths(pairNames []string) (
 	return cl.subs, nil
 }
 
-//
 // SubscribeTrades subscribe to changes on public order books.
 //
 // Multiple calls on this method will not clear previously subscribed pairs.
@@ -296,7 +275,6 @@ func (cl *WebSocketPublic) SubscribeDepths(pairNames []string) (
 //
 // The order books (open, closed, and/or cancelled) can be retrieved from
 // NotifTrades field.
-//
 func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
 	*PublicSubscription, error,
 ) {
@@ -324,14 +302,12 @@ func (cl *WebSocketPublic) SubscribeTrades(pairNames []string) (
 	return cl.subs, nil
 }
 
-//
 // UnsubscribeDepths stop receiving broadcast notification on topic
 // "depths" on specific pairs.
 //
 // If parameter is empty, it will unsubscribe all registered pairs.
 //
 // On success it will return the latest subscription.
-//
 func (cl *WebSocketPublic) UnsubscribeDepths(pairNames []string) (
 	*PublicSubscription, error,
 ) {
@@ -358,13 +334,11 @@ func (cl *WebSocketPublic) UnsubscribeDepths(pairNames []string) (
 	return cl.subs, nil
 }
 
-//
 // UnsubscribeTrades stop receiving broadcast notification on topic "trades"
 // on specific pairs.
 // If parameter is empty, it will unsubscribe all registered pairs.
 //
 // On success it will return the latest subscription.
-//
 func (cl *WebSocketPublic) UnsubscribeTrades(pairNames []string) (
 	*PublicSubscription, error,
 ) {

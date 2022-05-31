@@ -4,10 +4,8 @@
 
 package tokenomy
 
-//
 // PublicSubscription contains list of pairs that currently subscribed for
 // each topic: "depths", "ticker", and "trades".
-//
 type PublicSubscription struct {
 	Depths    []string `json:"depths"`
 	Ticker    []string `json:"ticker"`

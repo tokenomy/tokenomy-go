@@ -23,9 +23,7 @@ import (
 // broadcast from server.
 type OrdersClosedHandler func(trade *Trade)
 
-//
 // WebSocketPrivate define the private WebSocket client for APIv2.
-//
 type WebSocketPrivate struct {
 	env  *Environment
 	conn *websocket.Client
@@ -40,10 +38,8 @@ type WebSocketPrivate struct {
 	requestsLocker sync.Mutex
 }
 
-//
 // NewWebSocketPrivate create and initialize new WebSocket connection to
 // private endpoint.
-//
 func NewWebSocketPrivate(env *Environment) (
 	cl *WebSocketPrivate, err error,
 ) {
@@ -78,9 +74,7 @@ func NewWebSocketPrivate(env *Environment) (
 	return cl, nil
 }
 
-//
 // Close the connection and release all the resource.
-//
 func (cl *WebSocketPrivate) Close() error {
 	cl.requestsLocker.Lock()
 	for id, ch := range cl.requests {
@@ -93,7 +87,6 @@ func (cl *WebSocketPrivate) Close() error {
 	return cl.conn.Close()
 }
 
-//
 // TradeAsk request to sell the coin on market with specific method, amount,
 // and price.
 // The method parameter define the mode of sell, its either "market" (default)
@@ -108,7 +101,6 @@ func (cl *WebSocketPrivate) Close() error {
 //
 // The price parameter define the number of base that we want to sell the
 // amount of coin.
-//
 func (cl *WebSocketPrivate) TradeAsk(treq *TradeRequest) (
 	trade *TradeResponse, err error,
 ) {
@@ -123,7 +115,6 @@ func (cl *WebSocketPrivate) TradeAsk(treq *TradeRequest) (
 	return cl.sendTradeRequest(http.MethodPost, APITradeAsk, wsparams)
 }
 
-//
 // TradeBid request to buy the coin on market with specific method, amount,
 // and price.
 // The method parameter define the mode of buy, its either "market" (default)
@@ -138,7 +129,6 @@ func (cl *WebSocketPrivate) TradeAsk(treq *TradeRequest) (
 //
 // The price parameter define the number of base that we want to buy the
 // amount of coin.
-//
 func (cl *WebSocketPrivate) TradeBid(treq *TradeRequest) (
 	trade *TradeResponse, err error,
 ) {
@@ -153,9 +143,7 @@ func (cl *WebSocketPrivate) TradeBid(treq *TradeRequest) (
 	return cl.sendTradeRequest(http.MethodPost, APITradeBid, wsparams)
 }
 
-//
 // TradeCancel cancel the open trade using ID and pair information in Trade.
-//
 func (cl *WebSocketPrivate) TradeCancel(trade *Trade) (
 	*Trade, error,
 ) {
@@ -185,9 +173,7 @@ func (cl *WebSocketPrivate) TradeCancel(trade *Trade) (
 	return tradeResponse.Order, nil
 }
 
-//
 // TradeCancelAll cancel all user's open ask and bid orders.
-//
 func (cl *WebSocketPrivate) TradeCancelAll() (
 	trades []Trade, err error,
 ) {
@@ -209,9 +195,7 @@ func (cl *WebSocketPrivate) TradeCancelAll() (
 	return trades, nil
 }
 
-//
 // TradeCancelAsk cancel the specific open sell by pair and ID.
-//
 func (cl *WebSocketPrivate) TradeCancelAsk(pairName string, id int64) (
 	trade *TradeResponse, err error,
 ) {
@@ -227,9 +211,7 @@ func (cl *WebSocketPrivate) TradeCancelAsk(pairName string, id int64) (
 	return cl.sendTradeRequest(http.MethodDelete, APITradeCancelAsk, wsparams)
 }
 
-//
 // TradeCancelBid cancel the specific open buy by pair and ID.
-//
 func (cl *WebSocketPrivate) TradeCancelBid(pairName string, id int64) (
 	trade *TradeResponse, err error,
 ) {
@@ -245,9 +227,7 @@ func (cl *WebSocketPrivate) TradeCancelBid(pairName string, id int64) (
 	return cl.sendTradeRequest(http.MethodDelete, APITradeCancelBid, wsparams)
 }
 
-//
 // UserInfo fetch the user information and balances.
-//
 func (cl *WebSocketPrivate) UserInfo() (user *User, err error) {
 	res, err := cl.send(http.MethodGet, APIUserInfo, nil)
 	if err != nil {
@@ -269,10 +249,8 @@ func (cl *WebSocketPrivate) UserInfo() (user *User, err error) {
 	return user, nil
 }
 
-//
 // UserOrderInfo fetch a single user's trade information based on pair's name
 // and trade ID.
-//
 func (cl *WebSocketPrivate) UserOrderInfo(pairName string, id int64) (
 	trade *Trade, err error,
 ) {
@@ -306,9 +284,7 @@ func (cl *WebSocketPrivate) UserOrderInfo(pairName string, id int64) (
 	return trade, nil
 }
 
-//
 // UserOrdersOpen fetch the user open orders based on pair's name.
-//
 func (cl *WebSocketPrivate) UserOrdersOpen(pairName string) (
 	pairTradesOpen PairTradesOpen, err error,
 ) {

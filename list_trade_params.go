@@ -4,10 +4,8 @@
 
 package tokenomy
 
-//
 // ListTradeParams represent parameters for querying user's trades, closed,
 // and open orders.
-//
 type ListTradeParams struct {
 	Pair string
 

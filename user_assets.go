@@ -8,9 +8,7 @@ import (
 	big "github.com/shuLhan/share/lib/math/big"
 )
 
-//
 // UserAssets contains mapping between asset name and its value.
-//
 type UserAssets struct {
 	Balances          map[string]*big.Rat `json:"balances,omitempty"`
 	FrozenBalances    map[string]*big.Rat `json:"frozen_balances,omitempty"`
@@ -18,9 +16,7 @@ type UserAssets struct {
 	FrozenBalancesInt map[string]int64    `json:"-"`
 }
 
-//
 // NewUserAssets create and initialize all fields in UserAssets.
-//
 func NewUserAssets() (assets *UserAssets) {
 	return &UserAssets{
 		Balances:          make(map[string]*big.Rat),
@@ -30,9 +26,7 @@ func NewUserAssets() (assets *UserAssets) {
 	}
 }
 
-//
 // Copy create a new copy of assets.
-//
 func (assets *UserAssets) Copy() *UserAssets {
 	newAssets := &UserAssets{
 		Balances:          make(map[string]*big.Rat, len(assets.Balances)),

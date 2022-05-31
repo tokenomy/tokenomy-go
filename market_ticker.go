@@ -6,9 +6,7 @@ package tokenomy
 
 import "github.com/shuLhan/share/lib/math/big"
 
-//
 // MarketTicker contains the pair tick information in the market.
-//
 type MarketTicker struct {
 	// LowestAskPrice contains the lowest sell price in open orders.
 	LowestAskPrice *big.Rat `json:"ask"`

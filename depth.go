@@ -6,10 +6,8 @@ package tokenomy
 
 import "github.com/shuLhan/share/lib/math/big"
 
-//
 // Depth contains total amount of remaining open orders grouped by price.
 // Each depth is specific to pair.
-//
 type Depth struct {
 	Amount    *big.Rat `json:"amount"` // DEPRECATED: replaced with total_base and total_coin.
 	Price     *big.Rat `json:"price"`
