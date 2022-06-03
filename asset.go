@@ -6,6 +6,7 @@ package tokenomy
 
 // Asset contains basic information of an asset
 type Asset struct {
-	Name string `json:"name"`
-	Logo string `json:"logo"`
+	Name             string `json:"name"`
+	Logo             string `json:"logo"`
+	IsWithoutNetwork bool   `json:"is_without_network"`
 }
