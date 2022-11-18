@@ -1,4 +1,58 @@
 = CHANGELOG
+:toc:
+:sectanchors:
+:sectlinks:
+
+[#v0_15_0]
+==  tokenomy-go v0.15.0 (2022-11-18)
+
+This release add the following asset:
+
+* Solana (sol)
+
+and remove the following asset:
+
+* CyberMiles (cmt)
+* Kybernetwork (knc)
+* Monero (xmr)
+* Zcash (zec)
+
+[#v0_15_0_new_features]
+===  New features
+
+all: add bulk trading API::
++
+--
+The TradeBulk method can be used to cancel or create multiple orders at
+the same time.
+It accept the TradeBulk type with the following fields,
+
+* pair: REQUIRED, the name of the currencies being traded, for example
+  "btc_usdt".
+* orders: OPTIONAL, list of orders to be placed on the market.
+* cancel: OPTIONAL, list of order to be cancelled.
+* timestamp: REQUIRED, the current epoch time.
+
+The request will be processed sequentially: "orders" first, then "cancel".
+
+Each item in the cancel and orders will return exactly one object of
+BulkOrderItem in the same order as request.
+
+* id: The unique ID for order.
+  In case of failure on mass-orders or self-trade, it will return 0.
+* ref_id:  The value of ref_id from the BulkOrderItem request.
+* code: The status of order, 200 for success, otherwise it will be
+  considered as failed.
+* message: The order status or error message if returned code is not 200.
+* name: The error unique identifier. This field will be set only if the
+  code value is not 200.
+--
+
+[#v0_15_0_enhancements]
+=== Enhancements
+
+TKN-3112 asset: add field IsWithoutNetwork to Asset struct::
+
 
 ==  tokenomy-go v0.14.0 (2022.01.10)
 
