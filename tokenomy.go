@@ -89,6 +89,7 @@ const (
 	AssetNameUsdc            = "usdc"
 	AssetNameVexanium        = "vex"
 	AssetNameXanpool         = "xlp"
+	AssetNameAvalanche       = "avax"
 )
 
 // List of valid pairs.
