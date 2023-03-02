@@ -3,6 +3,17 @@
 :sectanchors:
 :sectlinks:
 
+[#v0_15_1]
+==  tokenomy-go v0.15.1 (2023-03-03)
+
+The following asset is added to platform: avax.
+
+The following asset has been removed from platform: mkr, snx, and trx.
+
+The following pairs has been removed from platform: trx_btc, mkr_idk,
+snx_idk, and trx_usdt.
+
+
 [#v0_15_0]
 ==  tokenomy-go v0.15.0 (2022-11-18)
 
