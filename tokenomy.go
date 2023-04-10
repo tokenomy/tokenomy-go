@@ -84,7 +84,6 @@ const (
 	AssetNameTezos           = "xtz"
 	AssetNameTokenomy        = "ten"
 	AssetNameUsdc            = "usdc"
-	AssetNameVexanium        = "vex"
 	AssetNameXanpool         = "xlp"
 	AssetNameAvalanche       = "avax"
 )
@@ -102,7 +101,6 @@ const (
 	PairStellarBitcoin     = AssetNameStellar + `_` + AssetNameBitcoin     // xlm_btc
 	PairTokenomyBitcoin    = AssetNameTokenomy + `_` + AssetNameBitcoin    // ten_btc
 	PairUsdcBitcoin        = AssetNameUsdc + `_` + AssetNameBitcoin        // usdc_btc
-	PairVexaniumBitcoin    = AssetNameVexanium + `_` + AssetNameBitcoin    // vex_btc
 
 	PairBitcoinIdk   = AssetNameBitcoin + `_` + AssetNameIdk   // btc_idk
 	PairCardanoIdk   = AssetNameCardano + `_` + AssetNameIdk   // ada_idk
