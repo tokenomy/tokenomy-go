@@ -69,7 +69,6 @@ const (
 	AssetNameChainlink       = "link"
 	AssetNameCompound        = "comp"
 	AssetNameDai             = "dai"
-	AssetNameEos             = "eos"
 	AssetNameEthereum        = "eth"
 	AssetNameEthereumclassic = "etc"
 	AssetNameHara            = "hart"
@@ -93,7 +92,6 @@ const (
 // or did not contains new pairs in the Tokenomy platform.
 const (
 	PairBitcoinCashBitcoin = AssetNameBitcoinCash + `_` + AssetNameBitcoin // bch_btc
-	PairEosBitcoin         = AssetNameEos + `_` + AssetNameBitcoin         // eos_btc
 	PairEthereumBitcoin    = AssetNameEthereum + `_` + AssetNameBitcoin    // eth_btc
 	PairLitecoinBitcoin    = AssetNameLitecoin + `_` + AssetNameBitcoin    // ltc_btc
 	PairPolkadotBitcoin    = AssetNamePolkadot + `_` + AssetNameBitcoin    // dot_btc
