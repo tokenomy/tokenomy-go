@@ -10,12 +10,13 @@ import (
 
 // WebSocketParams contains the request parameters for WebSocket client.
 type WebSocketParams struct {
-	Address   string `json:"address,omitempty"`
-	Asset     string `json:"asset,omitempty"`
-	IDSortBy  string `json:"id_sort_by,omitempty"`
-	Memo      string `json:"memo,omitempty"`
-	Network   string `json:"network,omitempty"`
-	RequestID string `json:"request_id,omitempty"`
+	Address     string `json:"address,omitempty"`
+	AddressType string `json:"address_type,omitempty"`
+	Asset       string `json:"asset,omitempty"`
+	IDSortBy    string `json:"id_sort_by,omitempty"`
+	Memo        string `json:"memo,omitempty"`
+	Network     string `json:"network,omitempty"`
+	RequestID   string `json:"request_id,omitempty"`
 
 	TradeRequest
 	PublicSubscription

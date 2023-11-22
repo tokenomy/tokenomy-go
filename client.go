@@ -463,7 +463,7 @@ func (cl *Client) UserTransactions(asset string, limit int64) (trans *AssetTrans
 // 200 with string “ok” (without quotes), and we will process the withdrawn in
 // our system, otherwise the request will be fail.
 func (cl *Client) UserWithdraw(
-	requestID, asset, network, address, memo string,
+	requestID, asset, network, address, addressType, memo string,
 	amount *big.Rat,
 ) (withdraw *WithdrawItem, err error) {
 	if len(requestID) == 0 {
@@ -480,12 +480,13 @@ func (cl *Client) UserWithdraw(
 	}
 
 	params := url.Values{
-		ParamNameRequestID: []string{requestID},
-		ParamNameAsset:     []string{asset},
-		ParamNameNetwork:   []string{network},
-		ParamNameAddress:   []string{address},
-		ParamNameMemo:      []string{memo},
-		ParamNameAmount:    []string{amount.String()},
+		ParamNameRequestID:   []string{requestID},
+		ParamNameAsset:       []string{asset},
+		ParamNameNetwork:     []string{network},
+		ParamNameAddress:     []string{address},
+		ParamNameAddressType: []string{addressType},
+		ParamNameMemo:        []string{memo},
+		ParamNameAmount:      []string{amount.String()},
 	}
 
 	b, err := cl.doSecureRequest(http.MethodPost, APIUserWithdraw,

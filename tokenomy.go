@@ -163,6 +163,7 @@ const (
 // List of knowns parameter names.
 const (
 	ParamNameAddress       = "address"
+	ParamNameAddressType   = "address_type"
 	ParamNameAmount        = "amount"
 	ParamNameAsset         = "asset"
 	ParamNameIDAfter       = "id_after"

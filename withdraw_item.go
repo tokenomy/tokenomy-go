@@ -18,6 +18,7 @@ type WithdrawItem struct {
 	Network     string `json:"network,omitempty"`
 	Status      string `json:"status,omitempty"`
 	Address     string `json:"address,omitempty"`
+	AddressType string `json:"address_type,omitempty"`
 	Memo        string `json:"memo,omitempty"`
 
 	ID          int64 `json:"id,omitempty"`
