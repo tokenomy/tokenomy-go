@@ -20,6 +20,9 @@ import (
 // DefaultAddress contains the official API domain.
 const DefaultAddress = "https://api.tokenomy.com"
 
+// Version the latest tagged version.
+const Version = `0.15.2`
+
 // List of API endpoints.
 const (
 	APIMarketDepths     = "/v2/market/depths"

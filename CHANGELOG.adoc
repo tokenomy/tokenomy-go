@@ -3,6 +3,20 @@
 :sectanchors:
 :sectlinks:
 
+Changelogs for Go module for Tokenomy.com.
+
+
+[#v0_15_2]
+==  tokenomy-go v0.15.2 (2023-11-22)
+
+The following asset has been removed from Tokenomy: vexanium and eos.
+
+[#v0_15_2__enhancements]
+=== Enhancements
+
+* TKN-7693 all: add param `address_type` to withdraw
+
+
 [#v0_15_1]
 ==  tokenomy-go v0.15.1 (2023-03-03)
 
